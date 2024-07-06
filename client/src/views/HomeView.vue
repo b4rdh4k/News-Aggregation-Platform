@@ -1,9 +1,21 @@
-<script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+<template>
+  <div>
+    <h1 class="text-2xl font-bold mb-4">Welcome to the News Aggregation Platform</h1>
+    <NewsList />
+  </div>
+</template>
+
+<script>
+import NewsList from '../components/NewsList.vue';
+
+export default {
+  name: 'HomeView',
+  components: {
+    NewsList,
+  },
+};
 </script>
 
-<template>
-  <main>
-    <TheWelcome />
-  </main>
-</template>
+<style scoped>
+/* Add any scoped styles here */
+</style>
