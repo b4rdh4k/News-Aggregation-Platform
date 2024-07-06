@@ -1,4 +1,5 @@
 import './assets/main.css'
+import {initTheme} from './utils/theme'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -12,3 +13,4 @@ app.use(createPinia())
 app.use(router)
 
 app.mount('#app')
+initTheme();

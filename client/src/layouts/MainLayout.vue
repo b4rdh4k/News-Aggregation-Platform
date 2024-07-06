@@ -1,24 +1,22 @@
 <template>
     <div>
-      <Header />
+      <AppHeader />
       <main class="container mx-auto mt-4">
         <router-view />
       </main>
-      <Footer />
+      <AppFooter />
     </div>
   </template>
   
   <script>
-  import Header from '../components/Header.vue';
-  import Footer from '../components/Footer.vue';
+  import AppHeader from '../components/AppHeader.vue';
+  import AppFooter from '../components/AppFooter.vue';
   
   export default {
     name: 'MainLayout',
     components: {
-      // eslint-disable-next-line vue/no-reserved-component-names
-      Header,
-      // eslint-disable-next-line vue/no-reserved-component-names
-      Footer,
+      AppHeader,
+      AppFooter,
     },
   };
   </script>

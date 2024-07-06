@@ -3,17 +3,17 @@
       <div class="container mx-auto text-center">
         <p>&copy; 2024 News Aggregation Platform. All rights reserved.</p>
       </div>
+      <!--we add the links here for about/contact/blablablaq-->
     </footer>
   </template>
   
   <script>
   export default {
-    // eslint-disable-next-line vue/multi-word-component-names, vue/no-reserved-component-names
-    name: 'Footer',
+    name: 'AppFooter',
   };
   </script>
   
   <style scoped>
-  /* Add any scoped styles here */
+  /* we add the responsivity here */
   </style>
   

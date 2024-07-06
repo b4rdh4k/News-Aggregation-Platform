@@ -6,7 +6,7 @@
 
 #app {
   margin: 0;
-    padding: 0;
+  padding: 0;
   font-weight: normal;
 }
 body {
@@ -47,4 +47,40 @@ small {font-size: 0.750rem; /* 12px */}
     --secondary: #3e4c3f;
     --accent: #8891a5;
   }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+}
+
+.bg-background {
+  background-color: var(--background);
+}
+.text-text {
+  color: var(--text);
+}
+.bg-primary {
+  background-color: var(--primary);
+}
+.bg-secondary {
+  background-color: var(--secondary);
+}
+.bg-accent {
+  background-color: var(--accent);
+}
+.dark .bg-background {
+  background-color: var(--dark-background);
+}
+.dark .text-text {
+  color: var(--dark-text);
+}
+.dark .bg-primary {
+  background-color: var(--dark-primary);
+}
+.dark .bg-secondary {
+  background-color: var(--dark-secondary);
+}
+.dark .bg-accent {
+  background-color: var(--dark-accent);
 }
