@@ -1,4 +1,5 @@
 @import './base.css';
+@import url('https://fonts.googleapis.com/css?family=M%20PLUS%20Code%20Latin:700|Noto%20Serif%20Vithkuqi:400');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,4 +8,43 @@
   margin: 0;
     padding: 0;
   font-weight: normal;
+}
+body {
+  font-family: 'Noto Serif Vithkuqi';
+  font-weight: 400;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'M PLUS Code Latin';
+  font-weight: 700;
+}
+
+html {font-size: 100%;} /* 16px */
+
+h1 {font-size: 4.210rem; /* 67.36px */}
+
+h2 {font-size: 3.158rem; /* 50.56px */}
+
+h3 {font-size: 2.369rem; /* 37.92px */}
+
+h4 {font-size: 1.777rem; /* 28.48px */}
+
+h5 {font-size: 1.333rem; /* 21.28px */}
+
+small {font-size: 0.750rem; /* 12px */}
+@layer base {
+  :root {
+    --text: #0e0e0c;
+    --background: #eae7dc;
+    --primary: #918b78;
+    --secondary: #b3c1b4;
+    --accent: #5a6377;
+  }
+  .dark {
+    --text: #f3f3f1;
+    --background: #232015;
+    --primary: #87816e;
+    --secondary: #3e4c3f;
+    --accent: #8891a5;
+  }
 }

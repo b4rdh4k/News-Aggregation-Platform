@@ -1,7 +1,7 @@
 <template>
-    <header class="bg-blue-500 text-white p-4">
+    <header class="bg-background text-white p-4">
       <div class="container mx-auto">
-        <h1 class="text-xl font-bold">News Aggregation Platform</h1>
+        <h1 class="text-xl text-text font-bold">News Aggregation Platform</h1>
         <nav>
           <router-link to="/" class="mr-4">Home</router-link>
           <router-link to="/about">About</router-link>
