@@ -18,14 +18,6 @@
       </div>
       
       <div class="flex items-center space-x-4">
-        <label class="md:hidden">
-          <div class="w-9 h-10 cursor-pointer flex flex-col items-center justify-center" @click="toggleMenu">
-            <input class="hidden peer" type="checkbox" />
-            <div class="w-[50%] h-[2px] bg-black rounded-sm transition-all duration-300 origin-left translate-y-[0.45rem] peer-checked:rotate-[-45deg]"></div>
-            <div class="w-[50%] h-[2px] bg-black rounded-md transition-all duration-300 origin-center peer-checked:hidden"></div>
-            <div class="w-[50%] h-[2px] bg-black rounded-md transition-all duration-300 origin-left -translate-y-[0.45rem] peer-checked:rotate-[45deg]"></div>
-          </div>
-        </label>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           @click="toggleSearch"
@@ -42,36 +34,51 @@
           />
         </svg>
         <ThemeToggle class="hidden md:block" />
-        <svg class="hidden md:block w-6 h-6 ml-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.944 13.944 0 0112 15c3.86 0 7.305 1.564 9.879 4.09m-3.9-6.215A4.992 4.992 0 0012 10c-2.485 0-4.608 1.746-5.384 4.19M15 14a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
+        <div class="relative">
+          <button @click="toggleDropdown" class="flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.944 13.944 0 0112 15c3.86 0 7.305 1.564 9.879 4.09m-3.9-6.215A4.992 4.992 0 0012 10c-2.485 0-4.608 1.746-5.384 4.19M15 14a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </button>
+          <div v-if="isDropdownOpen" class="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-secondary rounded-md shadow-lg z-20">
+            <button @click="openSignInModal" class="block w-full px-4 py-2 text-left hover:bg-gray-200 dark:hover:bg-dark-primary">Sign In</button>
+            <button @click="openRegisterModal" class="block w-full px-4 py-2 text-left hover:bg-gray-200 dark:hover:bg-dark-primary">Register</button>
+          </div>
+        </div>
       </div>
     </div>
       <div v-if="showSearch" class="relative md:hidden mt-4">
       <input type="text" v-model="searchQuery" @keydown.enter="performSearch" placeholder="Search for topics, locations & sources" class="p-2 rounded bg-secondary dark:bg-dark-secondary text-background dark:text-dark-background w-full">
     </div>
+
+    <SignInModal v-if="showSignInModal" @close="showSignInModal = false" />
+    <RegisterModal v-if="showRegisterModal" @close="showRegisterModal = false" />
   </header>
 </template>
 
 <script>
-import ThemeToggle from './ThemeToggle.vue';
+import ThemeToggle from '@/components/ThemeToggle.vue'; 
+import SignInModal from '@/components/Account/SigninModal.vue';
+import RegisterModal from '@/components/Account/SignupModal.vue';
 
 export default {
   name: 'AppHeader',
   components: {
     ThemeToggle,
+    SignInModal,
+    RegisterModal,
   },
   data() {
     return {
-      isMenuOpen: false,
       showSearch: false,
       searchQuery: '',
+      isDropdownOpen: false,
+      showSignInModal: false,
+      showRegisterModal: false,
     };
   },
   methods: {
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen;
-    },
+
     toggleSearch() {
       this.showSearch = !this.showSearch;
     },
@@ -80,6 +87,17 @@ export default {
         // well do this when we get the backend code!!
         console.log(`Searching for: ${this.searchQuery}`);
       }
+    },
+    toggleDropdown() {
+      this.isDropdownOpen = !this.isDropdownOpen;
+    },
+    openSignInModal() {
+      this.showSignInModal = true;
+      this.isDropdownOpen = false;
+    },
+    openRegisterModal() {
+      this.showRegisterModal = true;
+      this.isDropdownOpen = false;
     },
   },
 };

@@ -20,13 +20,7 @@ const routes = [
         path: 'about',
         name: 'About',
         component: AboutView,
-      }
-    ],
-  },
-  {
-    path: '/',
-    component: BasicsLayout,
-    children: [
+      },
       {
         path: 'sign-in',
         name: 'Signin',
@@ -37,6 +31,13 @@ const routes = [
         name: 'Signup',
         component: SignupView,
       },
+    ],
+  },
+  {
+    path: '/',
+    component: BasicsLayout,
+    children: [
+     
     ],
   },
 ];
