@@ -1,5 +1,5 @@
 <template>
-  <div class="flex max-h-screen  overflow-y-scroll bg-background text-text">
+  <div class="flex max-h-screen  overflow-y-scroll bg-background dark:bg-dark-background dark:text-dark-text text-text">
     <div class="flex flex-1 justify-center items-center mt-12">
       <div class="w-full max-w-sm pt-10 bg-background">
         <h1 class="text-4xl font-bold mb-4 text-center">Sign up</h1>
