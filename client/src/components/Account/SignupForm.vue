@@ -1,8 +1,8 @@
 <template>
-  <div class="flex max-h-screen  overflow-y-scroll bg-background dark:bg-dark-background dark:text-dark-text text-text">
-    <div class="flex flex-1 justify-center items-center mt-12">
-      <div class="w-full max-w-sm pt-10 bg-background">
-        <h1 class="text-4xl font-bold mb-4 text-center">Sign up</h1>
+  <div class="flex md:max-h-[90vh] lg:max-h-[90vh] max-h-screen rounded-lg p-2 sm:p-0 overflow-y-scroll bg-background dark:bg-dark-background dark:text-dark-text text-text">
+    <div class="flex flex-1 justify-center items-center md:mt-14 lg:mt-24 mt-40">
+      <div class="w-full max-w-sm bg-background">
+        <h1 class="text-4xl font-bold mb-4 md:mt-18 lg:mt-24 mt-40 text-center">Sign up</h1>
         <button
           class="w-full py-2 px-4 mb-4 border border-gray-300 rounded flex items-center justify-center text-dark-background bg-white hover:bg-gray-100"
         >
