@@ -1,6 +1,6 @@
 <template>
-      <div v-for="story in topStories" :key="story.id" class="mb-4">
-        <img :src="story.image" alt="" class="object-cover mb-2">
+      <div v-for="story in topStories" :key="story.id" class="mb-4" @click="goToNewsView(story)">
+        <img :src="story.image" alt="" class="w-full h-48 object-cover mb-2">
         <h3 class="font-semibold">{{ story.title }}</h3>
         <p class="text-text dark:text-dark-text">{{ story.time }} • {{ story.authors }}</p>
       </div>
@@ -27,6 +27,16 @@ export default {
         },
       ],
     };
+  },
+  methods: {
+    goToNewsView(story) {
+      console.log(story); // Debugging line
+      if (story && story.id) {
+        this.$router.push({ name: 'News', params: { id: story.id } });
+      } else {
+        console.error('Missing story ID'); 
+      }   
+    },
   },
 };
 </script>

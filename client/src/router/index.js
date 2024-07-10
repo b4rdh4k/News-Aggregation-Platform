@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue';
 import AboutView from '../views/AboutView.vue';
 import MainLayout from '../layouts/MainLayout.vue';
 import BasicsLayout from '../layouts/BasicsLayout.vue';
+import NewsView from '../components/NewsPage/NewsView.vue';
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
         name: 'About',
         component: AboutView,
       },
+      {
+        path: 'news/:id',
+        name: 'News',
+        component: NewsView,
+      }
     ],
   },
   {

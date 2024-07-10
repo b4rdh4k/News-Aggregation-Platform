@@ -19,9 +19,15 @@ export default {
           id: 2,
           title: 'Netflix’s next live event is a Joe Rogan comedy special',
           time: '1 hour ago'
-        }
-      ]
-    }
-  }
-}
+        },
+      ],
+    };
+  },
+  methods: {
+    goToNewsView(pick) {
+      this.$router.push({ name: 'News', params: { id: pick.id } });
+    },
+  },
+};
 </script>
+<style scoped></style>
