@@ -1,3 +1,7 @@
+<script setup>
+import { defineEmits } from 'vue';
+defineEmits(['closeModal']);
+</script>
 <template>
     <div class="fixed inset-0 z-50  flex items-center justify-center bg-text bg-opacity-90">
       <div class="bg-background rounded-lg shadow-lg w-full max-w-lg p-4">
@@ -6,12 +10,6 @@
       </div>
     </div>
   </template>
-  
-  <script>
-  export default {
-    emits: ['close'],
-  };
-  </script>
   
   <style scoped>
   </style>

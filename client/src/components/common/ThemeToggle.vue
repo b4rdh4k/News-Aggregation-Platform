@@ -8,7 +8,7 @@
   </template>
   
   <script>
-  import { setTheme, getTheme } from '../utils/theme';
+  import { setTheme, getTheme } from '../../utils/theme';
   
   export default {
     name: 'ThemeToggle',

@@ -1,16 +1,16 @@
 <template>
     <Modal @close="closeModal">
-      <SigninForm @closeModal="closeModal" />
+      <SignupForm @closeModal="closeModal" />
     </Modal>
   </template>
   
   <script>
-  import SigninForm from '@/components/Account/SigninForm.vue';
+  import SignupForm from '@/components/Account/Forms/SignupForm.vue';
   import Modal from '@/components/ModalFormat.vue';
   
   export default {
     components: {
-      SigninForm,
+      SignupForm,
       Modal,
     },
     methods: {

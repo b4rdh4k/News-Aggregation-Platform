@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import router from '@/router';
+
+const apiBaseUrl = import.meta.env.VITE_APP_API_BASE_URL;
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -8,48 +9,38 @@ export const useUserStore = defineStore('user', {
     token: null,
   }),
   actions: {
-    async register(email, password, confirmPassword, firstName, lastName, username, birthdate) {
+    async register(email, password, username, fullName, birthdate) {
       try {
-        const response = await axios.post('https://test.erzen.tk/api/v1/auth/register', {
+        const response = await axios.post(`${apiBaseUrl}/auth/register`, {
           email,
           password,
-          confirmPassword,
-          firstName,
-          lastName,
           username,
+          fullName,
           birthdate,
         });
-        if (response.status === 200) {
-          return true;
-        }
+        this.user = response.data.user;
+        this.token = response.data.token;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+        return true;
       } catch (error) {
-        console.error(error);
+        console.error('Registration failed:', error);
         return false;
       }
     },
     async login(email, password) {
       try {
-        const response = await axios.post('https://test.erzen.tk/api/v1/auth/login', {
+        const response = await axios.post(`${apiBaseUrl}/auth/login`, {
           email,
-          password
+          password,
         });
-        if (response.status === 200) {
-          this.user = response.data.user;
-          this.token = response.data.token;
-          axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
-          router.push('/');
-          return true;
-        }
+        this.user = response.data.user;
+        this.token = response.data.token;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+        return true;
       } catch (error) {
-        console.error(error);
+        console.error('Login failed:', error);
         return false;
       }
     },
-    logout() {
-      this.user = null;
-      this.token = null;
-      delete axios.defaults.headers.common['Authorization'];
-      router.push('/sign-in');
-    }
-  }
+  },
 });

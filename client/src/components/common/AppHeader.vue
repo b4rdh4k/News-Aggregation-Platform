@@ -76,9 +76,9 @@
 </template>
 
 <script>
-import ThemeToggle from '@/components/ThemeToggle.vue'
-import SignInModal from '@/components/Account/SigninModal.vue'
-import RegisterModal from '@/components/Account/SignupModal.vue'
+import ThemeToggle from '@/components/common/ThemeToggle.vue'
+import SignInModal from '@/components/Account/Modals/SigninModal.vue'
+import RegisterModal from '@/components/Account/Modals/SignupModal.vue'
 
 export default {
   name: 'AppHeader',

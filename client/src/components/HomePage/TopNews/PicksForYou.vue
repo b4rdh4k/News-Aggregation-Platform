@@ -1,5 +1,5 @@
 <template>
-  <div v-for="pick in picksForYou" :key="pick.id" class="mb-4">
+  <div v-for="pick in picksForYou" :key="pick.id" class="mb-4 md:ml-4 lg:ml-4 xl:ml-4 ">
     <h3 class="font-semibold">{{ pick.title }}</h3>
     <p class="text-gray-500">{{ pick.time }} • {{ pick.author }}</p>
   </div>
