@@ -14,7 +14,7 @@
             v-model="searchQuery"
             @keydown.enter="performSearch"
             placeholder="Search for topics, locations & sources"
-            class="p-2 min-w-96 rounded bg-secondary dark:bg-dark-secondary text-background dark:text-dark-background"
+            class="p-2 min-w-96 rounded bg-primary dark:bg-dark-primary text-text placeholder-accent dark:placeholder-dark-accent outline-none dark:text-dark-text"
           />
         </div>
       </div>
@@ -41,11 +41,11 @@
           </button>
           <div
             v-if="isDropdownOpen"
-            class="absolute right-0 mt-2 w-48 bg-background border-[1px] border-accent dark:bg-dark-background rounded-md shadow-lg z-20"
+            class="absolute right-0 mt-2 w-48 bg-background border-[1px] border-accent dark:border-dark-accent dark:bg-dark-background rounded-md shadow-lg z-20"
           >
             <button
               @click="openSignInModal"
-              class="block w-full border-b-[1px] border-accent px-4 py-2 text-left hover:bg-primary hover:rounded-t-md dark:hover:bg-dark-primary"
+              class="block w-full border-b-[1px] border-accent dark:border-dark-accent px-4 py-2 text-left hover:bg-primary hover:rounded-t-md dark:hover:bg-dark-primary"
             >
               Sign In
             </button>
@@ -67,7 +67,7 @@
         v-model="searchQuery"
         @keydown.enter="performSearch"
         placeholder="Search for topics, locations & sources"
-        class="p-2 rounded bg-secondary dark:bg-dark-secondary text-background dark:text-dark-background w-full"      />
+        class="p-2 rounded bg-primary dark:bg-dark-primary w-full"/>
     </div>
 
     <SignInModal v-if="showSignInModal" @close="showSignInModal = false" />

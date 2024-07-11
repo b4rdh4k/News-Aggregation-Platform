@@ -1,7 +1,7 @@
 /* Scrollbar Style */
 html {
   scrollbar-width: thin;
-  scrollbar-color: red transparent;
+  scrollbar-color: var(--accent) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -15,10 +15,10 @@ html {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: red;
+  background-color: var(--accent);
   border-radius: 5px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(red, 0.5);
+  background-color: rgba(var(--accent), 0.5);
 }

@@ -1,9 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import AboutView from '../views/AboutView.vue';
 import MainLayout from '../layouts/MainLayout.vue';
 import BasicsLayout from '../layouts/BasicsLayout.vue';
-import NewsView from '../components/NewsPage/NewsView.vue';
 
 const routes = [
   {
@@ -18,13 +16,23 @@ const routes = [
       {
         path: 'about',
         name: 'About',
-        component: AboutView,
+        component: () => import('../views/AboutView.vue'),
       },
       {
         path: 'news/:id',
         name: 'News',
-        component: NewsView,
-      }
+        component: () => import('../components/NewsPage/NewsView.vue'),
+      },
+      {
+        path: 'category/:id',
+        name: 'Category',
+        component: () => import('../views/Category/CategoryView.vue'),
+      },
+      {
+        path: 'source/:id',
+        name: 'Source',
+        component: () => import('../views/Source/SourceView.vue'),
+      },
     ],
   },
   {

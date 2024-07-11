@@ -1,21 +1,20 @@
 <script setup>
-import  TopStories  from '@/components/HomePage/TopNews/TopStories.vue'
-import  PicksForYou  from '@/components/HomePage/TopNews/PicksForYou.vue'
+import TopStories from '@/components/HomePage/TopNews/TopStories.vue'
+import PicksForYou from '@/components/HomePage/TopNews/PicksForYou.vue'
 </script>
 
 <template>
-  <div class="flex flex-col w-full justify-center md:flex-row lg:flex-row xl:flex-row space-x-4 mx-4">
-    <div class="w-2/3">
-      <h2 class="text-xl font-bold mb-4">Top stories</h2>
+  <div class="container mx-auto flex flex-col lg:flex-row xl:flex-row space-y-4 lg:space-y-0 xl:space-y-0 lg:space-x-4 xl:space-x-4 px-4">
+    <div class="w-full lg:w-3/4">
+      <h2 class="text-xl text-secondary dark:text-dark-secondary font-bold mb-4">Top stories</h2>
       <TopStories />
     </div>
-    <div class="w-1/3">
-      <h2 class="text-xl font-bold mb-4 ml-4">Picks for you</h2>
+    <div class="w-full lg:w-1/4">
+      <h2 class="text-xl text-secondary dark:text-dark-secondary font-bold mb-4 md:ml-4 lg:ml-4 xl:ml-4">Picks for you</h2>
       <PicksForYou />
     </div>
   </div>
 </template>
 
-
-
-<style scoped></style>
+<style scoped>
+</style>

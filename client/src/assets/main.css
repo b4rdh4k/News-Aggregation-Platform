@@ -35,17 +35,17 @@ small {font-size: 0.750rem; /* 12px */}
 @layer base {
   :root {
     --text: #0e0e0c;
-    --background: #eae7dc;
-    --primary: #918b78;
-    --secondary: #b3c1b4;
-    --accent: #5a6377;
+    --background: #f6e6f0;
+    --primary: #ffc4d6;
+    --secondary: #fab3c8;
+    --accent: #ff87ab;
   }
   .dark {
-    --text: #f3f3f1;
-    --background: #232015;
-    --primary: #87816e;
-    --secondary: #3e4c3f;
-    --accent: #8891a5;
+    --text: #f8f8ef;
+    --background: #051923;
+    --primary: #003554;
+    --secondary: #006494;
+    --accent: #00a6fb;
   }
 }
 
