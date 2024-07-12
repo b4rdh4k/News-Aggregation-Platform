@@ -1,6 +1,17 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import TopicModal from './TopicModal.vue';
+const isModalOpen = ref(false);
+
+const openModal = () => {
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+  router.push('/');
+};
 
 const router = useRouter()
 
@@ -147,76 +158,52 @@ const goToNewsView = (story) => {
   }
 }
 
-const dropdownOpen = ref(false)
-
-const toggleDropdown = () => {
-  dropdownOpen.value = !dropdownOpen.value
-}
 </script>
 <template>
-    <div class="p-4">
-      <div class="flex justify-between items-center mb-4">
-        <h1 class="text-3xl text-accent dark:text-dark-accent font-bold">Your topics</h1>
-        <div class="relative">
-          <button 
-            @click="toggleDropdown" 
-            class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent px-4 py-2 rounded-xl text-text dark:text-dark-text"
-          >
-            Categories
-          </button>
-          <div 
-            v-if="dropdownOpen" 
-            class="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-secondary rounded-md shadow-lg z-10"
-          >
-            <ul>
-              <li 
-                v-for="category in categories" 
-                :key="category.title" 
-                class="px-4 py-2 hover:bg-secondary dark:hover:bg-dark-primary cursor-pointer"
-                @click="() => { dropdownOpen = false; router.push(`/category/${category.title}`); }"
-              >
-                {{ category.title }}
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div
-          v-for="category in categories"
-          :key="category.title"
-          class="p-4 rounded-lg shadow-md"
-        >
-          <router-link :to="`/category/${category.title}`" class="mb-2" @click.stop>
-            <button
-              class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent px-2 rounded-xl"
-            >
-              <p class="text-text dark:text-dark-text">{{ category.title }}</p>
-            </button>
-          </router-link>
-          <ul>
-            <li
-              v-for="(item, index) in category.items"
-              :key="item.id"
-              class="mb-4 mt-4 cursor-pointer"
-              @click="goToNewsView(item)"
-            >
-              <router-link :to="`/source/${item.source}`" class="mb-2" @click.stop>
-                <p
-                  class="text-accent dark:text-dark-accent italic font-serif cursor-pointer hover:text-secondary dark:hover:text-dark-secondary"
-                >
-                  {{ item.source }}
-                </p>
-              </router-link>
-              <h6 class="font-semibold text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
-                {{ item.title }}
-              </h6>
-              <p class="text-text dark:text-dark-text">{{ item.time }} | {{ item.authors }}</p>
-              <hr v-if="index < category.items.length - 1" class="border-b mt-4 border-secondary dark:border-dark-secondary" />
-            </li>
-          </ul>
-        </div>
+  <div class="p-4">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-3xl text-accent dark:text-dark-accent font-bold">Your topics</h1>
+      <div class="relative">
+        <button @click="openModal" class="text-primary">Open Modal</button>
+
+        <TopicModal v-if="isModalOpen" @closeModal="closeModal"/>
       </div>
     </div>
-  </template>
-  
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        v-for="category in categories"
+        :key="category.title"
+        class="p-4 rounded-lg shadow-md"
+      >
+        <router-link :to="`/category/${category.title}`" class="mb-2" @click.stop>
+          <button
+            class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent px-2 rounded-xl"
+          >
+            <p class="text-text dark:text-dark-text">{{ category.title }}</p>
+          </button>
+        </router-link>
+        <ul>
+          <li
+            v-for="(item, index) in category.items"
+            :key="item.id"
+            class="mb-4 mt-4 cursor-pointer"
+            @click="goToNewsView(item)"
+          >
+            <router-link :to="`/source/${item.source}`" class="mb-2" @click.stop>
+              <p
+                class="text-accent dark:text-dark-accent italic font-serif cursor-pointer hover:text-secondary dark:hover:text-dark-secondary"
+              >
+                {{ item.source }}
+              </p>
+            </router-link>
+            <h6 class="font-semibold text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
+              {{ item.title }}
+            </h6>
+            <p class="text-text dark:text-dark-text">{{ item.time }} | {{ item.authors }}</p>
+            <hr v-if="index < category.items.length - 1" class="border-b mt-4 border-secondary dark:border-dark-secondary" />
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>'
+</template>
