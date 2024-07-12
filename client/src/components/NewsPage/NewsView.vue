@@ -36,6 +36,62 @@
             image: 'https://via.placeholder.com/400x200',
             content: 'Detailed content about Congressional Democrats...',
           },
+          {
+            id: 3,
+            title: 'The 2022 NFL Draft is coming to Las Vegas',
+            time: '2 hours ago',
+            authors: 'Author C',
+            image: 'https://via.placeholder.com/400x200',
+            content: 'Detailed content about the 2022 NFL Draft...',
+          },
+          {
+            id: 4,
+            title: 'The 2022 NFL Draft is coming to Las Vegas',
+            time: '2 hours ago',
+            authors: 'Author D',
+            image: 'https://via.placeholder.com/400x200',
+            content: 'Detailed content about the 2022 NFL Draft...',
+          },
+          {
+            id: 5,
+            title: 'Dead Online Shooter Refunds DrDisrespect Skins In The Worst Way',
+            time: '23 hours ago',
+            authors: 'Author A',
+            image: 'https://via.placeholder.com/400x200',
+            content: 'Detailed content about the Dead Online Shooter...',
+          },
+          {
+            id: 6,
+            title: 'Netflix’s next live event is a Joe Rogan comedy special',
+            time: '1 hour ago',
+            authors: 'Author B',
+            image: 'https://via.placeholder.com/400x200',
+            content: 'Detailed content about the Netflix live event...',
+          },
+          {
+            id: 7,
+            title: 'The 2022 NFL Draft is coming to Las Vegas',
+            time: '2 hours ago',
+            authors: 'Author C',
+            image: 'https://via.placeholder.com/400x200',
+            content: 'Detailed content about the 2022 NFL Draft...',
+          },
+          {
+            id: 8,
+            title: 'Thanks, Obama: USA Basketball survives rust, roster drama in exhibition win',
+            time: '2 minutes ago',
+            authors: 'Ben Golliver',
+            image: 'https://via.placeholder.com/400x200',
+            content: 'Detailed content about the USA Basketball exhibition win...',
+          },
+          {
+            id: 9,
+            title: 'Former NFL defensive coordinator Monte Kiffin has died',
+            time: '1 hour ago',
+            authors: 'Charean Williams',
+            image: 'https://via.placeholder.com/400x200',
+            content: 'Detailed content about Monte Kiffin...',
+          }
         ];
   
         this.news = allNews.find(newsItem => newsItem.id === parseInt(id));

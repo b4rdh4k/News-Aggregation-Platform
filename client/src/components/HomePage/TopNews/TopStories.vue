@@ -20,6 +20,22 @@ const topStories = reactive([
     time: '1 hour ago',
     authors: 'Anders Hagstrom',
     company: 'The Daily Caller'
+  },
+  {
+    id: 3,
+    category: 'Business',
+    title: 'The 2022 NFL Draft is coming to Las Vegas',
+    time: '2 hours ago',
+    authors: 'Author C',
+    company: 'The Washington Post'
+  },
+  {
+    id: 4,
+    category: 'Technology',
+    title: 'The 2022 NFL Draft is coming to Las Vegas',
+    time: '2 hours ago',
+    authors: 'Author D',
+    company: 'The Wall Street Journal'
   }
 ])
 
@@ -43,7 +59,7 @@ const goToNewsView = (story) => {
       <img
         src="@/assets/Biden.webp"
         alt="News Story Image"
-        class="items-start w-auto h-auto  sm:max-w-[350px] md:max-w-[550px] max-h[300px]"
+        class="items-start w-auto h-auto rounded-lg sm:max-w-[350px] md:max-w-[550px] max-h[300px]"
       />
       <div class="flex flex-col justify-between sm:ml-4 md:ml-4 lg:ml-4 xl:ml-4 mt-2 md:mt-0 lg:mt-0 xl:mt-0">
         <div>
@@ -52,7 +68,7 @@ const goToNewsView = (story) => {
               <p class="text-text dark:text-dark-text">{{ story.category }}</p>
             </button>
           </router-link>
-          <h4 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">
+          <h4 class="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl">
             {{ story.title }}
           </h4>
         </div>

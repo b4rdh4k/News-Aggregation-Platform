@@ -71,18 +71,18 @@ onMounted(async () => {
 <template>
   <div class="bg-background flex justify-between p-4">
     <div class="flex flex-col mb-4 justify-start">
-      <h1 class="text-lg font-semibold text-accent dark:text-dark-accent">Your Briefing</h1>
-      <div class="text-sm text-secondary dark:text-dark-secondary">{{ currentDate }}</div>
+      <h1 class="text-3xl font-semibold text-accent dark:text-dark-accent">Your Briefing</h1>
+      <div class="text-base text-secondary dark:text-dark-secondary">{{ currentDate }}</div>
       <span class="text-[40px]">{{ weatherEmoji }}</span>
     </div>
 
-    <div class="flex flex-col justify-end items-center py-1 px-8 bg-primary dark:bg-dark-primary text-accent dark:text-dark-text rounded-lg">
+    <div class="flex flex-col justify-end items-center py-1 px-4 bg-primary dark:bg-dark-primary text-text dark:text-dark-text rounded-lg">
       <div class="mr-4">
         <div class="font-semibold text-lg text-accent dark:text-dark-accent">{{ currentLocation }}</div>
         <div class="text-sm">{{ currentTemperature }}°C</div>
         <div class="text-sm">{{ humidity }}% Humidity</div>
         <div class="text-sm">{{ windDirection }} Wind Direction</div>
-        <button class="text-dark-text text-xs" @click="openWeatherSite">
+        <button class="text-dark-text dark:text-text text-xs" @click="openWeatherSite">
           More on weather.com
         </button>
       </div>

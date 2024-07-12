@@ -14,7 +14,7 @@
             v-model="searchQuery"
             @keydown.enter="performSearch"
             placeholder="Search for topics, locations & sources"
-            class="p-2 min-w-96 rounded bg-primary dark:bg-dark-primary text-text placeholder-accent dark:placeholder-dark-accent outline-none dark:text-dark-text"
+            class="p-2 min-w-96 rounded bg-primary dark:bg-dark-primary text-text placeholder-text dark:placeholder-dark-text outline-none dark:text-dark-text"
           />
         </div>
       </div>
