@@ -89,7 +89,7 @@ const categories = reactive([
       },
       {
         id: 9,
-        source: 'Author Name',
+        source: 'NBC Sports',
         title: 'Former NFL defensive coordinator Monte Kiffin has died',
         time: '1 hour ago',
         authors: 'Charean Williams'
@@ -177,7 +177,7 @@ const goToNewsView = (story) => {
       >
         <router-link :to="`/category/${category.title}`" class="mb-2" @click.stop>
           <button
-            class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent px-2 rounded-xl"
+            class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent px-2 rounded-xl -m-1"
           >
             <p class="text-text dark:text-dark-text">{{ category.title }}</p>
           </button>
@@ -196,14 +196,31 @@ const goToNewsView = (story) => {
                 {{ item.source }}
               </p>
             </router-link>
-            <h6 class="font-semibold text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
+            <h4 class="truncate-title text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl mb-2">
               {{ item.title }}
-            </h6>
-            <p class="text-text dark:text-dark-text">{{ item.time }} | {{ item.authors }}</p>
+            </h4>
+            <p class="truncate-author text-text dark:text-dark-text">{{ item.time }} | {{ item.authors }}</p>
             <hr v-if="index < category.items.length - 1" class="border-b mt-4 border-secondary dark:border-dark-secondary" />
           </li>
         </ul>
       </div>
     </div>
-  </div>'
+  </div>
 </template>
+
+<style scoped>
+.truncate-title, .truncate-author{
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+.truncate-author{
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+</style>
+

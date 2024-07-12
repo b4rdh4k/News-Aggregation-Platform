@@ -41,11 +41,11 @@ const goToNewsView = (pick) => {
 </script>
 
 <template>
-  <div class="bg-primary dark:bg-dark-primary rounded-lg p-2 ml-0 sm:ml-0 md:ml-4 lg:ml-4 xl:ml-4 items-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-1 gap-2">
+  <div class="bg-primary dark:bg-dark-primary rounded-lg p-2 ml-0 sm:ml-0 lg:ml-3 xl:ml-3 items-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-1 gap-2">
     <div
       v-for="(pick, index) in picksForYou"
       :key="pick.id"
-      class="mb-1 cursor-pointer mr-1 lg:max-w-[300px]"
+      class="mb-1 cursor-pointer mr-1"
       @click="goToNewsView(pick)"
     >
       <router-link :to="`/source/${pick.source}`" class="mb-2" @click.stop>
@@ -53,9 +53,9 @@ const goToNewsView = (pick) => {
           {{ pick.source }}
         </p>
       </router-link>
-      <h6 class="font-semibold text-base md:text-lg lg:text-xl text-pretty">{{ pick.title }}</h6>
-      <p class="text-text dark:text-dark-text mt-1">{{ pick.time }} | {{ pick.author }}</p>
-      <hr v-if="index !== picksForYou.length - 1" class=" border-t border-secondary dark:border-dark-secondary">
+      <h4 class="text-lg lg:text-xl xl:text-xl">{{ pick.title }}</h4>
+      <p class="text-text dark:text-dark-text text-sm mt-1">{{ pick.time }} | {{ pick.author }}</p>
+      <hr v-if="index < picksForYou.length - 1" class="border-b mt-4 border-secondary dark:border-dark-secondary" />
     </div>
   </div>
 </template>

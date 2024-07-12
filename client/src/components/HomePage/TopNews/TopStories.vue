@@ -59,21 +59,21 @@ const goToNewsView = (story) => {
       <img
         src="@/assets/Biden.webp"
         alt="News Story Image"
-        class="items-start w-auto h-auto rounded-lg sm:max-w-[350px] md:max-w-[550px] max-h[300px]"
+        class="items-start w-auto h-auto rounded-lg sm:max-w-[350px] md:max-w-[400px] lg:max-w-[400px] xl:max-w-[400px] max-h[300px]"
       />
       <div class="flex flex-col justify-between sm:ml-4 md:ml-4 lg:ml-4 xl:ml-4 mt-2 md:mt-0 lg:mt-0 xl:mt-0">
         <div>
-          <router-link :to="`/category/${story.category}`" class="mb-2" @click.stop>
-            <button class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent px-2 rounded-xl">
+          <router-link :to="`/category/${story.category}`" @click.stop>
+            <button class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent px-2 -ml-1 rounded-xl">
               <p class="text-text dark:text-dark-text">{{ story.category }}</p>
             </button>
           </router-link>
-          <h4 class="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl">
+          <h4 class="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl">
             {{ story.title }}
           </h4>
         </div>
         <div>
-          <p class="text-text dark:text-dark-text">{{ story.time }} | {{ story.authors }}</p>
+          <p class="text-text dark:text-dark-text text-sm sm:text-base md:text-base lg:text-lg xl:text-lg">{{ story.time }} | {{ story.authors }}</p>
           <router-link :to="`/source/${story.company}`" class="mb-2" @click.stop>
             <p
               class="text-accent dark:text-dark-accent italic font-serif cursor-pointer hover:text-primary dark:hover:text-dark-primary"

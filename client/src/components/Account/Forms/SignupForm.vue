@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores/user';
+import { useUserStore } from '@/stores/user.js';
 
 const emit = defineEmits(['closeModal']);
 
@@ -29,51 +29,51 @@ const validateForm = () => {
   confirmPasswordError.value = '';
 
   if (!email.value) {
-        emailError.value = 'Email is required'
-      } else if (!/\S+@\S+\.\S+/.test(email.value)) {
-        emailError.value = 'Email is invalid'
-      }
+    emailError.value = 'Email is required';
+  } else if (!/\S+@\S+\.\S+/.test(email.value)) {
+    emailError.value = 'Email is invalid';
+  }
 
-      if (!username.value) {
-        usernameError.value = 'Username is required'
-      } else if (!/^[a-zA-Z0-9_.]{6,12}$/.test(username.value)) {
-        usernameError.value =
-          'Username must be between 6 and 12 characters and can only contain letters, numbers, underscores, and dots'
-      }
+  if (!username.value) {
+    usernameError.value = 'Username is required';
+  } else if (!/^[a-zA-Z0-9_.]{6,12}$/.test(username.value)) {
+    usernameError.value =
+      'Username must be between 6 and 12 characters and can only contain letters, numbers, underscores, and dots';
+  }
 
-      if (!fullName.value) {
-        fullNameError.value = 'Full Name is required'
-      } else if (fullName.value.split(' ').length < 2) {
-        fullNameError.value = 'Full Name must have at least two words'
-      }
+  if (!fullName.value) {
+    fullNameError.value = 'Full Name is required';
+  } else if (fullName.value.split(' ').length < 2) {
+    fullNameError.value = 'Full Name must have at least two words';
+  }
 
-      if (!birthdate.value) {
-        birthdateError.value = 'Birthdate is required'
-      } else {
-        const today = new Date()
-        const selectedDate = new Date(birthdate.value)
-        const age = today.getFullYear() - selectedDate.getFullYear()
-        if (age < 18) {
-          birthdateError.value = 'You must be of legal age to register an account'
-        }else if(age > 120){
-          birthdateError.value = `You can't be older than humanly possible`;
-        }
-      }
+  if (!birthdate.value) {
+    birthdateError.value = 'Birthdate is required';
+  } else {
+    const today = new Date();
+    const selectedDate = new Date(birthdate.value);
+    const age = today.getFullYear() - selectedDate.getFullYear();
+    if (age < 18) {
+      birthdateError.value = 'You must be of legal age to register an account';
+    } else if (age > 120) {
+      birthdateError.value = "You can't be older than humanly possible";
+    }
+  }
 
-      if (!password.value) {
-        passwordError.value = 'Password is required'
-      } else if (password.value.length < 8) {
-        passwordError.value = 'Password must be at least 8 characters'
-      } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)/.test(password.value)) {
-        passwordError.value =
-          'Password must contain at least one uppercase letter, one lowercase letter, one symbol, and one number'
-      }
+  if (!password.value) {
+    passwordError.value = 'Password is required';
+  } else if (password.value.length < 8) {
+    passwordError.value = 'Password must be at least 8 characters';
+  } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)/.test(password.value)) {
+    passwordError.value =
+      'Password must contain at least one uppercase letter, one lowercase letter, one symbol, and one number';
+  }
 
-      if (!confirmPassword.value) {
-        confirmPasswordError.value = 'Confirm Password is required'
-      } else if (confirmPassword.value !== password.value) {
-        confirmPasswordError.value = 'Passwords do not match'
-      }
+  if (!confirmPassword.value) {
+    confirmPasswordError.value = 'Confirm Password is required';
+  } else if (confirmPassword.value !== password.value) {
+    confirmPasswordError.value = 'Passwords do not match';
+  }
 
   return !emailError.value && !passwordError.value && !usernameError.value && !fullNameError.value && !birthdateError.value && !confirmPasswordError.value;
 };
@@ -94,7 +94,7 @@ const submitForm = async () => {
       <div class="w-full max-w-sm">
         <h1 class="text-4xl font-bold mb-4 md:mt-18 lg:mt-24 mt-40 text-center">Sign up</h1>
         <button
-          class="w-full py-2 px-4 mb-4 border border-gray-300 rounded flex items-center justify-center text-dark-background bg-white hover:bg-gray-100"
+          class="w-full py-2 px-4 mb-4 border rounded flex items-center justify-center text-dark-background bg-white hover:bg-gray-100"
         >
           <img
             src="https://developers.google.com/identity/images/g-logo.png"
@@ -104,14 +104,14 @@ const submitForm = async () => {
           Sign up with Google
         </button>
         <div class="text-text mb-4 text-center">or use e-mail instead</div>
-        <form @submit.prevent="submitForm" class="w-full" autocomplete="on">
+        <form @submit.prevent="submitForm" class="w-full" autocomplete="on" novalidate>
           <div class="mb-4">
             <label for="username" class="block mb-2">Username</label>
             <input
               type="text"
               id="username"
               v-model="username"
-              class="w-full p-2 border border-gray-300 rounded"
+              class="w-full p-2 border rounded"
               :class="{ 'border-red-500': usernameError }"
               autocomplete="username"
             />
@@ -123,7 +123,7 @@ const submitForm = async () => {
               type="text"
               id="fullName"
               v-model="fullName"
-              class="w-full p-2 border border-gray-300 rounded"
+              class="w-full p-2 border rounded"
               :class="{ 'border-red-500': fullNameError }"
               autocomplete="name"
             />
@@ -135,7 +135,7 @@ const submitForm = async () => {
               type="email"
               id="email"
               v-model="email"
-              class="w-full p-2 border border-gray-300 rounded"
+              class="w-full p-2 border rounded"
               :class="{ 'border-red-500': emailError }"
               autocomplete="email"
             />
@@ -147,7 +147,7 @@ const submitForm = async () => {
               type="date"
               id="birthdate"
               v-model="birthdate"
-              class="w-full p-2 border border-gray-300 rounded"
+              class="w-full p-2 border rounded"
               :class="{ 'border-red-500': birthdateError }"
               autocomplete="off"
             />
@@ -159,7 +159,7 @@ const submitForm = async () => {
               type="password"
               id="password"
               v-model="password"
-              class="w-full p-2 border border-gray-300 rounded"
+              class="w-full p-2 border rounded"
               :class="{ 'border-red-500': passwordError }"
               autocomplete="new-password"
             />
@@ -171,7 +171,7 @@ const submitForm = async () => {
               type="password"
               id="confirmPassword"
               v-model="confirmPassword"
-              class="w-full p-2 border border-gray-300 rounded"
+              class="w-full p-2 border rounded"
               :class="{ 'border-red-500': confirmPasswordError }"
               autocomplete="new-password"
             />
@@ -179,7 +179,7 @@ const submitForm = async () => {
           </div>
           <button
             type="submit"
-            class="w-full py-2 mb-4 px-4 bg-dark-accent text-white rounded hover:bg-accent"
+            class="w-full py-2 mb-4 px-4 bg-secondary dark:bg-dark-secondary text-text dark:text-dark-text rounded hover:bg-accent dark:hover:bg-dark-accent"
           >
             Sign up
           </button>
@@ -192,11 +192,16 @@ const submitForm = async () => {
 <style scoped>
 input:focus {
   outline: none;
+  background-color: var(--secondary);
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(145, 139, 120, 0.3);
 }
-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.3);
+input:active{
+  background-color: var(--secondary);
+  border-color: var(--primary);
+}
+input{
+  background-color: var(--primary);
+  color: var(--text);
+  border-color: var(--secondary);
 }
 </style>

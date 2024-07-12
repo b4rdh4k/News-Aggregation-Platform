@@ -49,7 +49,7 @@ const submitForm = async () => {
       <div class="w-full max-w-sm pt-2">
         <h1 class="text-4xl font-bold mb-4 text-center">Sign in</h1>
         <button
-          class="w-full py-2 px-4 mb-4 border border-gray-300 rounded flex items-center justify-center text-dark-background bg-white hover:bg-gray-100"
+          class="w-full py-2 px-4 mb-4 border rounded flex items-center justify-center text-dark-background bg-white hover:bg-gray-100"
         >
           <img
             src="https://developers.google.com/identity/images/g-logo.png"
@@ -59,14 +59,14 @@ const submitForm = async () => {
           Sign in with Google
         </button>
         <div class="text-text mb-4 text-center">or use e-mail instead</div>
-        <form @submit.prevent="submitForm" class="w-full" autocomplete="on">
+        <form @submit.prevent="submitForm" class="w-full" autocomplete="on" novalidate>
           <div class="mb-4">
             <label for="email" class="block mb-2">E-mail</label>
             <input
               type="email"
               id="email"
               v-model="email"
-              class="w-full p-2 border border-gray-300 rounded"
+              class="w-full p-2 border rounded"
               :class="{ 'border-red-500': emailError }"
               autocomplete="email"
             />
@@ -78,7 +78,7 @@ const submitForm = async () => {
               type="password"
               id="password"
               v-model="password"
-              class="w-full p-2 border border-gray-300 rounded"
+              class="w-full p-2 border rounded"
               :class="{ 'border-red-500': passwordError }"
               autocomplete="new-password"
             />
@@ -87,13 +87,13 @@ const submitForm = async () => {
 
           <button
             type="submit"
-            class="w-full py-2 px-4 bg-dark-accent text-white rounded hover:bg-accent"
+            class="w-full py-2 mb-4 px-4 bg-secondary dark:bg-dark-secondary text-text dark:text-dark-text rounded hover:bg-accent dark:hover:bg-dark-accent"
           >
             Sign in
           </button>
         </form>
         <div class="mt-4 text-center">
-          <p class="text-secondary">
+          <p class="text-secondary dark:text-dark-secondary">
             Forgot password?
           </p>
         </div>
@@ -105,11 +105,16 @@ const submitForm = async () => {
 <style scoped>
 input:focus {
   outline: none;
+  background-color: var(--secondary);
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(145, 139, 120, 0.3);
 }
-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.3);
+input:active{
+  background-color: var(--secondary);
+  border-color: var(--primary);
+}
+input{
+  background-color: var(--primary);
+  color: var(--text);
+  border-color: var(--secondary);
 }
 </style>

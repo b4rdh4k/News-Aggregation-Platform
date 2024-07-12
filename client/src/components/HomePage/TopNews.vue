@@ -9,8 +9,8 @@ import PicksForYou from '@/components/HomePage/TopNews/PicksForYou.vue'
       <h2 class="text-3xl text-accent dark:text-dark-accent font-bold mb-4">Top stories</h2>
       <TopStories />
     </div>
-    <div class="w-full lg:w-1/4">
-      <h2 class="text-3xl text-accent dark:text-dark-accent font-bold mb-4 md:ml-4 lg:ml-4 xl:ml-4">Picks for you</h2>
+    <div class="w-auto lg:w-1/4">
+      <h2 class="text-3xl text-accent dark:text-dark-accent font-bold mb-4 lg:ml-4 xl:ml-4">Picks for you</h2>
       <PicksForYou />
     </div>
   </div>
