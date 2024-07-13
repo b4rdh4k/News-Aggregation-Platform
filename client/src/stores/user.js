@@ -23,5 +23,19 @@ export const useUserStore = defineStore('user', {
         return false;
       }
     },
+
+    async login(email, password) {
+      try {
+        const response = await apiClient.post('/auth/login', {
+          email,
+          password,
+        });
+        this.user = response.data;
+        return true;
+      } catch (error) {
+        console.error('Login error:', error);
+        return false;
+      }
+    },
   },
 });

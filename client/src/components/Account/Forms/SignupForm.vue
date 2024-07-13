@@ -37,8 +37,8 @@ const validateForm = () => {
   if (!username.value) {
     usernameError.value = 'Username is required';
   } else if (!/^[a-zA-Z0-9_.]{6,12}$/.test(username.value)) {
-    usernameError.value =
-      'Username must be between 6 and 12 characters and can only contain letters, numbers, underscores, and dots';
+    usernameError.value = 
+       'Username must be between 6 and 12 characters and can only contain letters, numbers, underscores, and dots';
   }
 
   if (!fullName.value) {
@@ -80,14 +80,37 @@ const validateForm = () => {
 
 const submitForm = async () => {
   if (validateForm()) {
-    const success = await userStore.register(email.value, password.value, username.value, fullName.value, birthdate.value);
+    const registrationData = {
+      username: username.value,
+      fullName: fullName.value,
+      email: email.value,
+      password: password.value,
+      firstLogin: new Date().toISOString(),
+      lastLogin: new Date().toISOString(),
+      connectingIp: '127.0.0.1', // Placeholder IP address
+      birthdate: new Date(birthdate.value).toISOString(),
+      language: navigator.language,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    };
+
+    const success = await userStore.register(
+      registrationData.email,
+      registrationData.password,
+      registrationData.username,
+      registrationData.fullName,
+      registrationData.birthdate
+    );
+
     if (success) {
       emit('closeModal');
       router.push('/');
+    } else {
+      alert('Registration failed. Please check your input and try again.');
     }
   }
 };
 </script>
+
 <template>
   <div class="flex md:max-h-[90vh] lg:max-h-[90vh] max-h-screen rounded-lg p-2 sm:p-0 overflow-y-scroll bg-background dark:bg-dark-background dark:text-dark-text text-text">
     <div class="flex flex-1 justify-center items-center md:mt-14 lg:mt-24 mt-40">
@@ -179,9 +202,8 @@ const submitForm = async () => {
           </div>
           <button
             type="submit"
-            class="w-full py-2 mb-4 px-4 bg-secondary dark:bg-dark-secondary text-text dark:text-dark-text rounded hover:bg-accent dark:hover:bg-dark-accent"
-          >
-            Sign up
+            class="w-full py-2 mb-4 px-4 bg-secondary dark:bg-dark-secondary text-text dark:text-dark-text rounded hover:bg-accent dark:hover:bg-dark-accent">
+            Sign Up
           </button>
         </form>
       </div>

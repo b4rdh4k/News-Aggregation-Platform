@@ -35,10 +35,12 @@ const validateForm = () => {
 
 const submitForm = async () => {
   if (validateForm()) {
-    const success = await userStore.register(email.value, password.value);
+    const success = await userStore.login(email.value, password.value);
     if (success) {
       emit('closeModal');
       router.push('/');
+    } else {
+      alert('Login failed. Please check your credentials and try again.');
     }
   }
 };
