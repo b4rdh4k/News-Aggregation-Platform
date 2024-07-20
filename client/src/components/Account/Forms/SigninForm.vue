@@ -50,17 +50,6 @@ const submitForm = async () => {
     <div class="flex flex-1 justify-center items-center mt-4">
       <div class="w-full max-w-sm pt-2">
         <h1 class="text-4xl font-bold mb-4 text-center">Sign in</h1>
-        <button
-          class="w-full py-2 px-4 mb-4 border rounded flex items-center justify-center text-dark-background bg-white hover:bg-gray-100"
-        >
-          <img
-            src="https://developers.google.com/identity/images/g-logo.png"
-            alt="Google Logo"
-            class="w-6 h-6 mr-2"
-          />
-          Sign in with Google
-        </button>
-        <div class="text-text mb-4 text-center">or use e-mail instead</div>
         <form @submit.prevent="submitForm" class="w-full" autocomplete="on" novalidate>
           <div class="mb-4">
             <label for="email" class="block mb-2">E-mail</label>
