@@ -15,12 +15,12 @@
 </template>
 
 <script>
-import ThemeToggle from './ThemeToggle.vue'
+import ThemeToggle from "./ThemeToggle.vue";
 
 export default {
-  name: 'BasicHeader',
+  name: "BasicHeader",
   components: {
-    ThemeToggle
-  }
-}
+    ThemeToggle,
+  },
+};
 </script>

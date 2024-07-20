@@ -1,3 +1,15 @@
+<script setup>
+import { ref } from 'vue';
+import { setTheme, getTheme } from "../../utils/theme";
+
+const currentTheme = ref(getTheme());
+
+const toggleTheme = () => {
+  currentTheme.value = currentTheme.value === "light" ? "dark" : "light";
+  setTheme(currentTheme.value);
+};
+</script>
+
 <template>
   <label class="relative inline-flex items-center cursor-pointer">
     <input
@@ -11,22 +23,3 @@
     ></div>
   </label>
 </template>
-
-<script>
-import { setTheme, getTheme } from '../../utils/theme'
-
-export default {
-  name: 'ThemeToggle',
-  data() {
-    return {
-      currentTheme: getTheme()
-    }
-  },
-  methods: {
-    toggleTheme() {
-      this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light'
-      setTheme(this.currentTheme)
-    }
-  }
-}
-</script>

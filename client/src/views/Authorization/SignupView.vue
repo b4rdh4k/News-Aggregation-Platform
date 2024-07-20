@@ -1,10 +1,6 @@
 <script setup>
-import SignUp from '@/components/Account/Forms/SignupForm.vue';
-
+import SignUp from "@/components/Account/Forms/SignupForm.vue";
 </script>
 <template>
-    <SignUp />
+  <SignUp />
 </template>
-  
-
-  

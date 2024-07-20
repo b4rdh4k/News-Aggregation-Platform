@@ -37,7 +37,11 @@
         </svg>
         <div class="relative" ref="dropdown">
           <button @click="toggleDropdown" class="flex items-center space-x-2">
-            <img src="@/assets/user-icon.svg" class="max-h-8 max-w-8 cursor-pointer" alt="User Icon" />
+            <img
+              src="@/assets/user-icon.svg"
+              class="max-h-8 max-w-8 cursor-pointer"
+              alt="User Icon"
+            />
           </button>
           <div
             v-if="isDropdownOpen"
@@ -57,7 +61,7 @@
             </button>
           </div>
         </div>
-        <ThemeToggle class=" md:block" />
+        <ThemeToggle class="md:block" />
       </div>
     </div>
 
@@ -67,7 +71,8 @@
         v-model="searchQuery"
         @keydown.enter="performSearch"
         placeholder="Search for topics, locations & sources"
-        class="p-2 rounded bg-primary dark:bg-dark-primary w-full"/>
+        class="p-2 rounded bg-primary dark:bg-dark-primary w-full"
+      />
     </div>
 
     <SignInModal v-if="showSignInModal" @close="showSignInModal = false" />
@@ -76,60 +81,60 @@
 </template>
 
 <script>
-import ThemeToggle from '@/components/common/ThemeToggle.vue'
-import SignInModal from '@/components/Account/Modals/SigninModal.vue'
-import RegisterModal from '@/components/Account/Modals/SignupModal.vue'
+import ThemeToggle from "@/components/common/ThemeToggle.vue";
+import SignInModal from "@/components/Account/Modals/SigninModal.vue";
+import RegisterModal from "@/components/Account/Modals/SignupModal.vue";
 
 export default {
-  name: 'AppHeader',
+  name: "AppHeader",
   components: {
     ThemeToggle,
     SignInModal,
-    RegisterModal
+    RegisterModal,
   },
   data() {
     return {
       showSearch: false,
-      searchQuery: '',
+      searchQuery: "",
       isDropdownOpen: false,
       showSignInModal: false,
-      showRegisterModal: false
-    }
+      showRegisterModal: false,
+    };
   },
   methods: {
     toggleSearch() {
-      this.showSearch = !this.showSearch
+      this.showSearch = !this.showSearch;
     },
     performSearch() {
       if (this.searchQuery) {
-        console.log(`Searching for: ${this.searchQuery}`)
+        console.log(`Searching for: ${this.searchQuery}`);
       }
     },
     toggleDropdown() {
-      this.isDropdownOpen = !this.isDropdownOpen
+      this.isDropdownOpen = !this.isDropdownOpen;
       if (this.isDropdownOpen) {
-        document.body.addEventListener('click', this.closeDropdownOnClickOutside)
+        document.body.addEventListener("click", this.closeDropdownOnClickOutside);
       } else {
-        document.body.removeEventListener('click', this.closeDropdownOnClickOutside)
+        document.body.removeEventListener("click", this.closeDropdownOnClickOutside);
       }
     },
     openSignInModal() {
-      this.showSignInModal = true
-      this.isDropdownOpen = false
+      this.showSignInModal = true;
+      this.isDropdownOpen = false;
     },
     openRegisterModal() {
-      this.showRegisterModal = true
-      this.isDropdownOpen = false
+      this.showRegisterModal = true;
+      this.isDropdownOpen = false;
     },
     closeDropdownOnClickOutside(event) {
-      const dropdown = this.$refs.dropdown
+      const dropdown = this.$refs.dropdown;
       if (!dropdown.contains(event.target)) {
-        this.isDropdownOpen = false
-        document.body.removeEventListener('click', this.closeDropdownOnClickOutside)
+        this.isDropdownOpen = false;
+        document.body.removeEventListener("click", this.closeDropdownOnClickOutside);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>

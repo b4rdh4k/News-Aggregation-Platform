@@ -38,4 +38,8 @@ export const useUserStore = defineStore('user', {
       }
     },
   },
+
+  async logout() {
+    this.user = null;
+  },
 });

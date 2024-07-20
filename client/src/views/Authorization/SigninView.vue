@@ -1,8 +1,7 @@
 <script setup>
-import SignIn from '@/components/Account/Forms/SigninForm.vue';
-
+import SignIn from "@/components/Account/Forms/SigninForm.vue";
 </script>
 
 <template>
-    <SignIn />
+  <SignIn />
 </template>
