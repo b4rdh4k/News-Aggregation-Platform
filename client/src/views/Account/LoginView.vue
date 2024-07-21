@@ -4,6 +4,7 @@ import { useUserStore } from '../../store/user';
 import { useRouter } from 'vue-router';
 import lottie from 'lottie-web';
 import animationData from '@/assets/LoginAnimation.json';
+import { useToast } from 'vue-toastification';
 
 const email = ref('');
 const password = ref('');
@@ -11,6 +12,7 @@ const emailError = ref('');
 const passwordError = ref('');
 const userStore = useUserStore();
 const router = useRouter();
+const toast = useToast();
 
 const lottieContainer = ref(null);
 
@@ -46,7 +48,10 @@ const validateForm = () => {
 };
 
 const login = async () => {
-  if (!validateForm()) return;
+  if (!validateForm()) {
+    toast.error('Please fill out all required fields correctly.');
+    return;
+  }
 
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
@@ -67,6 +72,7 @@ const login = async () => {
         user: data.user,
       });
       localStorage.setItem('token', data.accessToken);
+      toast.success('Login successful!');
       router.push('/');
     } else {
       console.error('Login failed:', data);
@@ -75,12 +81,14 @@ const login = async () => {
       } else if (data.message === 'Invalid password') {
         passwordError.value = 'Password is incorrect';
       }
+      toast.error('Your username or password is incorrect.');
     }
   } catch (error) {
     console.error('Error logging in user:', error);
     if (error.message === 'Failed to fetch') {
       emailError.value = 'Failed to connect to server';
     }
+    toast.error('Failed to connect to server.');
   }
 };
 </script>

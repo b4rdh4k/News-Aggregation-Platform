@@ -1,11 +1,9 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useUserStore } from '@/store/user'
-import { useRouter } from 'vue-router'
 import ThemeToggle from '@/components/shared/ThemeToggle.vue'
 
 const userStore = useUserStore()
-const router = useRouter()
 
 const dropdownOpen = ref(false)
 const showSearch = ref(false)
@@ -42,14 +40,9 @@ const performSearch = () => {
   }
 }
 
-const logout = async () => {
-  try {
-    await userStore.logout()
-    router.push('/')
-  } catch (error) {
-    console.error('Error logging out:', error)
-  }
-}
+const handleLogout = async () => {
+  await userStore.logout();
+};
 
 const dropdownRef = ref(null)
 
@@ -128,7 +121,7 @@ onBeforeUnmount(() => {
               </li>
               <li v-if="isLoggedIn">
                 <button
-                  @click="logout"
+                  @click="handleLogout"
                   class="block w-full border-b-[1px] border-accent dark:border-dark-accent px-4 py-2 text-left hover:bg-primary hover:rounded-t-md dark:hover:bg-dark-primary"
                 >
                   Logout
