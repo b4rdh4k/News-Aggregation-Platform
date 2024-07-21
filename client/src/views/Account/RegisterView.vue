@@ -1,122 +1,159 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue'
+import { useUserStore } from '@/store/user'
 import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores/user.js';
 
-const emit = defineEmits(['closeModal']);
+import lottie from 'lottie-web'
+import animationData from '@/assets/SignupAnimation.json'
 
-const email = ref('');
-const password = ref('');
-const confirmPassword = ref('');
-const username = ref('');
-const fullName = ref('');
-const birthdate = ref('');
-const emailError = ref('');
-const usernameError = ref('');
-const fullNameError = ref('');
-const birthdateError = ref('');
-const passwordError = ref('');
-const confirmPasswordError = ref('');
-const userStore = useUserStore();
-const router = useRouter();
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+const username = ref('')
+const fullName = ref('')
+const birthdate = ref('')
+const emailError = ref('')
+const usernameError = ref('')
+const fullNameError = ref('')
+const birthdateError = ref('')
+const passwordError = ref('')
+const confirmPasswordError = ref('')
+const userStore = useUserStore()
+const router = useRouter()
+
+const lottieContainer = ref(null)
+
+onMounted(() => {
+  lottie.loadAnimation({
+    container: lottieContainer.value,
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    animationData
+  })
+})
 
 const validateForm = () => {
-  emailError.value = '';
-  passwordError.value = '';
-  usernameError.value = '';
-  fullNameError.value = '';
-  birthdateError.value = '';
-  confirmPasswordError.value = '';
+  emailError.value = ''
+  passwordError.value = ''
+  usernameError.value = ''
+  fullNameError.value = ''
+  birthdateError.value = ''
+  confirmPasswordError.value = ''
 
   if (!email.value) {
-    emailError.value = 'Email is required';
+    emailError.value = 'Email is required'
   } else if (!/\S+@\S+\.\S+/.test(email.value)) {
-    emailError.value = 'Email is invalid';
+    emailError.value = 'Email is invalid'
   }
 
   if (!username.value) {
-    usernameError.value = 'Username is required';
+    usernameError.value = 'Username is required'
   } else if (!/^[a-zA-Z0-9_.]{6,12}$/.test(username.value)) {
-    usernameError.value = 
-       'Username must be between 6 and 12 characters and can only contain letters, numbers, underscores, and dots';
+    usernameError.value =
+      'Username must be between 6 and 12 characters and can only contain letters, numbers, underscores, and dots'
   }
 
   if (!fullName.value) {
-    fullNameError.value = 'Full Name is required';
+    fullNameError.value = 'Full Name is required'
   } else if (fullName.value.split(' ').length < 2) {
-    fullNameError.value = 'Full Name must have at least two words';
+    fullNameError.value = 'Full Name must have at least two words'
   }
 
   if (!birthdate.value) {
-    birthdateError.value = 'Birthdate is required';
+    birthdateError.value = 'Birthdate is required'
   } else {
-    const today = new Date();
-    const selectedDate = new Date(birthdate.value);
-    const age = today.getFullYear() - selectedDate.getFullYear();
+    const today = new Date()
+    const selectedDate = new Date(birthdate.value)
+    const age = today.getFullYear() - selectedDate.getFullYear()
     if (age < 18) {
-      birthdateError.value = 'You must be of legal age to register an account';
+      birthdateError.value = 'You must be of legal age to register an account'
     } else if (age > 120) {
-      birthdateError.value = "You can't be older than humanly possible";
+      birthdateError.value = "You can't be older than humanly possible"
     }
   }
 
   if (!password.value) {
-    passwordError.value = 'Password is required';
+    passwordError.value = 'Password is required'
   } else if (password.value.length < 8) {
-    passwordError.value = 'Password must be at least 8 characters';
+    passwordError.value = 'Password must be at least 8 characters'
   } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)/.test(password.value)) {
     passwordError.value =
-      'Password must contain at least one uppercase letter, one lowercase letter, one symbol, and one number';
+      'Password must contain at least one uppercase letter, one lowercase letter, one symbol, and one number'
   }
 
   if (!confirmPassword.value) {
-    confirmPasswordError.value = 'Confirm Password is required';
+    confirmPasswordError.value = 'Confirm Password is required'
   } else if (confirmPassword.value !== password.value) {
-    confirmPasswordError.value = 'Passwords do not match';
+    confirmPasswordError.value = 'Passwords do not match'
   }
 
-  return !emailError.value && !passwordError.value && !usernameError.value && !fullNameError.value && !birthdateError.value && !confirmPasswordError.value;
-};
+  return (
+    !emailError.value &&
+    !passwordError.value &&
+    !usernameError.value &&
+    !fullNameError.value &&
+    !birthdateError.value &&
+    !confirmPasswordError.value
+  )
+}
 
-const submitForm = async () => {
-  if (validateForm()) {
-    const registrationData = {
-      username: username.value,
+const register = async () => {
+  if (!validateForm()) {
+    return
+  }
+
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json-patch+json'
+      },
+      body: JSON.stringify({
+        username: username.value,
       fullName: fullName.value,
       email: email.value,
       password: password.value,
       firstLogin: new Date().toISOString(),
       lastLogin: new Date().toISOString(),
-      connectingIp: '127.0.0.1', // Placeholder IP address
+      connectingIp: '127.0.0.1',
       birthdate: new Date(birthdate.value).toISOString(),
       language: navigator.language,
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-    };
+      })
+    })
 
-    const success = await userStore.register(
-      registrationData.email,
-      registrationData.password,
-      registrationData.username,
-      registrationData.fullName,
-      registrationData.birthdate
-    );
-
-    if (success) {
-      emit('closeModal');
+    const data = await response.json()
+    if (response.ok) {
+      userStore.$patch({
+        token: data.token,
+        user: data.user
+      })
       router.push('/');
     } else {
-      alert('Registration failed. Please check your input and try again.');
+      console.error('Registration failed:', data)
     }
+  } catch (error) {
+    console.error('Error registering user:', error)
   }
-};
+}
 </script>
 
 <template>
-  <div class="flex p-2 rounded-lg bg-background dark:bg-dark-background dark:text-dark-text text-text">
-    <div class="flex flex-1 justify-center items-center mt-4">
-      <div class="w-full max-w-sm pt-2">
-        <h1 class="text-4xl font-bold mb-4 text-center">Sign up</h1>
-        <form @submit.prevent="submitForm" class="w-full" autocomplete="on" novalidate>
+  <div
+    class="flex flex-col md:flex-row min-h-screen max-h-screen bg-background dark:bg-dark-background text-text dark:text-dark-text"
+  >
+    <div class="hidden md:flex flex-1 pl-4">
+      <div ref="lottieContainer" class="h-full"></div>
+    </div>
+    <div
+      class="flex-1 flex items-start lg:items-center xl:items-center 2xl:items-center justify-center"
+    >
+      <div
+        class="container max-w-lg mx-auto px-6 bg-background dark:bg-dark-background text-text dark:text-dark-text rounded-lg"
+      >
+        <h3 class="text-text dark:text-dark-text font-bold mb-4 text-center">Join the community</h3>
+        <form @submit.prevent="register" class="w-full" autocomplete="on" novalidate>
           <div class="mb-4">
             <label for="username" class="block mb-2">Username</label>
             <input
@@ -187,14 +224,23 @@ const submitForm = async () => {
               :class="{ 'border-red-500': confirmPasswordError }"
               autocomplete="new-password"
             />
-            <p v-if="confirmPasswordError" class="text-red-500 text-sm">{{ confirmPasswordError }}</p>
+            <p v-if="confirmPasswordError" class="text-red-500 text-sm">
+              {{ confirmPasswordError }}
+            </p>
           </div>
           <button
             type="submit"
-            class="w-full py-2 mb-4 px-4 bg-secondary dark:bg-dark-secondary text-text dark:text-dark-text rounded hover:bg-accent dark:hover:bg-dark-accent">
+            class="w-full py-2 mb-4 px-4 bg-secondary dark:bg-dark-secondary text-text dark:text-dark-text rounded hover:bg-accent dark:hover:bg-dark-accent"
+          >
             Sign Up
           </button>
         </form>
+        <div class="text-center text-lg">
+          <p class="text-secondary dark:text-dark-secondary">
+            Already a Sapient?
+            <router-link to="/login" class="text-accent dark:text-dark-accent">Log in</router-link>
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -206,11 +252,11 @@ input:focus {
   background-color: var(--secondary);
   border-color: var(--primary);
 }
-input:active{
+input:active {
   background-color: var(--secondary);
   border-color: var(--primary);
 }
-input{
+input {
   background-color: var(--primary);
   color: var(--text);
   border-color: var(--secondary);

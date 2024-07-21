@@ -1,11 +1,11 @@
 <script setup>
-import BaseHeader from "@/components/common/BasicHeader.vue";
+import BaseHeader from "@/components/shared/BasicHeader.vue";
 </script>
 
 <template>
   <div>
     <BaseHeader />
-    <main class="container">
+    <main>
       <router-view />
     </main>
   </div>

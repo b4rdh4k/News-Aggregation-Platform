@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { setTheme, getTheme } from "../../utils/theme";
+import { setTheme, getTheme } from "@/utils/theme";
 
 const currentTheme = ref(getTheme());
 

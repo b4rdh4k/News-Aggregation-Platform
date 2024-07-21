@@ -1,3 +1,7 @@
+<script setup>
+import ThemeToggle from "./ThemeToggle.vue";
+</script>
+
 <template>
   <header
     class="bg-background dark:bg-dark-background text-text dark:text-dark-text p-4 m-0"
@@ -13,14 +17,3 @@
     </div>
   </header>
 </template>
-
-<script>
-import ThemeToggle from "./ThemeToggle.vue";
-
-export default {
-  name: "BasicHeader",
-  components: {
-    ThemeToggle,
-  },
-};
-</script>
