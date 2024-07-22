@@ -2,19 +2,26 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import MainLayout from '../layouts/MainLayout.vue';
+import HomeLayout from '../layouts/HomeLayout.vue';	
 import BasicsLayout from '../layouts/BasicsLayout.vue';
 import { useUserStore } from '../store/user';
 
 const routes = [
   {
     path: '/',
-    component: MainLayout,
+    component: HomeLayout,
     children: [
       {
         path: '',
         name: 'Home',
         component: HomeView,
       },
+    ],
+  },
+  {
+    path: '/',
+    component: MainLayout,
+    children: [
       {
         path: 'categories',
         name: 'Categories',
