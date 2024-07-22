@@ -1,35 +1,33 @@
 <script setup>
-import { useRoute } from 'vue-router';
+import { useRoute } from 'vue-router'
 
-const route = useRoute();
+const route = useRoute()
 
 const isActive = (tab) => {
-  return route.name === tab;
-};
+  return route.name === tab
+}
 </script>
 
 <template>
-  <div class="flex flex-wrap text-base lg:text-xl xl:text-xl 2xl:text-xl gap-1 mx-4 mt-7 sm:mx-8 lg:mx-16 xl:mx-40">
-    <router-link 
-      :to="{ name: 'Home' }" 
-      class="tab-button" 
-      :class="{ active: isActive('Home') }"
-    >
-      HOME
+  <div
+    class="flex flex-wrap text-base text-secondary dark:text-dark-secondary lg:text-xl xl:text-xl 2xl:text-xl gap-1 mx-4 mt-7 sm:mx-8 lg:mx-16 xl:mx-40"
+  >
+    <router-link :to="{ name: 'Home' }" class="tab-button" :class="{ active: isActive('Home') }">
+      <h6 class="font-semibold">HOME</h6>
     </router-link>
     <router-link
-        :to="{ name: 'ForYou' }"
-        class="tab-button"
-        :class="{ active: isActive('ForYou') }"
+      :to="{ name: 'ForYou' }"
+      class="tab-button"
+      :class="{ active: isActive('ForYou') }"
     >
-        Personal
+      <h6>Personal</h6>
     </router-link>
-    <router-link 
-      :to="{ name: 'Categories' }" 
-      class="tab-button" 
+    <router-link
+      :to="{ name: 'Categories' }"
+      class="tab-button"
       :class="{ active: isActive('Categories') }"
     >
-      Categories
+      <h6>Categories</h6>
     </router-link>
   </div>
 </template>
@@ -64,9 +62,10 @@ const isActive = (tab) => {
 
 .tab-button.active {
   color: var(--accent);
+  font-weight: bolder;
 }
 
-@media (min-width: 640px) { 
+@media (min-width: 640px) {
   .tab-button {
     padding: 12px;
   }
@@ -83,5 +82,4 @@ const isActive = (tab) => {
     padding: 16px;
   }
 }
-
 </style>
