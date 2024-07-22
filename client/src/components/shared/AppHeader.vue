@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useUserStore } from '@/store/user'
 import ThemeToggle from '@/components/shared/ThemeToggle.vue'
+import TabsHeader from './TabsHeader.vue';
 
 const userStore = useUserStore()
 
@@ -58,10 +59,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <header
-    class="bg-background dark:bg-dark-background text-text dark:text-dark-text p-4 sticky top-0 shadow-md z-10"
-  >
-    <div class="container mx-auto flex justify-between items-center">
+  <header class="bg-background dark:bg-dark-background text-text dark:text-dark-text pb-0 sticky top-0 shadow-md z-10">
+    <div class="container mx-auto flex justify-between items-center p-4">
       <router-link to="/" class="h-12 flex-shrink-0">
         <img src="@/assets/Sapientia-Logo.png" alt="Logo" class="h-full cursor-pointer" />
       </router-link>
@@ -142,6 +141,7 @@ onBeforeUnmount(() => {
         class="p-2 rounded bg-primary dark:bg-dark-primary w-full"
       />
     </div>
+    <TabsHeader />
   </header>
 </template>
 

@@ -183,6 +183,11 @@ const goToNewsView = (story) => {
             class="mb-4 mt-4 cursor-pointer"
             @click="goToNewsView(item)"
           >
+            <h4
+              class="truncate-title text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl mb-2"
+            >
+              {{ item.title }}
+            </h4>
             <router-link :to="`/source/${item.source}`" class="mb-2" @click.stop>
               <p
                 class="text-accent dark:text-dark-accent italic font-serif cursor-pointer hover:text-secondary dark:hover:text-dark-secondary"
@@ -190,11 +195,6 @@ const goToNewsView = (story) => {
                 {{ item.source }}
               </p>
             </router-link>
-            <h4
-              class="truncate-title text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl mb-2"
-            >
-              {{ item.title }}
-            </h4>
             <p class="truncate-author text-text dark:text-dark-text">
               {{ item.time }} | {{ item.authors }}
             </p>

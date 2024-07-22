@@ -58,8 +58,9 @@ const goToNewsView = (story) => {
     <div class="flex flex-col sm:flex-row md:flex-row lg:flex-row xl:flex-row">
       <img
         src="@/assets/Biden.webp"
+        rel="preload"
         alt="News Story Image"
-        class="items-start w-auto h-auto rounded-lg sm:max-w-[350px] md:max-w-[400px] lg:max-w-[400px] xl:max-w-[400px] max-h[300px]"
+        class="items-start w-auto h-auto hover:animate-pulse rounded-lg sm:max-w-[350px] md:max-w-[400px] lg:max-w-[400px] xl:max-w-[400px] max-h[300px]"
       />
       <div
         class="flex flex-col justify-between sm:ml-4 md:ml-4 lg:ml-4 xl:ml-4 mt-2 md:mt-0 lg:mt-0 xl:mt-0"

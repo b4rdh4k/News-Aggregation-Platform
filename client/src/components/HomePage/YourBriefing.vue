@@ -1,7 +1,7 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 
-const apiKey = "3220b3cdee7947d4b2a00531240907";
+const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
 
 const currentLocation = ref("");
 const currentDate = ref("");
@@ -10,6 +10,8 @@ const humidity = ref("");
 const windDirection = ref("");
 const weatherForecast = ref([]);
 const currentTime = new Date().getHours();
+const weatherFetched = ref(false);
+const locationPermissionDenied = ref(false);
 
 const weatherEmoji = computed(() => {
   if (currentTime >= 6 && currentTime < 12) {
@@ -37,41 +39,47 @@ const fetchWeatherData = async (location) => {
       date: day.date,
       temperature: `${day.day.maxtemp_c}° / ${day.day.mintemp_c}°`,
     }));
+
+    weatherFetched.value = true;
   } catch (error) {
     console.error("Error fetching weather data:", error);
   }
 };
 
-const openWeatherSite = () => {
-  window.open("https://www.weather.com", "_blank");
-};
-
 const getCurrentLocation = async () => {
   try {
+    if (locationPermissionDenied.value) {
+      return;
+    }
+
     if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
-        const response = await fetch(
-          `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}`
-        );
-        const data = await response.json();
-        currentLocation.value = `${data.location.name}, ${data.location.country}`;
-        await fetchWeatherData(currentLocation.value);
+      const position = await new Promise((resolve, reject) => {
+        const successCallback = (position) => {
+          resolve(position);
+        };
+        const errorCallback = (error) => {
+          if (error.code === error.PERMISSION_DENIED) {
+            locationPermissionDenied.value = true;
+          }
+          reject(error);
+        };
+        navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
       });
-    } else {
-      console.log("Geolocation is not available");
-      await fetchWeatherData("Pristina, Kosovo");
+
+      const { latitude, longitude } = position.coords;
+      const response = await fetch(
+        `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}`
+      );
+      const data = await response.json();
+      currentLocation.value = `${data.location.name}, ${data.location.country}`;
+      await fetchWeatherData(currentLocation.value);
     }
   } catch (error) {
     console.error("Error getting current location:", error);
-    await fetchWeatherData("Pristina, Kosovo");
   }
 };
-
-onMounted(async () => {
-  await getCurrentLocation();
-});
 </script>
+
 <template>
   <div class="flex justify-between p-4">
     <div class="flex flex-col mb-4 justify-start">
@@ -84,20 +92,20 @@ onMounted(async () => {
       <span class="text-[40px]">{{ weatherEmoji }}</span>
     </div>
 
-    <div
-      class="flex flex-col justify-end items-center py-1 px-4 bg-primary dark:bg-dark-primary text-text dark:text-dark-text rounded-lg"
-    >
+    <div v-if="weatherFetched" class="flex flex-col justify-center items-center py-1 px-4 bg-primary dark:bg-dark-primary text-text dark:text-dark-text rounded-lg">
       <div class="mr-4">
-        <div class="font-semibold text-lg text-accent dark:text-dark-accent">
+        <div class="font-semibold text-lg text-text dark:text-dark-text">
           {{ currentLocation }}
         </div>
         <div class="text-sm">{{ currentTemperature }}°C</div>
         <div class="text-sm">{{ humidity }}% Humidity</div>
         <div class="text-sm">{{ windDirection }} Wind Direction</div>
-        <button class="text-dark-text dark:text-text text-xs" @click="openWeatherSite">
-          More on weather.com
-        </button>
       </div>
+    </div>
+    <div v-else>
+      <button @click="getCurrentLocation" class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent text-text dark:text-dark-text p-3 rounded-xl">
+        Get Weather
+      </button>
     </div>
   </div>
 </template>

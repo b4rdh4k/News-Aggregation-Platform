@@ -35,17 +35,17 @@ small {font-size: 0.750rem; /* 12px */}
 @layer base {
   :root {
     --text: #0e0e0c;
-    --background: #f6e6f0;
+    --background: #f6f2f4;
     --primary: #ffc4d6;
     --secondary: #fab3c8;
-    --accent: #ff87ab;
+    --accent: #c56a86;
   }
   .dark {
     --text: #f8f8ef;
     --background: #051923;
     --primary: #003554;
     --secondary: #006494;
-    --accent: #00a6fb;
+    --accent: #31baff;
   }
 }
 

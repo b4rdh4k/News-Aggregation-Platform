@@ -16,9 +16,19 @@ const routes = [
         component: HomeView,
       },
       {
+        path: 'categories',
+        name: 'Categories',
+        component: () => import('../views/CategoriesView.vue'),
+      },
+      {
         path: 'about',
         name: 'About',
         component: () => import('../views/AboutView.vue'),
+      },
+      {
+        path: 'for-you',
+        name: 'ForYou',
+        component: () => import('../views/ForYouView.vue'),
       },
       {
         path: 'news/:id',
