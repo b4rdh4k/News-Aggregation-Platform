@@ -1,271 +1,230 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import router from '../router';
 import { useToast } from 'vue-toastification';
 
-const toast = useToast();
-
 export const useUserStore = defineStore('user', () => {
+  const token = ref(localStorage.getItem('token') || null);
   const user = ref(null);
-  const token = ref(localStorage.getItem('accessToken') || null);
-  const tokenExpiry = ref(localStorage.getItem('accessExpireToken') || null);
+  const toast = useToast();
 
-  const setToken = (newToken, expiryTime) => {
-    token.value = newToken;
-    localStorage.setItem('accessToken', newToken);
-    localStorage.setItem('accessExpireToken', expiryTime);
-    tokenExpiry.value = expiryTime;
-  };
-
-  const setUser = (userData) => {
-    user.value = userData;
-  };
-
-  const isTokenExpired = () => {
-    if (!tokenExpiry.value) return true;
-    return new Date().getTime() > parseInt(tokenExpiry.value);
-  };
-
-  const refreshToken = async () => {
+  const login = async (credentials) => {
     try {
-      const response = await fetch('/auth/refresh', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: 'POST',
-        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
       });
+      const data = await response.json();
 
       if (response.ok) {
-        const data = await response.json();
-        const expiryTime = new Date().getTime() + data.expiresIn * 10000;
-        setToken(data.accessToken, expiryTime);
-        toast.success('Token refreshed successfully!');
+        token.value = data.accessToken;
+        localStorage.setItem('token', data.accessToken);
+        user.value = data.user;
       } else {
-        throw new Error('Token refresh failed');
+        throw new Error(data.message || 'Login failed');
       }
     } catch (error) {
-      console.error(error);
-      toast.error('Failed to refresh token.');
-      router.push('/signin');
+      console.error('Login error:', error.message);
+      throw error;
     }
+  };
+
+  const logout = () => {
+    token.value = null;
+    user.value = null;
+    localStorage.removeItem('token');
   };
 
   const register = async (userInfo) => {
     try {
-      const response = await fetch('/auth/register', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(userInfo),
       });
+      const data = await response.json();
 
       if (response.ok) {
-        const data = await response.json();
-        setToken(data.accessToken);
-        setUser(data.user);
-        toast.success('Registration successful!');
+        token.value = data.accessToken;
+        user.value = data.user;
+        localStorage.setItem('token', data.accessToken);
       } else {
-        throw new Error('Registration failed');
+        throw new Error(data.message || 'Registration failed');
       }
     } catch (error) {
-      console.error(error);
-      toast.error('Registration failed. Please try again.');
+      console.error('Registration error:', error.message);
     }
   };
 
-
-  const fetchUser = async () => {
+  const refreshToken = async () => {
     try {
-      if (isTokenExpired()) {
-        await refreshToken();
-      }
-
-      const response = await fetch('/auth/info', {
-        method: 'GET',
-        headers: { 'Authorization': `Bearer ${token.value}` },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data);
-        toast.success('User data fetched successfully!');
-      } else {
-        throw new Error('Fetch user failed');
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('Failed to fetch user data.');
-    }
-  };
-
-  const login = async (credentials) => {
-    try {
-      const response = await fetch('/auth/login', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
+      const data = await response.json();
 
       if (response.ok) {
-        const data = await response.json();
-        const expiryTime = new Date().getTime() + data.expiresIn * 1000; // Assuming response contains expiresIn
-        setToken(data.accessToken, expiryTime);
-        setUser(data.user);
-        toast.success('Login successful!');
+        token.value = data.accessToken;
+        localStorage.setItem('token', data.accessToken);
       } else {
-        throw new Error('Login failed');
+        throw new Error(data.message || 'Token refresh failed');
       }
     } catch (error) {
-      console.error(error);
-      toast.error('Your username or password is incorrect.');
-    }
-  };
-
-  const logout = async () => {
-    try {
-      const response = await fetch('/auth/logout', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token.value}` },
-      });
-
-      if (response.ok) {
-        setToken(null, null);
-        setUser(null);
-        localStorage.getItem('accessExpireToken', null);
-        toast.success('Logout successful!');
-        router.push('/register');
-      } else {
-        throw new Error('Logout failed');
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('Logout failed. Please try again.');
+      console.error('Refresh token error:', error.message);
     }
   };
 
   const forgotPassword = async (email) => {
     try {
-      const response = await fetch('/auth/forgot-password', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/forgot-password`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ email }),
       });
+      const data = await response.json();
 
       if (response.ok) {
-        toast.success('Password reset email sent!');
+        toast.success('Operation successful!');
       } else {
-        throw new Error('Forgot password request failed');
+        throw new Error(data.message || 'Forgot password request failed');
       }
     } catch (error) {
-      console.error(error);
-      toast.error('Failed to send password reset email.');
+      console.error('Forgot password error:', error.message);
     }
   };
 
   const changePassword = async (newPassword) => {
     try {
-      const response = await fetch('/auth/change-password', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/change-password`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token.value}` },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ newPassword }),
       });
+      const data = await response.json();
 
       if (response.ok) {
         toast.success('Password changed successfully!');
       } else {
-        throw new Error('Change password request failed');
+        throw new Error(data.message || 'Change password failed');
       }
     } catch (error) {
-      console.error(error);
-      toast.error('Failed to change password.');
+      console.error('Change password error:', error.message);
     }
   };
 
   const verifyEmail = async (token) => {
     try {
-      const response = await fetch('/auth/verify-email', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/verify-email`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ token }),
       });
+      const data = await response.json();
 
       if (response.ok) {
         toast.success('Email verified successfully!');
       } else {
-        throw new Error('Email verification failed');
+        throw new Error(data.message || 'Email verification failed');
       }
     } catch (error) {
-      console.error(error);
-      toast.error('Failed to verify email.');
+      console.error('Verify email error:', error.message);
     }
   };
 
   const setupMFA = async (mfaData) => {
     try {
-      const response = await fetch('/auth/setup-mfa', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/setup-mfa`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token.value}` },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(mfaData),
       });
+      const data = await response.json();
 
       if (response.ok) {
-        toast.success('MFA setup successfully!');
+        toast.success('MFA setup successful!');
       } else {
-        throw new Error('MFA setup failed');
+        throw new Error(data.message || 'MFA setup failed');
       }
     } catch (error) {
-      console.error(error);
-      toast.error('Failed to setup MFA.');
+      console.error('Setup MFA error:', error.message);
     }
   };
 
   const verifyMFA = async (mfaCode) => {
     try {
-      const response = await fetch('/auth/verify-mfa', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/verify-mfa`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token.value}` },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ mfaCode }),
       });
+      const data = await response.json();
 
       if (response.ok) {
         toast.success('MFA verified successfully!');
       } else {
-        throw new Error('MFA verification failed');
+        throw new Error(data.message || 'MFA verification failed');
       }
     } catch (error) {
-      console.error(error);
-      toast.error('Failed to verify MFA.');
+      console.error('Verify MFA error:', error.message);
     }
   };
 
   const generateBackupCodes = async () => {
     try {
-      const response = await fetch('/auth/generate-backup-codes', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/generate-backup-codes`, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token.value}` },
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
+      const data = await response.json();
 
       if (response.ok) {
-        toast.success('Backup codes generated successfully!');
+        console.log(data.backupCodes);
       } else {
-        throw new Error('Generate backup codes failed');
+        throw new Error(data.message || 'Generating backup codes failed');
       }
     } catch (error) {
-      console.error(error);
-      toast.error('Failed to generate backup codes.');
+      console.error('Generate backup codes error:', error.message);
     }
   };
 
-  return {
-    user,
-    token,
-    login,
-    register,
-    fetchUser,
-    logout,
-    refreshToken,
-    forgotPassword,
-    changePassword,
-    verifyEmail,
-    setupMFA,
-    verifyMFA,
-    generateBackupCodes,
+  const getUserInfo = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/info`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        user.value = data.user;
+      } else {
+        throw new Error(data.message || 'Fetching user info failed');
+      }
+    } catch (error) {
+      console.error('Get user info error:', error.message);
+    }
   };
+
+  return { token, user, login, register, logout, refreshToken, forgotPassword, changePassword, verifyEmail, setupMFA, verifyMFA, generateBackupCodes, getUserInfo };
 });
