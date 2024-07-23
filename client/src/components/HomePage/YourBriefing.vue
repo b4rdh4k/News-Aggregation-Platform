@@ -81,7 +81,7 @@ const getCurrentLocation = async () => {
 </script>
 
 <template>
-  <div class="flex justify-between p-4">
+  <div class="container flex justify-between p-4">
     <div class="flex flex-col mb-4 justify-start">
       <h1 class="text-3xl font-semibold text-accent dark:text-dark-accent">
         Your Briefing

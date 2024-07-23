@@ -6,7 +6,7 @@ import AppFooter from "../components/shared/AppFooter.vue";
 <template>
   <div>
     <AppHeader />
-    <div class="container mx-auto mt-4">
+    <div class="mx-auto mt-4">
       <main class="flex-1">
         <router-view />
       </main>
