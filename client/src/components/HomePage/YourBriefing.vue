@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 
 const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
 
@@ -72,12 +72,21 @@ const getCurrentLocation = async () => {
       );
       const data = await response.json();
       currentLocation.value = `${data.location.name}, ${data.location.country}`;
+      localStorage.setItem("userLocation", currentLocation.value);
       await fetchWeatherData(currentLocation.value);
     }
   } catch (error) {
     console.error("Error getting current location:", error);
   }
 };
+
+onMounted(async () => {
+  const storedLocation = localStorage.getItem("userLocation");
+  if (storedLocation) {
+    currentLocation.value = storedLocation;
+    await fetchWeatherData(storedLocation);
+  }
+});
 </script>
 
 <template>
