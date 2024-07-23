@@ -16,6 +16,11 @@ const routes = [
         name: 'Home',
         component: HomeView,
       },
+      {
+        path: 'subscription',
+        name: 'Subscription',
+        component: () => import('../views/SubscriptionView.vue'),
+      },
     ],
   },
   {
