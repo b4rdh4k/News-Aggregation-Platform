@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useUserStore } from '@/store/user';
 import ThemeToggle from '@/components/shared/ThemeToggle.vue';
 import TabsHeader from './TabsHeader.vue';
+import router from '@/router';
 
 const userStore = useUserStore();
 
@@ -23,12 +24,10 @@ const performSearch = () => {
 
 const handleLogout = async () => {
   await userStore.logout();
-  // Redirect or perform further actions on logout
+  router.push('/');
 };
 
-// Optional: Refresh user information if needed
 onMounted(() => {
-  // This will ensure the token is loaded from local storage on component mount
   if (userStore.token) {
     console.log('Token:', userStore.token);
   }
@@ -36,12 +35,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <header class="bg-background dark:bg-dark-background text-text dark:text-dark-text pb-0 sticky top-0 shadow-md z-10">
-    <div class="container mx-auto flex justify-between items-center p-4">
+  <header class="bg-background  dark:bg-dark-background text-text dark:text-dark-text pb-0 sticky top-0 shadow-md z-10">
+    <div class="container mx-auto flex flex-wrap justify-around items-center p-4">
       <router-link to="/" class="h-12 flex-shrink-0">
         <img src="@/assets/Sapientia-Logo.png" alt="Logo" class="h-full cursor-pointer" />
       </router-link>
-      <div class="hidden md:block">
+      <div class="hidden lg:block">
         <div class="relative">
           <input
             type="text"
@@ -56,7 +55,7 @@ onMounted(() => {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           @click="toggleSearch"
-          class="w-6 h-6 ml-4 cursor-pointer md:hidden"
+          class="w-6 h-6 ml-4 cursor-pointer lg:hidden"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -98,7 +97,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div v-if="showSearch" class="relative md:hidden mt-4">
+    <div v-if="showSearch" class="relative xl:hidden mt-4 mx-2">
       <input
         type="text"
         v-model="searchQuery"
@@ -107,14 +106,7 @@ onMounted(() => {
         class="p-2 rounded bg-primary dark:bg-dark-primary w-full"
       />
     </div>
+
     <TabsHeader />
   </header>
 </template>
-
-<style scoped>
-@media (min-width: 768px) {
-  .hidden {
-    display: block !important;
-  }
-}
-</style>

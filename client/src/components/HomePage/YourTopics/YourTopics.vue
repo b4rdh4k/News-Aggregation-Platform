@@ -1,227 +1,65 @@
 <script setup>
-import { reactive } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import PreferencesModal from '@/components/HomePage/YourTopics/PreferencesModal.vue';
+import { useCategoryStore } from '@/store/categoryStore';
 
 const router = useRouter();
+const categoryStore = useCategoryStore();
+const selectedCategories = computed(() => categoryStore.selectedCategories);
 
-const categories = reactive([
-  {
-    title: "U.S.",
-    items: [
-      {
-        id: 1,
-        source: "BBC",
-        title: "Gaza war: US says floating aid pier to shut down soon",
-        time: "4 hours ago",
-        authors: "Paul Adams",
-      },
-      {
-        id: 2,
-        source: "CNBC",
-        title:
-          "10 states with America's worst infrastructure, and most to gain from billions in federal dollars",
-        time: "7 hours ago",
-        authors: "Scott Cohn",
-      },
-      {
-        id: 3,
-        source: "Al Jazeera",
-        title: "Russia says US missiles in Germany signal return of Cold War",
-        time: "3 hours ago",
-        authors: "Author Name",
-      },
-    ],
-  },
-  {
-    title: "Entertainment",
-    items: [
-      {
-        id: 4,
-        source: "The Washington Post",
-        title: "Shelley Duvall, a beguiling face of 1970s film, dies at 75",
-        time: "47 minutes ago",
-        authors: "Harrison Smith",
-      },
-      {
-        id: 5,
-        source: "AP",
-        title:
-          "Alec Baldwin’s lawyer grills crime scene tech over search for live ammo at his shooting trial",
-        time: "1 hour ago",
-        authors: "Morgan Lee & Andrew D. Dalton",
-      },
-      {
-        id: 6,
-        source: "Rolling Stone",
-        title: "We Had Breakfast With Hawk Tuah Girl, the National Hero We Need",
-        time: "8 hours ago",
-        authors: "Joseph Hudak",
-      },
-    ],
-  },
-  {
-    title: "Sports",
-    items: [
-      {
-        id: 7,
-        source: "ESPN",
-        title: "Skenes throws 7 no-hit IP, K's 11 in Pirates' win",
-        time: "2 hours ago",
-        authors: "Author Name",
-      },
-      {
-        id: 8,
-        source: "The Washington Post",
-        title:
-          "Thanks, Obama: USA Basketball survives rust, roster drama in exhibition win",
-        time: "2 minutes ago",
-        authors: "Ben Golliver",
-      },
-      {
-        id: 9,
-        source: "NBC Sports",
-        title: "Former NFL defensive coordinator Monte Kiffin has died",
-        time: "1 hour ago",
-        authors: "Charean Williams",
-      },
-    ],
-  },
-  {
-    title: "Technology",
-    items: [
-      {
-        id: 10,
-        source: "The Wall Street Journal",
-        title: "The 2022 NFL Draft is coming to Las Vegas",
-        time: "2 hours ago",
-        authors: "Author D",
-      },
-      {
-        id: 11,
-        source: "The Washington Post",
-        title: "The 2022 NFL Draft is coming to Las Vegas",
-        time: "2 hours ago",
-        authors: "Author C",
-      },
-      {
-        id: 12,
-        source: "The Guardian",
-        title: "The 2022 NFL Draft is coming to Las Vegas",
-        time: "2 hours ago",
-        authors: "Author B",
-      },
-    ],
-  },
-  {
-    title: "Business",
-    items: [
-      {
-        id: 13,
-        source: "The Wall Street Journal",
-        title: "The 2022 NFL Draft is coming to Las Vegas",
-        time: "2 hours ago",
-        authors: "Author D",
-      },
-      {
-        id: 14,
-        source: "The Washington Post",
-        title: "The 2022 NFL Draft is coming to Las Vegas",
-        time: "2 hours ago",
-        authors: "Author C",
-      },
-      {
-        id: 15,
-        source: "The Guardian",
-        title: "The 2022 NFL Draft is coming to Las Vegas",
-        time: "2 hours ago",
-        authors: "Author B",
-      },
-    ],
-  },
-]);
+const showModal = ref(false);
+
+const openModal = () => {
+  showModal.value = true;
+};
+
+const closeModal = () => {
+  showModal.value = false;
+};
 
 const goToNewsView = (story) => {
   if (story && story.id) {
-    router.push({ name: "News", params: { id: story.id } });
+    router.push({ name: 'News', params: { id: story.id } });
   } else {
-    console.error("Missing story ID");
+    console.error('Missing story ID');
   }
 };
+
+onMounted(() => {
+  categoryStore.initializeDefaults();
+});
 </script>
 
 <template>
   <div class="p-4">
-    <div
-      class="flex justify-between items-center mb-4 pb-2 border-b-[1px] border-accent dark:border-dark-accent"
-    >
+    <div class="flex justify-between items-center mb-4 pb-2 border-b-[1px] border-accent dark:border-dark-accent">
       <h1 class="text-3xl text-accent dark:text-dark-accent font-bold">Your topics</h1>
       <div class="relative">
-        <button
-          class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent text-text dark:text-dark-text p-3 rounded-xl"
-        >
+        <button @click="openModal" class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent text-text dark:text-dark-text p-3 rounded-xl">
           Preferences
         </button>
       </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div
-        v-for="category in categories"
-        :key="category.title"
-        class="p-4 rounded-lg shadow-inner shadow-secondary dark:shadow-dark-secondary"
-      >
+      <div v-for="category in selectedCategories" :key="category.title" class="p-4 rounded-lg shadow-inner shadow-secondary dark:shadow-dark-secondary">
         <router-link :to="`/category/${category.title}`" class="mb-2" @click.stop>
-          <button
-            class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent px-2 rounded-xl -m-1"
-          >
+          <button class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent px-2 rounded-xl -m-1">
             <p class="text-text dark:text-dark-text">{{ category.title }}</p>
           </button>
         </router-link>
         <ul>
-          <li
-            v-for="(item, index) in category.items"
-            :key="item.id"
-            class="mb-4 mt-4 cursor-pointer"
-            @click="goToNewsView(item)"
-          >
-            <h4
-              class="truncate-title text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl mb-2"
-            >
-              {{ item.title }}
-            </h4>
+          <li v-for="(item, index) in category.items" :key="item.id" class="mb-4 mt-4 cursor-pointer" @click="goToNewsView(item)">
+            <h4 class="truncate-title text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl mb-2">{{ item.title }}</h4>
             <router-link :to="`/source/${item.source}`" class="mb-2" @click.stop>
-              <p
-                class="text-accent dark:text-dark-accent italic font-serif cursor-pointer hover:text-secondary dark:hover:text-dark-secondary"
-              >
-                {{ item.source }}
-              </p>
+              <p class="text-accent dark:text-dark-accent italic font-serif cursor-pointer hover:text-secondary dark:hover:text-dark-secondary">{{ item.source }}</p>
             </router-link>
-            <p class="truncate-author text-text dark:text-dark-text">
-              {{ item.time }} | {{ item.authors }}
-            </p>
-            <hr
-              v-if="index < category.items.length - 1"
-              class="border-b mt-4 border-secondary dark:border-dark-secondary"
-            />
+            <p class="truncate-author text-text dark:text-dark-text">{{ item.time }} | {{ item.authors }}</p>
+            <hr v-if="index < category.items.length - 1" class="border-b mt-4 border-secondary dark:border-dark-secondary" />
           </li>
         </ul>
       </div>
     </div>
+    <PreferencesModal :show="showModal" @close="closeModal" />
   </div>
 </template>
-
-<style scoped>
-.truncate-title,
-.truncate-author {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: normal;
-}
-.truncate-author {
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
-}
-</style>

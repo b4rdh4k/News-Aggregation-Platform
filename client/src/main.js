@@ -2,8 +2,6 @@ import './assets/main.css'
 import { initTheme } from './utils/theme'
 import Toast, { POSITION } from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
-import { Tabs, Tab } from 'vue3-tabs-component'
-
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
@@ -17,8 +15,6 @@ app.use(Toast, {
   timeout: 3000
 })
 
-app.component('TabsComponent', Tabs)
-app.component('TabComponent', Tab)
 
 const pinia = createPinia()
 app.use(pinia)
