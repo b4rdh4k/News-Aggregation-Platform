@@ -1,6 +1,6 @@
 // router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
+import HomeView from '@/views/general/HomeView.vue';
 import MainLayout from '../layouts/MainLayout.vue';
 import HomeLayout from '../layouts/HomeLayout.vue';	
 import BasicsLayout from '../layouts/BasicsLayout.vue';
@@ -19,7 +19,7 @@ const routes = [
       {
         path: 'subscription',
         name: 'Subscription',
-        component: () => import('../views/SubscriptionView.vue'),
+        component: () => import('@/views/general/SubscriptionView.vue'),
       },
     ],
   },
@@ -30,17 +30,12 @@ const routes = [
       {
         path: 'categories',
         name: 'Categories',
-        component: () => import('../views/CategoriesView.vue'),
-      },
-      {
-        path: 'about',
-        name: 'About',
-        component: () => import('../views/AboutView.vue'),
+        component: () => import('../views/general/CategoriesView.vue'),
       },
       {
         path: 'for-you',
         name: 'ForYou',
-        component: () => import('../views/ForYouView.vue'),
+        component: () => import('../views/general/ForYouView.vue'),
       },
       {
         path: 'news/:id',
@@ -73,6 +68,11 @@ const routes = [
         name: 'Register',
         component: () => import('@/views/Account/RegisterView.vue'),
       },
+      {
+        path: 'setup-mfa',
+        name: 'SetupMFA',
+        component: () => import('@/components/Account/setup-mfa.vue'),
+      }
     ],
   },
 ];

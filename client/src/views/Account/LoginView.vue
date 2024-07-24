@@ -2,18 +2,18 @@
 import { ref, onMounted } from 'vue';
 import { useUserStore } from '../../store/user';
 import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
 import lottie from 'lottie-web';
 import animationData from '@/assets/LoginAnimation.json';
-import { useToast } from 'vue-toastification';
 
 const email = ref('');
 const password = ref('');
 const emailError = ref('');
 const passwordError = ref('');
+const mfaRequired = ref(false);
 const userStore = useUserStore();
 const router = useRouter();
 const toast = useToast();
-
 const lottieContainer = ref(null);
 
 onMounted(() => {
@@ -25,7 +25,6 @@ onMounted(() => {
     animationData,
   });
 });
-
 const validateForm = () => {
   emailError.value = '';
   passwordError.value = '';
@@ -66,6 +65,7 @@ const login = async () => {
     });
     const data = await response.json();
     console.log('Login response:', data);
+
     if (response.ok) {
       userStore.$patch({
         token: data.accessToken,
@@ -73,7 +73,12 @@ const login = async () => {
       });
       localStorage.setItem('token', data.accessToken);
       toast.success('Login successful!');
-      router.push('/');
+
+      if (mfaRequired.value) {
+        router.push('/setup-mfa');
+      } else {
+        router.push('/');
+      }
     } else {
       console.error('Login failed:', data);
       if (data.message === 'Invalid email') {
@@ -98,8 +103,8 @@ const login = async () => {
     <div class="hidden md:flex flex-1 pl-4">
       <div ref="lottieContainer" class="h-full"></div>
     </div>
-    
-    <div class="flex-1 flex items-center 2xl:items-center justify-center">
+
+    <div class="flex-1 flex items-center justify-center">
       <div class="container max-w-lg mx-auto px-6 bg-background dark:bg-dark-background text-text dark:text-dark-text rounded-lg">
         <h1 class="text-4xl font-bold mb-4 text-center">Nice to see you again!</h1>
         <form @submit.prevent="login" autocomplete="on" novalidate>
@@ -126,6 +131,16 @@ const login = async () => {
               autocomplete="new-password"
             />
             <p v-if="passwordError" class="text-red-500 text-sm">{{ passwordError }}</p>
+          </div>
+
+          <div class="mb-4">
+            <input
+              type="checkbox"
+              id="mfa"
+              v-model="mfaRequired"
+              class="mr-2"
+            />
+            <label for="mfa" class="inline">Require MFA</label>
           </div>
 
           <button

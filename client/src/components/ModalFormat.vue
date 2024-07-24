@@ -1,5 +1,4 @@
 <script setup>
-import { defineEmits } from "vue";
 defineEmits(["closeModal"]);
 </script>
 <template>
