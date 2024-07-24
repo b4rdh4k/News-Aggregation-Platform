@@ -25,13 +25,14 @@ onMounted(() => {
     animationData,
   });
 });
+
 const validateForm = () => {
   emailError.value = '';
   passwordError.value = '';
 
   if (!email.value) {
     emailError.value = 'Email is required';
-  } else if (!/\S+@\S+\.\S+/.test(email.value)) {
+  } else if (!/\S+@\S+\.\S+/i.test(email.value)) {
     emailError.value = 'Email is invalid';
   }
 
@@ -52,6 +53,9 @@ const login = async () => {
     return;
   }
 
+  // Normalize email to lowercase
+  const normalizedEmail = email.value.toLowerCase();
+
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
       method: 'POST',
@@ -59,7 +63,7 @@ const login = async () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: email.value,
+        email: normalizedEmail,
         password: password.value,
       }),
     });
@@ -97,6 +101,7 @@ const login = async () => {
   }
 };
 </script>
+
 
 <template>
   <div class="flex flex-col md:flex-row min-h-screen bg-background dark:bg-dark-background text-text dark:text-dark-text">

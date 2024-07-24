@@ -30,7 +30,7 @@ const routes = [
       {
         path: 'categories',
         name: 'Categories',
-        component: () => import('../views/general/CategoriesView.vue'),
+        component: () => import('../views/Category/CategoriesView.vue'),
       },
       {
         path: 'for-you',
@@ -43,9 +43,10 @@ const routes = [
         component: () => import('../components/NewsPage/NewsView.vue'),
       },
       {
-        path: 'category/:id',
+        path: 'category/:name',
         name: 'Category',
         component: () => import('../views/Category/CategoryView.vue'),
+        props: true,
       },
       {
         path: 'source/:id',

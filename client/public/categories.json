@@ -10,23 +10,31 @@
           "time": "28 minutes ago"
         },
         {
-            "title": "Man whose family among six killed in A61 crash says heart 'ripped into million piecesMan whose family among six killed in A61 crash says heart 'ripped into million piecesMan whose family among six killed in A61 crash says heart 'ripped into million pieces'",
-            "link": "#",
-          "source": "BBC.com",
-          "time": "2 days ago"
-        },
-        {
-          "title": "Man whose family among six killed in A61 crash says heart 'ripped into million pieces'",
+          "title": "Man whose family among six killed in A61 crash says heart 'ripped into million piecesMan whose family among six killed in A61 crash says heart 'ripped into million pieces'",
           "link": "#",
-          "source": "Sky News",
-          "time": "53 minutes ago"
-        },
-        {
-            "title": "Man whose family among six killed in A61 crash says heart 'ripped into million pieces'",
-            "link": "#",
-          "source": "The Independent",
-          "time": "13 minutes ago"
-        }
+        "image": "https://placehold.co/300",
+        "source": "BEvening Standard",
+        "time": "28 minutes ago"
+      },
+      {
+        "title": "Man whose family among six killed in A61 crash says heart 'ripped into million piecesMan whose family among six killed in A61 crash says heart 'ripped into million pieces'",
+        "link": "#",
+      "image": "https://placehold.co/300",
+      "source": "Evening Standard",
+      "time": "28 minutes ago"
+    },{
+      "title": "Man whose family among six killed in A61 crash says heart 'ripped into million piecesMan whose family among six killed in A61 crash says heart 'ripped into million pieces'",
+      "link": "#",
+    "image": "https://placehold.co/300",
+    "source": "Evening Standard",
+    "time": "28 minutes ago"
+  },{
+    "title": "Man whose family among six killed in A61 crash says heart 'ripped into million piecesMan whose family among six killed in A61 crash says heart 'ripped into million pieces'",
+    "link": "#",
+  "image": "https://placehold.co/300",
+  "source": "Evening Standard",
+  "time": "28 minutes ago"
+}
       ]
     },
     {
@@ -40,23 +48,41 @@
           "time": "1 hour ago"
         },
         {
-          "title": "Article 2",
+          "title": "Article 1",
           "link": "#",
-          "source": "Source 2",
-          "time": "2 hours ago"
+          "image": "https://placehold.co/300",
+          "source": "Source 1",
+          "time": "1 hour ago"
         },
         {
-          "title": "Article 3",
+          "title": "Article 1",
           "link": "#",
-          "source": "Source 3",
-          "time": "3 hours ago"
+          "image": "https://placehold.co/300",
+          "source": "Source 1",
+          "time": "1 hour ago"
         },
         {
-          "title": "Article 4",
+          "title": "Article 1",
           "link": "#",
-          "source": "Source 4",
-          "time": "4 hours ago"
+          "image": "https://placehold.co/300",
+          "source": "Source 1",
+          "time": "1 hour ago"
+        },
+        {
+          "title": "Article 1",
+          "link": "#",
+          "image": "https://placehold.co/300",
+          "source": "Source 1",
+          "time": "1 hour ago"
+        },
+        {
+          "title": "Article 1",
+          "link": "#",
+          "image": "https://placehold.co/300",
+          "source": "Source 1",
+          "time": "1 hour ago"
         }
+        
       ]
     },
     {
@@ -66,27 +92,45 @@
           "title": "Article 1",
           "link": "#",
           "image": "https://placehold.co/300",
-          "source": "Source 1",
+          "source": "Kompania 1",
           "time": "1 hour ago"
         },
         {
-          "title": "Article 2",
+          "title": "Article 1",
           "link": "#",
-          "source": "Source 2",
-          "time": "2 hours ago"
+          "image": "https://placehold.co/300",
+          "source": "Kompania 1",
+          "time": "1 hour ago"
         },
         {
-          "title": "Article 3",
+          "title": "Article 1",
           "link": "#",
-          "source": "Source 3",
-          "time": "3 hours ago"
+          "image": "https://placehold.co/300",
+          "source": "Kompania 1",
+          "time": "1 hour ago"
         },
         {
-          "title": "Article 4",
+          "title": "Article 1",
           "link": "#",
-          "source": "Source 4",
-          "time": "4 hours ago"
+          "image": "https://placehold.co/300",
+          "source": "Kompania 1",
+          "time": "1 hour ago"
+        },
+        {
+          "title": "Article 1",
+          "link": "#",
+          "image": "https://placehold.co/300",
+          "source": "Kompania 1",
+          "time": "1 hour ago"
+        },
+        {
+          "title": "Article 1",
+          "link": "#",
+          "image": "https://placehold.co/300",
+          "source": "Kompania 1",
+          "time": "1 hour ago"
         }
+        
       ]
     }
   ]

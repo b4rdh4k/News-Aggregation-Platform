@@ -19,6 +19,7 @@ app.use(Toast, {
 const pinia = createPinia()
 app.use(pinia)
 
+
 const userStore = useUserStore(pinia) 
 if (localStorage.getItem('token')) {
   userStore.token = localStorage.getItem('token')
