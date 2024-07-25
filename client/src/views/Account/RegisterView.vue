@@ -1,29 +1,29 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useUserStore } from '@/store/user';
-import { useRouter } from 'vue-router';
-import lottie from 'lottie-web';
-import animationData from '@/assets/SignupAnimation.json';
-import { useToast } from 'vue-toastification';
+import { ref, onMounted } from 'vue'
+import { useUserStore } from '@/store/user'
+import { useRouter } from 'vue-router'
+import lottie from 'lottie-web'
+import animationData from '@/assets/SignupAnimation.json'
+import { useToast } from 'vue-toastification'
 
-const email = ref('');
-const password = ref('');
-const confirmPassword = ref('');
-const username = ref('');
-const fullName = ref('');
-const birthdate = ref('');
-const emailError = ref('');
-const usernameError = ref('');
-const fullNameError = ref('');
-const birthdateError = ref('');
-const passwordError = ref('');
-const confirmPasswordError = ref('');
-const loading = ref(false);
-const lottieContainer = ref(null);
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+const username = ref('')
+const fullName = ref('')
+const birthdate = ref('')
+const emailError = ref('')
+const usernameError = ref('')
+const fullNameError = ref('')
+const birthdateError = ref('')
+const passwordError = ref('')
+const confirmPasswordError = ref('')
+const loading = ref(false)
+const lottieContainer = ref(null)
 
-const userStore = useUserStore();
-const router = useRouter();
-const toast = useToast();
+const userStore = useUserStore()
+const router = useRouter()
+const toast = useToast()
 
 onMounted(() => {
   lottie.loadAnimation({
@@ -32,62 +32,62 @@ onMounted(() => {
     loop: true,
     autoplay: true,
     animationData
-  });
-});
+  })
+})
 
 const validateForm = () => {
-  emailError.value = '';
-  passwordError.value = '';
-  usernameError.value = '';
-  fullNameError.value = '';
-  birthdateError.value = '';
-  confirmPasswordError.value = '';
+  emailError.value = ''
+  passwordError.value = ''
+  usernameError.value = ''
+  fullNameError.value = ''
+  birthdateError.value = ''
+  confirmPasswordError.value = ''
 
   if (!email.value) {
-    emailError.value = 'Email is required';
+    emailError.value = 'Email is required'
   } else if (!/\S+@\S+\.\S+/.test(email.value)) {
-    emailError.value = 'Email is invalid';
+    emailError.value = 'Email is invalid'
   }
 
   if (!username.value) {
-    usernameError.value = 'Username is required';
+    usernameError.value = 'Username is required'
   } else if (!/^[a-zA-Z0-9_.]{6,12}$/.test(username.value)) {
     usernameError.value =
-      'Username must be between 6 and 12 characters and can only contain letters, numbers, underscores, and dots';
+      'Username must be between 6 and 12 characters and can only contain letters, numbers, underscores, and dots'
   }
 
   if (!fullName.value) {
-    fullNameError.value = 'Full Name is required';
+    fullNameError.value = 'Full Name is required'
   } else if (fullName.value.split(' ').length < 2) {
-    fullNameError.value = 'Full Name must have at least two words';
+    fullNameError.value = 'Full Name must have at least two words'
   }
 
   if (!birthdate.value) {
-    birthdateError.value = 'Birthdate is required';
+    birthdateError.value = 'Birthdate is required'
   } else {
-    const today = new Date();
-    const selectedDate = new Date(birthdate.value);
-    const age = today.getFullYear() - selectedDate.getFullYear();
+    const today = new Date()
+    const selectedDate = new Date(birthdate.value)
+    const age = today.getFullYear() - selectedDate.getFullYear()
     if (age < 18) {
-      birthdateError.value = 'You must be of legal age to register an account';
+      birthdateError.value = 'You must be of legal age to register an account'
     } else if (age > 120) {
-      birthdateError.value = "You can't be older than humanly possible";
+      birthdateError.value = "You can't be older than humanly possible"
     }
   }
 
   if (!password.value) {
-    passwordError.value = 'Password is required';
+    passwordError.value = 'Password is required'
   } else if (password.value.length < 8) {
-    passwordError.value = 'Password must be at least 8 characters';
+    passwordError.value = 'Password must be at least 8 characters'
   } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)/.test(password.value)) {
     passwordError.value =
-      'Password must contain at least one uppercase letter, one lowercase letter, one symbol, and one number';
+      'Password must contain at least one uppercase letter, one lowercase letter, one symbol, and one number'
   }
 
   if (!confirmPassword.value) {
-    confirmPasswordError.value = 'Confirm Password is required';
+    confirmPasswordError.value = 'Confirm Password is required'
   } else if (confirmPassword.value !== password.value) {
-    confirmPasswordError.value = 'Passwords do not match';
+    confirmPasswordError.value = 'Passwords do not match'
   }
 
   return (
@@ -97,16 +97,16 @@ const validateForm = () => {
     !fullNameError.value &&
     !birthdateError.value &&
     !confirmPasswordError.value
-  );
-};
+  )
+}
 
 const register = async () => {
   if (!validateForm()) {
-    toast.error('Please fill out all required fields correctly.');
-    return;
+    toast.error('Please fill out all required fields correctly.')
+    return
   }
 
-  loading.value = true;
+  loading.value = true
 
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
@@ -125,39 +125,72 @@ const register = async () => {
         birthdate: new Date(birthdate.value).toISOString(),
         language: navigator.language,
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-      }),
-    });
+      })
+    })
 
-    const data = await response.json();
-    console.log('Registration response:', data);
+    const data = await response.json()
+    console.log('Registration response:', data)
     if (response.ok) {
       userStore.$patch({
         token: data.accessToken,
         user: data.user
-      });
-      toast.success('Registration was successful!');
-      router.push('/login');
+      })
+      toast.success('Registration was successful!')
+      router.push('/login')
     } else {
-      console.error('Registration failed:', data);
+      console.error('Registration failed:', data)
 
       switch (data.code) {
+        case 1:
+          toast.error('Email is required.')
+          break
+        case 2:
+          toast.error('Password is required.')
+          break
+        case 3:
+          toast.error('Email and password are required.')
+          break
+        case 4:
+          toast.error('Password must be between 8 and 100 characters')
+          break
+        case 5:
+          toast.error('Password must be between 8 and 100 characters.')
+          break
+        case 6:
+          toast.error('Birtjdate is required.')
+          break
         case 7:
-          toast.error('Email is already taken.');
-          break;
+          toast.error('Email is already taken.')
+          break
         case 8:
-          toast.error('Username is already taken.');
+          toast.error('Username is already taken.')
+          break
+        case 9:
+          toast.error('Invalid birthdate.')
+          break
+          case 10:
+          toast.error('Invalid date.');
+          break;
+          case 12:
+          toast.error('Username cannot be empty.');
+          break;
+          case 15:
+          toast.error('Birthdate is the same as the current one.');
+          break;
+          case 16:
+          toast.error('Full name cannot be empty.');
           break;
         default:
-          toast.error('Failed to register user.');
+          toast.error('Failed to register user.')
       }
     }
   } catch (error) {
-    console.error('Error registering user:', error);
-    toast.error('Failed to connect to server.');
+    console.error('Error registering user:', error)
+    toast.error('Failed to connect to server.')
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>
 
 <template>
@@ -254,9 +287,7 @@ const register = async () => {
             class="w-full py-2 mb-4 px-4 bg-secondary dark:bg-dark-secondary text-text dark:text-dark-text rounded hover:bg-accent dark:hover:bg-dark-accent"
             :disabled="loading"
           >
-            <span v-if="loading">
-              <i class="fas fa-spinner fa-spin"></i> Registering...
-            </span>
+            <span v-if="loading"> <i class="fas fa-spinner fa-spin"></i> Registering... </span>
             <span v-else>Sign Up</span>
           </button>
           <p class="text-center">

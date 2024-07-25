@@ -4,9 +4,11 @@ import { useUserStore } from '@/store/user';
 import ThemeToggle from '@/components/shared/ThemeToggle.vue';
 import TabsHeader from './TabsHeader.vue';
 import router from '@/router';
+import { useToast } from 'vue-toastification'
+
 
 const userStore = useUserStore();
-
+const toast = useToast()
 const showSearch = ref(false);
 const searchQuery = ref('');
 
@@ -24,6 +26,7 @@ const performSearch = () => {
 
 const handleLogout = async () => {
   await userStore.logout();
+  toast.success('Logout successful!')
   router.push('/');
 };
 
