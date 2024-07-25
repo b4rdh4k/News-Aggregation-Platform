@@ -157,7 +157,7 @@ const login = async () => {
           >
             <span v-if="!loading">Log in</span>
             <span v-if="loading" class="spinner">
-              <i class="fas fa-spinner fa-spin"></i> Loading...
+              Loading... <i class="fas fa-spinner fa-spin"></i>
             </span>
           </button>
         </form>

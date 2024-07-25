@@ -287,7 +287,7 @@ const register = async () => {
             class="w-full py-2 mb-4 px-4 bg-secondary dark:bg-dark-secondary text-text dark:text-dark-text rounded hover:bg-accent dark:hover:bg-dark-accent"
             :disabled="loading"
           >
-            <span v-if="loading"> <i class="fas fa-spinner fa-spin"></i> Registering... </span>
+            <span v-if="loading">  Registering...  <i class="fas fa-spinner fa-spin"></i></span>
             <span v-else>Sign Up</span>
           </button>
           <p class="text-center">

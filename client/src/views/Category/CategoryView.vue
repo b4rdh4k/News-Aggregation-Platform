@@ -2,7 +2,9 @@
 import { ref, computed, onMounted } from 'vue'
 import LoadingAnimation from '@/components/shared/LoadingAnimation.vue';
 import { useRoute } from 'vue-router'
+import { useToast } from 'vue-toastification'
 
+const toast = useToast()
 const category = ref(null)
 const selectedSource = ref('')
 const route = useRoute()
@@ -17,6 +19,7 @@ onMounted(async () => {
     category.value = data.find((cat) => cat.name === categoryName) || null
   } catch (error) {
     console.error('Failed to fetch categories:', error)
+    toast.error('Failed to fetch categories.');
   }
 })
 
@@ -113,7 +116,7 @@ const uniqueSources = computed(() => {
         </div>
 
         <div class="p-2 pb-0 text-container">
-          <div class="items-center pb-2 border-b-2 border-red-800">
+          <div class="items-center pb-2 border-b-2 border-accent dark:border-dark-accent">
             <h5 class="truncate-text hover:underline">{{ article.title }}</h5>
             <p class="">{{ article.source }} | {{ article.time }}</p>
           </div>

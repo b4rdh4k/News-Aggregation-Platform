@@ -1,51 +1,47 @@
 <script setup>
-import { reactive } from "vue";
-import { useRouter } from "vue-router";
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
 
-const router = useRouter();
+const router = useRouter()
 
 const topStories = reactive([
   {
     id: 1,
-    category: "World",
-    title: "Ukraine Looms Over NATO Summit, and Biden Is Defiant on Running",
-    time: "5 hours ago",
-    authors: "Julian E. Barnes, Ian Stewart",
-    company: "The New York Times",
+    category: 'World',
+    title: 'Ukraine Looms Over NATO Summit, and Biden Is Defiant on Running',
+    time: '5 hours ago',
+    company: 'The New York Times'
   },
   {
     id: 2,
-    category: "Politics",
-    title: "Congressional Democrats",
-    time: "1 hour ago",
-    authors: "Anders Hagstrom",
-    company: "The Daily Caller",
+    category: 'Politics',
+    title: 'Congressional Democrats',
+    time: '1 hour ago',
+    company: 'The Daily Caller'
   },
   {
     id: 3,
-    category: "Business",
-    title: "The 2022 NFL Draft is coming to Las Vegas",
-    time: "2 hours ago",
-    authors: "Author C",
-    company: "The Washington Post",
+    category: 'Business',
+    title: 'The 2022 NFL Draft is coming to Las Vegas',
+    time: '2 hours ago',
+    company: 'The Washington Post'
   },
   {
     id: 4,
-    category: "Technology",
-    title: "The 2022 NFL Draft is coming to Las Vegas",
-    time: "2 hours ago",
-    authors: "Author D",
-    company: "The Wall Street Journal",
-  },
-]);
+    category: 'Technology',
+    title: 'The 2022 NFL Draft is coming to Las Vegas',
+    time: '2 hours ago',
+    company: 'The Wall Street Journal'
+  }
+])
 
 const goToNewsView = (story) => {
   if (story && story.id) {
-    router.push({ name: "News", params: { id: story.id } });
+    router.push({ name: 'News', params: { id: story.id } })
   } else {
-    console.error("Missing story ID");
+    console.error('Missing story ID')
   }
-};
+}
 </script>
 
 <template>
@@ -78,11 +74,6 @@ const goToNewsView = (story) => {
           </h4>
         </div>
         <div>
-          <p
-            class="text-text dark:text-dark-text text-sm sm:text-base md:text-base lg:text-lg xl:text-lg"
-          >
-            {{ story.time }} | {{ story.authors }}
-          </p>
           <router-link :to="`/source/${story.company}`" class="mb-2" @click.stop>
             <p
               class="text-accent dark:text-dark-accent italic font-serif cursor-pointer hover:text-primary dark:hover:text-dark-primary"
@@ -90,6 +81,11 @@ const goToNewsView = (story) => {
               {{ story.company }}
             </p>
           </router-link>
+          <p
+            class="text-text dark:text-dark-text text-sm sm:text-base md:text-base lg:text-lg xl:text-lg"
+          >
+            {{ story.time }}
+          </p>
         </div>
       </div>
     </div>

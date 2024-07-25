@@ -10,28 +10,24 @@ const picksForYou = ref([
     source: "New York Times",
     title: "Dead Online Shooter Refunds DrDisrespect Skins In The Worst Way",
     time: "23 hours ago",
-    author: "Author A",
   },
   {
     id: 2,
     source: "The Guardian",
     title: "Netflix’s next live event is a Joe Rogan comedy special",
     time: "1 hour ago",
-    author: "Author B",
   },
   {
     id: 3,
     source: "The Washington Post",
     title: "The 2022 NFL Draft is coming to Las Vegas",
     time: "2 hours ago",
-    author: "Author C",
   },
   {
     id: 4,
     source: "The Wall Street Journal",
     title: "The 2022 NFL Draft is coming to Las Vegas",
     time: "2 hours ago",
-    author: "Author D",
   },
 ]);
 
@@ -59,7 +55,7 @@ const goToNewsView = (pick) => {
       </router-link>
       <h4 class="text-lg lg:text-xl xl:text-xl">{{ pick.title }}</h4>
       <p class="text-text dark:text-dark-text text-sm mt-1">
-        {{ pick.time }} | {{ pick.author }}
+        {{ pick.time }}
       </p>
       <hr
         v-if="index < picksForYou.length - 1"
