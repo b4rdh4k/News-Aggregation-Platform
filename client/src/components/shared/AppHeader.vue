@@ -6,11 +6,11 @@ import TabsHeader from './TabsHeader.vue';
 import router from '@/router';
 import { useToast } from 'vue-toastification'
 
-
 const userStore = useUserStore();
 const toast = useToast()
 const showSearch = ref(false);
 const searchQuery = ref('');
+const showNotifications = ref(false); // State to control notifications dropdown
 
 const isLoggedIn = computed(() => !!userStore.token);
 
@@ -28,6 +28,10 @@ const handleLogout = async () => {
   await userStore.logout();
   toast.success('Logout successful!')
   router.push('/');
+};
+
+const toggleNotifications = () => {
+  showNotifications.value = !showNotifications.value;
 };
 
 onMounted(() => {
@@ -70,7 +74,7 @@ onMounted(() => {
             d="M21 21l-4.35-4.35m-3.15 1.85a7 7 0 1 0-9.9-9.9 7 7 0 0 0 9.9 9.9z"
           />
         </svg>
-        <div>
+        <div class="flex items-center space-x-4 relative">
           <div v-if="!isLoggedIn">
             <router-link
               to="/login"
@@ -87,6 +91,23 @@ onMounted(() => {
                 alt="User Icon"
               />
             </router-link>
+            <!-- Notifications Button -->
+            <button @click="toggleNotifications" class="relative">
+              <img
+                src="@/assets/15782384.png" 
+                class="w-10 h-10 cursor-pointer"
+                alt="Notifications Icon"
+              />
+              <!-- Notifications Dropdown -->
+              <div v-show="showNotifications" class="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-background border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-20">
+                <!-- Example Notifications List -->
+                <div class="p-2">
+                  <p class="text-gray-800 dark:text-gray-200">Notification 1</p>
+                  <p class="text-gray-800 dark:text-gray-200">Notification 2</p>
+                  <!-- Add more notifications here -->
+                </div>
+              </div>
+            </button>
           </div>
         </div>
         <ThemeToggle class="md:block" />
@@ -113,3 +134,31 @@ onMounted(() => {
     <TabsHeader />
   </header>
 </template>
+
+<style scoped>
+/* Style adjustments for notifications */
+button.relative {
+  position: relative;
+}
+
+button.relative .absolute {
+  display: none;
+}
+
+button.relative:hover .absolute {
+  display: block;
+}
+
+textarea {
+  resize: none;
+}
+
+/* Fix for visibility issue */
+.bg-background, .dark:bg-dark-background {
+  background-color: #fff; /* Ensure there's a visible background color */
+}
+
+.text-text, .dark:text-dark-text {
+  color: #000; /* Ensure text is visible */
+}
+</style>

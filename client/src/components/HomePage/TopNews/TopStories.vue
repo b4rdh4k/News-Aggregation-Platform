@@ -1,9 +1,15 @@
+<template>
+  <ArticleList :articles="topStories" @click="goToNewsView" />
+</template>
+
 <script setup>
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import ArticleList from '@/components/ArticleList.vue'  // Adjust path as necessary
 
 const router = useRouter()
 
+// Static data
 const topStories = reactive([
   {
     id: 1,
@@ -35,6 +41,39 @@ const topStories = reactive([
   }
 ])
 
+// Function to fetch top stories
+const fetchTopStories = async () => {
+  try {
+    const response = await fetch('https://test.erzen.tk/article/all');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    
+    console.log('Fetched data:', data); // Log the entire fetched data
+    console.log('Fetched data.value:', data.value); // Log the data.value to inspect its structure
+    if (Array.isArray(data.value)) {
+      console.log('Fetched data:', data.value); // Log the entire fetched data
+    }
+
+    // Assuming you need to inspect `data.value` to find the array of articles
+    // Modify the following code based on the actual structure of data.value
+    if (Array.isArray(data.value.articles)) {
+      topStories.splice(0, topStories.length, ...data.value.articles);
+    } else {
+      console.error('Fetched data.value does not contain the expected articles array or is not an array:', data.value);
+    }
+  } catch (error) {
+    console.error('Error fetching top stories:', error);
+  }
+}
+
+// Fetch data when component mounts
+onMounted(() => {
+  fetchTopStories()
+})
+
+// Function to navigate to news view
 const goToNewsView = (story) => {
   if (story && story.id) {
     router.push({ name: 'News', params: { id: story.id } })
@@ -43,51 +82,3 @@ const goToNewsView = (story) => {
   }
 }
 </script>
-
-<template>
-  <div
-    v-for="story in topStories"
-    :key="story.id"
-    class="container mb-4 cursor-pointer"
-    @click="goToNewsView(story)"
-  >
-    <div class="flex flex-col sm:flex-row md:flex-row lg:flex-row xl:flex-row">
-      <img
-        src="@/assets/Biden.webp"
-        rel="preload"
-        alt="News Story Image"
-        class="items-start w-auto h-auto hover:animate-pulse rounded-lg sm:max-w-[350px] md:max-w-[400px] lg:max-w-[400px] xl:max-w-[400px] max-h[300px]"
-      />
-      <div
-        class="flex flex-col justify-between sm:ml-4 md:ml-4 lg:ml-4 xl:ml-4 mt-2 md:mt-0 lg:mt-0 xl:mt-0"
-      >
-        <div>
-          <router-link :to="`/category/${story.category}`" @click.stop>
-            <button
-              class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent px-2 -ml-1 rounded-xl"
-            >
-              <p class="text-text dark:text-dark-text">{{ story.category }}</p>
-            </button>
-          </router-link>
-          <h4 class="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl">
-            {{ story.title }}
-          </h4>
-        </div>
-        <div>
-          <router-link :to="`/source/${story.company}`" class="mb-2" @click.stop>
-            <p
-              class="text-accent dark:text-dark-accent italic font-serif cursor-pointer hover:text-primary dark:hover:text-dark-primary"
-            >
-              {{ story.company }}
-            </p>
-          </router-link>
-          <p
-            class="text-text dark:text-dark-text text-sm sm:text-base md:text-base lg:text-lg xl:text-lg"
-          >
-            {{ story.time }}
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
