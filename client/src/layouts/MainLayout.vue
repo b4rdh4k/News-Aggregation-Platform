@@ -1,7 +1,7 @@
 <script setup>
-import AppHeader from "../components/shared/AppHeader.vue";
-import AppFooter from "../components/shared/AppFooter.vue";
-import AdsComponent from "../components/AdsAside.vue";
+import AppHeader from '../components/shared/AppHeader.vue'
+import AppFooter from '../components/shared/AppFooter.vue'
+import AdsComponent from '../components/AdsAside.vue'
 </script>
 
 <template>
@@ -16,4 +16,3 @@ import AdsComponent from "../components/AdsAside.vue";
     <AppFooter />
   </div>
 </template>
-

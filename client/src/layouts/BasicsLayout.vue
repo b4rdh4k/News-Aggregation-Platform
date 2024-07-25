@@ -1,5 +1,5 @@
 <script setup>
-import BaseHeader from "@/components/shared/BasicHeader.vue";
+import BaseHeader from '@/components/shared/BasicHeader.vue'
 </script>
 
 <template>

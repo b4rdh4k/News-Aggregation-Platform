@@ -1,13 +1,13 @@
 <script setup>
-import { ref } from 'vue';
-import { setTheme, getTheme } from "@/utils/theme";
+import { ref } from 'vue'
+import { setTheme, getTheme } from '@/utils/theme'
 
-const currentTheme = ref(getTheme());
+const currentTheme = ref(getTheme())
 
 const toggleTheme = () => {
-  currentTheme.value = currentTheme.value === "light" ? "dark" : "light";
-  setTheme(currentTheme.value);
-};
+  currentTheme.value = currentTheme.value === 'light' ? 'dark' : 'light'
+  setTheme(currentTheme.value)
+}
 </script>
 
 <template>

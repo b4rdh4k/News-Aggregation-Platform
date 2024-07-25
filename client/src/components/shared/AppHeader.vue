@@ -1,48 +1,50 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useUserStore } from '@/store/user';
-import ThemeToggle from '@/components/shared/ThemeToggle.vue';
-import TabsHeader from './TabsHeader.vue';
-import router from '@/router';
+import { ref, computed, onMounted } from 'vue'
+import { useUserStore } from '@/store/user'
+import ThemeToggle from '@/components/shared/ThemeToggle.vue'
+import TabsHeader from './TabsHeader.vue'
+import router from '@/router'
 import { useToast } from 'vue-toastification'
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 const toast = useToast()
-const showSearch = ref(false);
-const searchQuery = ref('');
-const showNotifications = ref(false); // State to control notifications dropdown
+const showSearch = ref(false)
+const searchQuery = ref('')
+const showNotifications = ref(false) // State to control notifications dropdown
 
-const isLoggedIn = computed(() => !!userStore.token);
+const isLoggedIn = computed(() => !!userStore.token)
 
 const toggleSearch = () => {
-  showSearch.value = !showSearch.value;
-};
+  showSearch.value = !showSearch.value
+}
 
 const performSearch = () => {
   if (searchQuery.value) {
-    console.log(`Searching for: ${searchQuery.value}`);
+    console.log(`Searching for: ${searchQuery.value}`)
   }
-};
+}
 
 const handleLogout = async () => {
-  await userStore.logout();
+  await userStore.logout()
   toast.success('Logout successful!')
-  router.push('/');
-};
+  router.push('/')
+}
 
 const toggleNotifications = () => {
-  showNotifications.value = !showNotifications.value;
-};
+  showNotifications.value = !showNotifications.value
+}
 
 onMounted(() => {
   if (userStore.token) {
-    console.log('Token:', userStore.token);
+    console.log('Token:', userStore.token)
   }
-});
+})
 </script>
 
 <template>
-  <header class="bg-background  dark:bg-dark-background text-text dark:text-dark-text pb-0 sticky top-0 shadow-md z-10">
+  <header
+    class="bg-background dark:bg-dark-background text-text dark:text-dark-text pb-0 sticky top-0 shadow-md z-10"
+  >
     <div class="container mx-auto flex flex-wrap justify-around items-center p-4">
       <router-link to="/" class="h-12 flex-shrink-0">
         <img src="@/assets/Sapientia-Logo.png" alt="Logo" class="h-full cursor-pointer" />
@@ -94,12 +96,15 @@ onMounted(() => {
             <!-- Notifications Button -->
             <button @click="toggleNotifications" class="relative">
               <img
-                src="@/assets/15782384.png" 
+                src="@/assets/15782384.png"
                 class="w-10 h-10 cursor-pointer"
                 alt="Notifications Icon"
               />
               <!-- Notifications Dropdown -->
-              <div v-show="showNotifications" class="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-background border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-20">
+              <div
+                v-show="showNotifications"
+                class="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-background border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-20"
+              >
                 <!-- Example Notifications List -->
                 <div class="p-2">
                   <p class="text-gray-800 dark:text-gray-200">Notification 1</p>
@@ -154,11 +159,13 @@ textarea {
 }
 
 /* Fix for visibility issue */
-.bg-background, .dark:bg-dark-background {
+.bg-background,
+.dark:bg-dark-background {
   background-color: #fff; /* Ensure there's a visible background color */
 }
 
-.text-text, .dark:text-dark-text {
+.text-text,
+.dark:text-dark-text {
   color: #000; /* Ensure text is visible */
 }
 </style>

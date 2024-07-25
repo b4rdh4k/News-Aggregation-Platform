@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import LoadingAnimation from '@/components/shared/LoadingAnimation.vue';
+import LoadingAnimation from '@/components/shared/LoadingAnimation.vue'
 import { useRoute } from 'vue-router'
 import { useToast } from 'vue-toastification'
 
@@ -19,7 +19,7 @@ onMounted(async () => {
     category.value = data.find((cat) => cat.name === categoryName) || null
   } catch (error) {
     console.error('Failed to fetch categories:', error)
-    toast.error('Failed to fetch categories.');
+    toast.error('Failed to fetch categories.')
   }
 })
 

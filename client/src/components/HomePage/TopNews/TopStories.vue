@@ -5,7 +5,7 @@
 <script setup>
 import { reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import ArticleList from '@/components/ArticleList.vue'  // Adjust path as necessary
+import ArticleList from '@/components/ArticleList.vue' // Adjust path as necessary
 
 const router = useRouter()
 
@@ -44,27 +44,30 @@ const topStories = reactive([
 // Function to fetch top stories
 const fetchTopStories = async () => {
   try {
-    const response = await fetch('https://test.erzen.tk/article/all');
+    const response = await fetch('https://test.erzen.tk/article/all')
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error('Network response was not ok')
     }
-    const data = await response.json();
-    
-    console.log('Fetched data:', data); // Log the entire fetched data
-    console.log('Fetched data.value:', data.value); // Log the data.value to inspect its structure
+    const data = await response.json()
+
+    console.log('Fetched data:', data) // Log the entire fetched data
+    console.log('Fetched data.value:', data.value) // Log the data.value to inspect its structure
     if (Array.isArray(data.value)) {
-      console.log('Fetched data:', data.value); // Log the entire fetched data
+      console.log('Fetched data:', data.value) // Log the entire fetched data
     }
 
     // Assuming you need to inspect `data.value` to find the array of articles
     // Modify the following code based on the actual structure of data.value
     if (Array.isArray(data.value.articles)) {
-      topStories.splice(0, topStories.length, ...data.value.articles);
+      topStories.splice(0, topStories.length, ...data.value.articles)
     } else {
-      console.error('Fetched data.value does not contain the expected articles array or is not an array:', data.value);
+      console.error(
+        'Fetched data.value does not contain the expected articles array or is not an array:',
+        data.value
+      )
     }
   } catch (error) {
-    console.error('Error fetching top stories:', error);
+    console.error('Error fetching top stories:', error)
   }
 }
 

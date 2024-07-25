@@ -11,12 +11,12 @@
 
 <script setup>
 import { defineProps, defineEmits } from 'vue'
-import ArticleCard from './ArticleCard.vue'  // Adjust path as necessary
+import ArticleCard from './ArticleCard.vue' // Adjust path as necessary
 
 const props = defineProps({
   articles: {
     type: Array,
-    default: () => []  // Default to an empty array if no articles are provided
+    default: () => [] // Default to an empty array if no articles are provided
   }
 })
 

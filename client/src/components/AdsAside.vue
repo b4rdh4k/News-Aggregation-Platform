@@ -1,13 +1,13 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue'
 
-const ads = ref([]);
+const ads = ref([])
 
 onMounted(async () => {
-  const response = await fetch('/ads.json');
-  const data = await response.json();
-  ads.value = data;
-});
+  const response = await fetch('/ads.json')
+  const data = await response.json()
+  ads.value = data
+})
 </script>
 
 <template>
@@ -16,7 +16,7 @@ onMounted(async () => {
     <div class="grid grid-cols-2 sm:grid-cold-3 md:grid-cols-3 lg:grid-cols-1 gap-3">
       <div v-for="(ad, index) in ads" :key="index" class="p-4 rounded-lg">
         <a :href="ad.link" target="_blank" rel="noopener noreferrer">
-          <img :src="ad.image" alt="Ad image" class="w-auto h-auto object-cover rounded-lg">
+          <img :src="ad.image" alt="Ad image" class="w-auto h-auto object-cover rounded-lg" />
         </a>
       </div>
     </div>

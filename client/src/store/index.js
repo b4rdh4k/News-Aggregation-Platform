@@ -1,8 +1,7 @@
-import { useCategoryStore } from './categoryStore';
+import { useCategoryStore } from './categoryStore'
 
 export const initializeStores = () => {
-  const categoryStore = useCategoryStore();
+  const categoryStore = useCategoryStore()
 
-  categoryStore.fetchCategories();
-  
-};
+  categoryStore.fetchCategories()
+}

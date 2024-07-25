@@ -85,16 +85,18 @@ const login = async () => {
       switch (data.code) {
         case 36:
           toast.error('User not found.')
-          break;
-          case 37:
+          break
+        case 37:
           toast.error('Invalid password.')
-          break;
-          case 38:
+          break
+        case 38:
           toast.error('Error creating acess token.')
-          break;
-          case 44:
-          toast.error('Our system has detected multiple login attempts from your IP address     which is a violation of our Terms of Service. As a result     access from your IP has been temporarily blocked for 10 minutes. This measure helps protect our platform from unauthorized access and ensures a secure environment for all users.')
-          break;
+          break
+        case 44:
+          toast.error(
+            'Our system has detected multiple login attempts from your IP address     which is a violation of our Terms of Service. As a result     access from your IP has been temporarily blocked for 10 minutes. This measure helps protect our platform from unauthorized access and ensures a secure environment for all users.'
+          )
+          break
         default:
           toast.error('Failed to register user.')
       }
