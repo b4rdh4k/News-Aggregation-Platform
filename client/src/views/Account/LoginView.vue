@@ -15,6 +15,7 @@ const userStore = useUserStore();
 const router = useRouter();
 const toast = useToast();
 const lottieContainer = ref(null);
+const loading = ref(false);
 
 onMounted(() => {
   lottie.loadAnimation({
@@ -53,8 +54,9 @@ const login = async () => {
     return;
   }
 
-  // Normalize email to lowercase
   const normalizedEmail = email.value.toLowerCase();
+
+  loading.value = true; 
 
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
@@ -67,6 +69,7 @@ const login = async () => {
         password: password.value,
       }),
     });
+
     const data = await response.json();
     console.log('Login response:', data);
 
@@ -98,10 +101,11 @@ const login = async () => {
       emailError.value = 'Failed to connect to server';
     }
     toast.error('Failed to connect to server.');
+  } finally {
+    loading.value = false;
   }
 };
 </script>
-
 
 <template>
   <div class="flex flex-col md:flex-row min-h-screen bg-background dark:bg-dark-background text-text dark:text-dark-text">
@@ -151,8 +155,12 @@ const login = async () => {
           <button
             type="submit"
             class="w-full py-2 mb-4 px-4 bg-secondary dark:bg-dark-secondary text-text dark:text-dark-text rounded hover:bg-accent dark:hover:bg-dark-accent"
+            :disabled="loading"
           >
-            Log in
+            <span v-if="!loading">Log in</span>
+            <span v-if="loading" class="spinner">
+              <i class="fas fa-spinner fa-spin"></i> Loading...
+            </span>
           </button>
         </form>
         <div class="mt-4 text-center text-lg">
@@ -182,5 +190,10 @@ input {
   background-color: var(--primary);
   color: var (--text);
   border-color: var(--secondary);
+}
+.spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

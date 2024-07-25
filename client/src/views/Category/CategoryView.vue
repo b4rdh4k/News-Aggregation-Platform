@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import LoadingAnimation from '@/components/shared/LoadingAnimation.vue';
 import { useRoute } from 'vue-router'
 
 const category = ref(null)
@@ -130,8 +131,8 @@ const uniqueSources = computed(() => {
       </div>
     </div>
   </div>
-  <div v-else class="container mx-auto p-2">
-    <p>Loading...</p>
+  <div v-else class="container flex items-center justify-center p-4">
+    <LoadingAnimation />
   </div>
 </template>
 

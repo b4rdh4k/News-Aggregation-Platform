@@ -158,7 +158,6 @@ const register = async () => {
     loading.value = false;
   }
 };
-
 </script>
 
 <template>
@@ -253,16 +252,20 @@ const register = async () => {
           <button
             type="submit"
             class="w-full py-2 mb-4 px-4 bg-secondary dark:bg-dark-secondary text-text dark:text-dark-text rounded hover:bg-accent dark:hover:bg-dark-accent"
+            :disabled="loading"
           >
-            Sign Up
+            <span v-if="loading">
+              <i class="fas fa-spinner fa-spin"></i> Registering...
+            </span>
+            <span v-else>Sign Up</span>
           </button>
-        </form>
-        <div class="text-center text-lg">
-          <p class="text-secondary dark:text-dark-secondary">
-            Already a Sapient?
-            <router-link to="/login" class="text-accent dark:text-dark-accent">Log in</router-link>
+          <p class="text-center">
+            Already have an account?
+            <router-link to="/login" class="text-secondary dark:text-dark-secondary underline"
+              >Log In</router-link
+            >
           </p>
-        </div>
+        </form>
       </div>
     </div>
   </div>
