@@ -3,6 +3,7 @@ import WeatherWidget from '@/components/HomePage/YourBriefing.vue'
 import TopStories from '@/components/HomePage/TopNews/TopStories.vue'
 import PicksForYou from '@/components/HomePage/TopNews/PicksForYou.vue'
 import SubscriptionCta from '@/components/HomePage/SubscriptionCta.vue'
+import LatestNews from '@/components/HomePage/LatestNews.vue'
 </script>
 
 <template>
@@ -26,6 +27,9 @@ import SubscriptionCta from '@/components/HomePage/SubscriptionCta.vue'
       </h2>
       <PicksForYou />
     </div>
+  </div>
+  <div>
+  <LatestNews />
   </div>
 
   <div class="w-full py-4 bg-gradient-to-tr from-accent via-primary to-accent dark:from-dark-accent dark:via-dark-primary dark:to-dark-accent min-h-dvh flex flex-col justify-center items-center">

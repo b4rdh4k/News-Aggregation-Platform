@@ -52,7 +52,7 @@ const onDragEnd = () => {
 
 <template>
   <ModalFormat v-if="show" @close="closeModal">
-    <div class="bg-secondary dark:bg-dark-secondary p-4 max-h-screen overflow-y-scroll rounded-lg flex flex-col h-full">
+    <div class="bg-secondary dark:bg-dark-secondary p-4 max-h-screen overflow-y-auto rounded-lg flex flex-col h-full">
       <div class="flex-grow">
         <h3>Manage your preferences</h3>
         <p>Select up to 8 categories to customize your news feed.</p>

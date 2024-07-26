@@ -2,6 +2,7 @@
 html {
   scrollbar-width: thin;
   scrollbar-color: var(--accent) transparent;
+  scroll-behavior:smooth;
 }
 
 *::-webkit-scrollbar {
