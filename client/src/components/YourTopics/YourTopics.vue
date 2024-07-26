@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import PreferencesModal from '@/components/HomePage/YourTopics/PreferencesModal.vue'
+import PreferencesModal from '@/components/YourTopics/PreferencesModal.vue'
 import { useCategoryStore } from '@/store/categoryStore'
 
 const router = useRouter()

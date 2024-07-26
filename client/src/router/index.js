@@ -35,7 +35,7 @@ const routes = [
       {
         path: 'for-you',
         name: 'ForYou',
-        component: () => import('../views/general/ForYouView.vue'),
+        component: () => import('../views/PersonalizedFeed/ForYouView.vue'),
       },
       {
         path: 'news/:id',

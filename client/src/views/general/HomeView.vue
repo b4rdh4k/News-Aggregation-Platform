@@ -2,7 +2,6 @@
 import WeatherWidget from '@/components/HomePage/YourBriefing.vue'
 import TopStories from '@/components/HomePage/TopNews/TopStories.vue'
 import PicksForYou from '@/components/HomePage/TopNews/PicksForYou.vue'
-import YourTopics from '@/components/HomePage/YourTopics/YourTopics.vue'
 import SubscriptionCta from '@/components/HomePage/SubscriptionCta.vue'
 </script>
 
@@ -11,7 +10,7 @@ import SubscriptionCta from '@/components/HomePage/SubscriptionCta.vue'
     <WeatherWidget />
   </div>
   <div
-    class="container mx-auto flex flex-col lg:flex-row xl:flex-row space-y-4 lg:space-y-0 xl:space-y-0 lg:space-x-4 xl:space-x-4 px-4"
+    class="container mx-auto mb-6 flex flex-col lg:flex-row xl:flex-row space-y-4 lg:space-y-0 xl:space-y-0 lg:space-x-4 xl:space-x-4 px-4"
   >
     <div class="w-full lg:w-3/4">
       <h2
@@ -28,9 +27,7 @@ import SubscriptionCta from '@/components/HomePage/SubscriptionCta.vue'
       <PicksForYou />
     </div>
   </div>
-  <div class="container mx-auto">
-    <YourTopics />
-  </div>
+
   <div class="w-full py-4 bg-gradient-to-tr from-accent via-primary to-accent dark:from-dark-accent dark:via-dark-primary dark:to-dark-accent min-h-dvh flex flex-col justify-center items-center">
   <div class="text-center">
     <h2 class="text-background dark:text-dark-background font-bold">Curiosity killed the cat</h2>
