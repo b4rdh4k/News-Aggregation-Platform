@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useUserStore } from '@/store/user';
-import ThemeToggle from '@/components/shared/ThemeToggle.vue';
-import TabsHeader from './TabsHeader.vue';
+import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue';
+import TabsHeader from '@/components/shared/Navigation/TabsHeader.vue';
 import router from '@/router';
 import { useToast } from 'vue-toastification'
 
@@ -80,7 +80,7 @@ onMounted(() => {
             </router-link>
           </div>
           <div v-if="isLoggedIn" class="flex flex-row">
-            <router-link to="/">
+            <router-link to="/profile">
               <img
                 src="@/assets/user-icon.svg"
                 class="max-h-8 max-w-8 cursor-pointer"

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import LoadingAnimation from '@/components/shared/LoadingAnimation.vue';
+import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue';
 import { useRoute } from 'vue-router'
 import { useToast } from 'vue-toastification'
 

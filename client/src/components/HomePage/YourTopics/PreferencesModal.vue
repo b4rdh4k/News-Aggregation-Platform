@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useCategoryStore } from '@/store/categoryStore';
 import draggable from 'vuedraggable';
-import ModalFormat from '@/components/ModalFormat.vue';
+import ModalFormat from '@/components/shared/Interactions/ModalFormat.vue';
 
 const { show } = defineProps({
   show: Boolean,
