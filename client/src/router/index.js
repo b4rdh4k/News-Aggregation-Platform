@@ -16,11 +16,6 @@ const routes = [
         name: 'Home',
         component: HomeView,
       },
-      {
-        path: 'subscription',
-        name: 'Subscription',
-        component: () => import('@/views/Subscription/SubscriptionView.vue'),
-      },
     ],
   },
   {
@@ -73,7 +68,12 @@ const routes = [
         path: 'setup-mfa',
         name: 'SetupMFA',
         component: () => import('@/components/Account/setup-mfa.vue'),
-      }
+      },
+      {
+        path: 'subscription',
+        name: 'Subscription',
+        component: () => import('@/views/Subscription/SubscriptionView.vue'),
+      },
     ],
   },
 ];

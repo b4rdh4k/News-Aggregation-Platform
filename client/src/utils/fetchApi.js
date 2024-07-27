@@ -4,20 +4,19 @@ export const fetchApi = async (url, options = {}) => {
   const userStore = useUserStore();
   const token = userStore.token || localStorage.getItem('token');
 
-  const headers = {
-    'Content-Type': 'application/json',
-    ...options.headers,
-    'Authorization': token ? `Bearer ${token}` : undefined,
-  };
-
   const response = await fetch(`${import.meta.env.VITE_API_URL}${url}`, {
     ...options,
-    headers,
+    headers : {
+      'Content-Type': 'application/json',
+      ...options.headers,
+      'Authorization': token ? `Bearer ${token}` : undefined,
+    },
   });
 
-  if (response.status === 401) {
-    console.error('Unauthorized. Redirecting to login...');
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`)
   }
 
-  return response.json();
-};
+  return response.json()
+}
+
