@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/store/user'
 import { useRouter } from 'vue-router'
 import lottie from 'lottie-web'
-import animationData from '@/assets/SignupAnimation.json'
+import animationData from '@/assets/media/SignupAnimation.json'
 import { useToast } from 'vue-toastification'
 
 const email = ref('')

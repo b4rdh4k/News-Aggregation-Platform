@@ -57,11 +57,13 @@ import LatestNews from '@/components/HomePage/LatestNews.vue'
         want to read, when you want to read it. For just $9.99 a month, you can have access to a
         personalized feed, cultivated just for you.
       </p>
+      <router-link to="/subscription">
       <button
         class="bg-accent dark:bg-dark-accent hover:bg-secondary dark:hover:bg-dark-secondary text-text dark:text-dark-text text-lg p-6 px-8 rounded-md mt-4"
       >
         LEARN MORE
       </button>
+    </router-link>
     </div>
   </div>
 </div>

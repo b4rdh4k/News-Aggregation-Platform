@@ -41,7 +41,7 @@ onMounted(() => {
   <header class="bg-background  dark:bg-dark-background text-text dark:text-dark-text pb-0 sticky top-0 shadow-md z-10">
     <div class="container mx-auto flex flex-wrap justify-around items-center p-4">
       <router-link to="/" class="h-12 flex-shrink-0">
-        <img src="@/assets/Sapientia-Logo.png" alt="Logo" class="h-full cursor-pointer" />
+        <img src="@/assets/media/Sapientia-Logo.png" alt="Logo" class="h-full cursor-pointer" />
       </router-link>
       <div class="hidden lg:block">
         <div class="relative">
@@ -82,7 +82,7 @@ onMounted(() => {
           <div v-if="isLoggedIn" class="flex flex-row">
             <router-link to="/profile">
               <img
-                src="@/assets/user-icon.svg"
+                src="@/assets/media/user-icon.svg"
                 class="max-h-8 max-w-8 cursor-pointer"
                 alt="User Icon"
               />

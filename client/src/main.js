@@ -1,4 +1,4 @@
-import './assets/main.css'
+import './assets/style/main.css'
 import { initTheme } from './utils/theme'
 import Toast, { POSITION } from 'vue-toastification'
 import 'vue-toastification/dist/index.css'

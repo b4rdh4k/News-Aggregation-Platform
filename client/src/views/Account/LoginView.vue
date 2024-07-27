@@ -4,7 +4,7 @@ import { useUserStore } from '../../store/user'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import lottie from 'lottie-web'
-import animationData from '@/assets/LoginAnimation.json'
+import animationData from '@/assets/media/LoginAnimation.json'
 
 const email = ref('')
 const password = ref('')
