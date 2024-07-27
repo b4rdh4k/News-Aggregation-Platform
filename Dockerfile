@@ -19,7 +19,8 @@ RUN npm run build
 # Expose the port the app runs on (adjust to the correct port if necessary)
 EXPOSE 4173
 
-# Define the command to start the application
+# Define the command to start the application 
 CMD ["npm", "run", "preview"]
 
-#this is a test comment
+#this is a test comment 
+#this is a test comment 2
