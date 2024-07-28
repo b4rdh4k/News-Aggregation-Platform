@@ -1,40 +1,66 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
-import { useSearchStore } from '@/store/search'
-import { useUserStore } from '@/store/user'
-import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue'
-import TabsHeader from '@/components/shared/Navigation/TabsHeader.vue'
-import router from '@/router'
-import { useToast } from 'vue-toastification'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { useSearchStore } from '@/store/search';
+import { useUserStore } from '@/store/user';
+import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue';
+import TabsHeader from '@/components/shared/Navigation/TabsHeader.vue';
+import router from '@/router';
+import { useToast } from 'vue-toastification';
 
-const searchStore = useSearchStore()
-const userStore = useUserStore()
-const toast = useToast()
-const showSearch = ref(false)
-const searchQuery = ref('')
-const isLoggedIn = computed(() => !!userStore.token)
+const searchStore = useSearchStore();
+const userStore = useUserStore();
+const toast = useToast();
+const showSearch = ref(false);
+const searchQuery = ref('');
+const isLoggedIn = computed(() => !!userStore.token);
+const searchInputRef = ref(null);
+const searchInputRefSmall = ref(null);
 
 const toggleSearch = () => {
-  showSearch.value = !showSearch.value
-}
+  showSearch.value = !showSearch.value;
+  nextTick(() => {
+    if (showSearch.value) {
+      if (window.innerWidth < 1024) {
+        searchInputRefSmall.value?.focus();
+      } else {
+        searchInputRef.value?.focus();
+      }
+    }
+  });
+};
 
 const performSearch = () => {
   if (searchQuery.value) {
-    searchStore.search(searchQuery.value)
+    searchStore.search(searchQuery.value);
   }
-}
+};
 
 const handleLogout = async () => {
-  await userStore.logout()
-  toast.success('Logout successful!')
-  router.push('/')
-}
+  await userStore.logout();
+  toast.success('Logout successful!');
+  router.push('/');
+};
+
+const handleKeydown = (event) => {
+  if (event.key === '/') {
+    event.preventDefault();
+    toggleSearch();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown);
+});
 
 watch(searchQuery, (newValue) => {
   if (newValue) {
-    performSearch()
+    performSearch();
   }
-})
+});
 </script>
 
 <template>
@@ -51,6 +77,7 @@ watch(searchQuery, (newValue) => {
           v-model="searchQuery"
           @keydown.enter="performSearch"
           placeholder="Search for topics, locations & sources"
+          ref="searchInputRef"
           class="p-2 min-w-96 rounded bg-primary dark:bg-dark-primary text-text placeholder-text dark:placeholder-dark-text outline-none dark:text-dark-text"
         />
         <div
@@ -114,14 +141,29 @@ watch(searchQuery, (newValue) => {
         </div>
       </div>
     </div>
-    <div v-if="showSearch" class="relative xl:hidden mt-4 mx-2">
+    <div v-if="showSearch" class="relative lg:hidden mt-4 mx-2">
       <input
         type="text"
         v-model="searchQuery"
         @keydown.enter="performSearch"
         placeholder="Search for topics, locations & sources"
+        ref="searchInputRefSmall"
         class="p-2 rounded bg-primary dark:bg-dark-primary w-full"
       />
+      <div
+        v-if="searchQuery && searchStore.searchResults.length"
+        class="absolute z-20 bg-background dark:bg-dark-background shadow-lg rounded mt-1 w-full max-h-60 overflow-y-auto"
+      >
+        <ul>
+          <li
+            v-for="result in searchStore.searchResults"
+            :key="result.id"
+            class="p-2 hover:bg-secondary dark:hover:bg-dark-secondary cursor-pointer"
+          >
+            {{ result.title }}
+          </li>
+        </ul>
+      </div>
     </div>
     <TabsHeader />
   </header>
