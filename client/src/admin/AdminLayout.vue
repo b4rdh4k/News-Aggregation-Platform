@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue';
 
 const isSidebarOpen = ref(false)
 
@@ -15,17 +16,24 @@ function closeSidebar() {
 <template>
   <div class="dashboard">
     <aside :class="['sidebar', { 'sidebar-open': isSidebarOpen }]">
-      <div class="sidebar-header flex justify-between items-center mb-4">
-        <div class="logo">Dashboard</div>
+      <div class="sidebar-header">
+        <div class="description">Dashboard</div>
         <button @click="toggleSidebar" class="lg:hidden close-btn">
           <i class="fa fa-times"></i>
         </button>
       </div>
-      <nav class="flex flex-col">
+      <nav class="flex mt-4 flex-col">
         <router-link to="/admin" class="nav-item" @click="closeSidebar">Home</router-link>
         <router-link to="/admin/users" class="nav-item" @click="closeSidebar">Users</router-link>
-        <router-link to="/admin/comments" class="nav-item" @click="closeSidebar">Comments</router-link>
+        <router-link to="/admin/comments" class="nav-item" @click="closeSidebar"
+          >Comments</router-link
+        >
       </nav>
+      <footer class="sidebar-footer">
+        <router-link to="/">
+          <button class="button py-2 px-4 rounded">Logout</button>
+        </router-link>
+      </footer>
     </aside>
 
     <main class="main-content">
@@ -46,10 +54,11 @@ function closeSidebar() {
             />
           </svg>
         </button>
-        <div>Welcome, Admin</div>
-        <router-link to="/">
-          <button class="bg-primary text-white py-2 px-4 rounded">Logout</button>
+        <div class="welcome-message">Happy working 💌 </div>
+        <router-link to="/" class="h-12 flex-shrink-0">
+          <img src="@/assets/media/Sapientia-Logo.png" alt="Logo" class="h-full cursor-pointer" />
         </router-link>
+        <ThemeToggle />
       </header>
       <section class="content p-4">
         <router-view></router-view>
