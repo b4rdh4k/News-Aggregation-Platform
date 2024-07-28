@@ -1,57 +1,71 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useUserStore } from '@/store/user';
-import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue';
-import TabsHeader from '@/components/shared/Navigation/TabsHeader.vue';
-import router from '@/router';
+import { ref, computed, watch } from 'vue'
+import { useSearchStore } from '@/store/search'
+import { useUserStore } from '@/store/user'
+import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue'
+import TabsHeader from '@/components/shared/Navigation/TabsHeader.vue'
+import router from '@/router'
 import { useToast } from 'vue-toastification'
 
-
-const userStore = useUserStore();
+const searchStore = useSearchStore()
+const userStore = useUserStore()
 const toast = useToast()
-const showSearch = ref(false);
-const searchQuery = ref('');
-
-const isLoggedIn = computed(() => !!userStore.token);
+const showSearch = ref(false)
+const searchQuery = ref('')
+const isLoggedIn = computed(() => !!userStore.token)
 
 const toggleSearch = () => {
-  showSearch.value = !showSearch.value;
-};
+  showSearch.value = !showSearch.value
+}
 
 const performSearch = () => {
   if (searchQuery.value) {
-    console.log(`Searching for: ${searchQuery.value}`);
+    searchStore.search(searchQuery.value)
   }
-};
+}
 
 const handleLogout = async () => {
-  await userStore.logout();
+  await userStore.logout()
   toast.success('Logout successful!')
-  router.push('/');
-};
+  router.push('/')
+}
 
-onMounted(() => {
-  if (userStore.token) {
-    console.log('Token:', userStore.token);
+watch(searchQuery, (newValue) => {
+  if (newValue) {
+    performSearch()
   }
-});
+})
 </script>
 
 <template>
-  <header class="bg-background  dark:bg-dark-background text-text dark:text-dark-text pb-0 sticky top-0 shadow-md z-10">
+  <header
+    class="bg-background dark:bg-dark-background text-text dark:text-dark-text pb-0 sticky top-0 shadow-md z-10"
+  >
     <div class="container mx-auto flex flex-wrap justify-around items-center p-4">
       <router-link to="/" class="h-12 flex-shrink-0">
         <img src="@/assets/media/Sapientia-Logo.png" alt="Logo" class="h-full cursor-pointer" />
       </router-link>
-      <div class="hidden lg:block">
-        <div class="relative">
-          <input
-            type="text"
-            v-model="searchQuery"
-            @keydown.enter="performSearch"
-            placeholder="Search for topics, locations & sources"
-            class="p-2 min-w-96 rounded bg-primary dark:bg-dark-primary text-text placeholder-text dark:placeholder-dark-text outline-none dark:text-dark-text"
-          />
+      <div class="hidden lg:block relative">
+        <input
+          type="text"
+          v-model="searchQuery"
+          @keydown.enter="performSearch"
+          placeholder="Search for topics, locations & sources"
+          class="p-2 min-w-96 rounded bg-primary dark:bg-dark-primary text-text placeholder-text dark:placeholder-dark-text outline-none dark:text-dark-text"
+        />
+        <div
+          v-if="searchQuery && searchStore.searchResults.length"
+          class="absolute z-20 bg-background dark:bg-dark-background shadow-lg rounded mt-1 w-full max-h-60 overflow-y-auto"
+        >
+          <ul>
+            <li
+              v-for="result in searchStore.searchResults"
+              :key="result.id"
+              class="p-2 hover:bg-secondary dark:hover:bg-dark-secondary cursor-pointer"
+            >
+              {{ result.title }}
+            </li>
+          </ul>
         </div>
       </div>
       <div class="flex items-center space-x-4">
@@ -109,7 +123,6 @@ onMounted(() => {
         class="p-2 rounded bg-primary dark:bg-dark-primary w-full"
       />
     </div>
-
     <TabsHeader />
   </header>
 </template>
