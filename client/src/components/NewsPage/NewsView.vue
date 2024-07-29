@@ -2,13 +2,23 @@
   <div>
     <!-- News Details -->
     <h1 class="text-2xl font-bold">{{ news.title }}</h1>
-    <p class="text-sm text-gray-600">{{ news.time }} • {{ news.authors }}</p>
+    <p class="text-sm text-gray-600">
+      Published on {{ new Date(news.publishedAt).toLocaleDateString() }} 
+      • Author: {{ news.author || 'Unknown' }}
+      • Views: {{ news.views || 0 }}
+      • Likes: {{ news.likes || 0 }}
+    </p>
     <img
-      :src="news.image"
+      :src="news.imageUrl"
       alt="News Image"
       class="w-full h-48 object-cover mb-4 rounded-lg shadow-md"
     />
-    <p class="text-base text-gray-800">{{ news.content }}</p>
+    <p class="text-base text-gray-800 mb-4">{{ news.content || 'No Content Available' }}</p>
+
+    <!-- Description Section -->
+    <div v-if="news.description" class="mt-4">
+      <div v-html="news.description" class="text-gray-700"></div>
+    </div>
 
     <!-- Comment Section -->
     <div class="mt-6">
@@ -49,81 +59,24 @@ export default {
     async fetchNewsDetails(id) {
       // Simulated API call - replace this with your actual API call
       const allNews = [
+        // Simulated news data
         {
-          id: 1,
-          title: 'Ukraine Looms Over NATO Summit, and Biden Is Defiant on Running',
-          time: '5 hours ago',
-          authors: 'Julian E. Barnes, Ian Stewart',
-          image: 'https://via.placeholder.com/400x200',
-          content: 'Detailed content about the Ukraine NATO summit...'
-        },
-        {
-          id: 2,
-          title: 'Congressional Democrats',
-          time: '1 hour ago',
-          authors: 'Anders Hagstrom',
-          image: 'https://via.placeholder.com/400x200',
-          content: 'Detailed content about Congressional Democrats...'
-        },
-        {
-          id: 3,
-          title: 'The 2022 NFL Draft is coming to Las Vegas',
+          id: '1f9245c6-8bac-4277-abd6-b2062483ca78',
+          title: 'Tatum ‘will play’ for Team USA vs. South Sudan after Sunday benching, Kerr says - The New York Times',
           time: '2 hours ago',
-          authors: 'Author C',
-          image: 'https://via.placeholder.com/400x200',
-          content: 'Detailed content about the 2022 NFL Draft...'
-        },
-        {
-          id: 4,
-          title: 'The 2022 NFL Draft is coming to Las Vegas',
-          time: '2 hours ago',
-          authors: 'Author D',
-          image: 'https://via.placeholder.com/400x200',
-          content: 'Detailed content about the 2022 NFL Draft...'
-        },
-        {
-          id: 5,
-          title: 'Dead Online Shooter Refunds DrDisrespect Skins In The Worst Way',
-          time: '23 hours ago',
-          authors: 'Author A',
-          image: 'https://via.placeholder.com/400x200',
-          content: 'Detailed content about the Dead Online Shooter...'
-        },
-        {
-          id: 6,
-          title: 'Netflix’s next live event is a Joe Rogan comedy special',
-          time: '1 hour ago',
-          authors: 'Author B',
-          image: 'https://via.placeholder.com/400x200',
-          content: 'Detailed content about the Netflix live event...'
-        },
-        {
-          id: 7,
-          title: 'The 2022 NFL Draft is coming to Las Vegas',
-          time: '2 hours ago',
-          authors: 'Author C',
-          image: 'https://via.placeholder.com/400x200',
-          content: 'Detailed content about the 2022 NFL Draft...'
-        },
-        {
-          id: 8,
-          title: 'Thanks, Obama: USA Basketball survives rust, roster drama in exhibition win',
-          time: '2 minutes ago',
-          authors: 'Ben Golliver',
-          image: 'https://via.placeholder.com/400x200',
-          content: 'Detailed content about the USA Basketball exhibition win...'
-        },
-        {
-          id: 9,
-          title: 'Former NFL defensive coordinator Monte Kiffin has died',
-          time: '1 hour ago',
-          authors: 'Charean Williams',
-          image: 'https://via.placeholder.com/400x200',
-          content: 'Detailed content about Monte Kiffin...'
+          author: null,
+          imageUrl: 'https://via.placeholder.com/500',
+          content: 'No Content',
+          description: '<a href="https://news.google.com/rss/articles/CBMiVWh0dHBzOi8vd3d3Lm55dGltZXMuY29tL2F0aGxldGljLzU2NjU0NTQvMjAyNC8wNy8yOS9qYXlzb24tdGF0dW0tb2x5bXBpY3MtYmFza2V0YmFsbC_SAQA?oc=5" target="_blank">Tatum ‘will play’ for Team USA vs. South Sudan after Sunday benching, Kerr says</a>&nbsp;&nbsp;<font color="#6f6f6f">The New York Times</font><strong><a href="https://news.google.com/stories/CAAqNggKIjBDQklTSGpvSmMzUnZjbmt0TXpZd1NoRUtEd2pBd0p1SURCRURSSTRoaXBNZkN5Z0FQAQ?hl=en-US&gl=US&ceid=US:en&oc=5" target="_blank">View Full Coverage on Google News</a></strong>',
+          id: '1f9245c6-8bac-4277-abd6-b2062483ca78',
+          imageUrl: 'https://via.placeholder.com/500',
+          publishedAt: '2024-07-29T20:35:27Z',
+          views: 0,
+          likes: 0,
         }
       ]
 
-      this.news = allNews.find((newsItem) => newsItem.id === parseInt(id))
+      this.news = allNews.find((newsItem) => newsItem.id === this.newsId)
 
       // Simulated fetch for comments - replace this with actual API call
       const allComments = [
