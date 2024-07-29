@@ -7,6 +7,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { useUserStore } from './store/user'
+import Scroll2TopButton from './components/shared/ScrollToTopButton.vue'
 
 const app = createApp(App)
 
@@ -14,7 +15,7 @@ app.use(Toast, {
   position: POSITION.TOP_RIGHT,
   timeout: 3000
 })
-
+app.component('ScrollToTopButton', Scroll2TopButton);
 
 const pinia = createPinia()
 app.use(pinia)

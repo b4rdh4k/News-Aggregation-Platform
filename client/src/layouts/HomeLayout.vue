@@ -9,6 +9,7 @@ import AppFooter from "../components/shared/Navigation/AppFooter.vue";
     <div class="mx-auto mt-4">
       <main class="flex-1">
         <router-view />
+        
       </main>
     </div>
     <AppFooter />
