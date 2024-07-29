@@ -10,10 +10,10 @@ const isActive = (tab) => {
 
 <template>
   <div
-    class="flex flex-wrap text-base text-secondary dark:text-dark-secondary lg:text-xl xl:text-xl 2xl:text-xl gap-1 mx-4 mt-7 sm:mx-8 lg:mx-16 xl:mx-40"
+    class="flex flex-wrap text-base text-secondary dark:text-dark-secondary lg:text-xl xl:text-xl 2xl:text-xl mt-2"
   >
     <router-link :to="{ name: 'Home' }" class="tab-button" :class="{ active: isActive('Home') }">
-      <h6 class="font-semibold">HOME</h6>
+      <h6 class="font-semibold">Home</h6>
     </router-link>
     <router-link
       :to="{ name: 'ForYou' }"
@@ -52,7 +52,7 @@ const isActive = (tab) => {
   width: 100%;
   height: 5px;
   background-color: var(--accent);
-  transform: translateX(-100%);
+  transform: translateX(-101%);
   transition: transform 0.3s ease-in;
 }
 

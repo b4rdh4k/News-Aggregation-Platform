@@ -110,7 +110,8 @@ onMounted(async () => {
         <div class="text-container p-2 pb-0">
           <div class="items-center pb-2">
             <h5 class="truncate-text">{{ article.title }}</h5>
-            <p>{{ article.source }} | {{ article.time }}</p>
+            <p class="pt-2">{{ article.source }}</p>
+            <p> {{ article.time }}</p>
           </div>
           <div class="flex justify-end p-4 border-t-2 border-accent dark:border-dark-accent">
             <router-link :to="article.link" class="flex items-center space-x-2">
