@@ -1,13 +1,18 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue';
-import { useRoute } from 'vue-router'
+import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 
 const toast = useToast()
 const category = ref(null)
 const selectedSource = ref('')
 const route = useRoute()
+const router = useRouter()
+
+const goBack = () => {
+  router.go(-1)
+}
 
 onMounted(async () => {
   try {
@@ -19,7 +24,7 @@ onMounted(async () => {
     category.value = data.find((cat) => cat.name === categoryName) || null
   } catch (error) {
     console.error('Failed to fetch categories:', error)
-    toast.error('Failed to fetch categories.');
+    toast.error('Failed to fetch categories.')
   }
 })
 
@@ -41,14 +46,14 @@ const uniqueSources = computed(() => {
 <template>
   <div v-if="hasCategory" class="container mx-auto p-4">
     <div
-      class="flex items-center justify-between b-4 pb-2 mb-4 border-b-2 border-dashed border-secondary dark:border-dark-secondary"
+      class="flex flex-col sm:flex-row items-center justify-between b-4 pb-2 mb-4 border-b-2 border-dashed border-secondary dark:border-dark-secondary"
     >
       <h3
         class="font-bold text-accent dark:text-dark-accent text-xl sm:text-2xl md:text-3xl lg:text-4xl"
       >
         {{ category.name }}
       </h3>
-      <div class="">
+      <div>
         <select
           id="sourceFilter"
           v-model="selectedSource"
@@ -118,7 +123,7 @@ const uniqueSources = computed(() => {
         <div class="p-2 pb-0 text-container">
           <div class="items-center pb-2 border-b-2 border-accent dark:border-dark-accent">
             <h5 class="truncate-text hover:underline">{{ article.title }}</h5>
-            <p class="">{{ article.source }} | {{ article.time }}</p>
+            <p>{{ article.source }} | {{ article.time }}</p>
           </div>
           <div class="flex justify-end p-4">
             <router-link :to="article.link" class="flex items-center space-x-2">
@@ -133,6 +138,11 @@ const uniqueSources = computed(() => {
         </div>
       </div>
     </div>
+
+    <button @click="goBack" class="btn-go-back">
+      <i class="fa fa-arrow-left" aria-hidden="true"></i>
+      <span class="ml-2">Go Back</span>
+    </button>
   </div>
   <div v-else class="container flex items-center justify-center p-4">
     <LoadingAnimation />
@@ -229,18 +239,30 @@ select option {
   margin: 0px;
 }
 
-.icon-box {
-  margin: 10px;
-  padding: 12px;
-  background-color: #7980c5;
-  border-radius: 10px;
-  text-align: center;
+.icon {
+  font-size: 20px;
+  color: var(--primary);
 }
 
-.icon-box .span {
-  font-family: system-ui;
-  font-size: small;
-  font-weight: 500;
-  color: #fff;
+.btn-go-back {
+  background-color: var(--primary);
+  color: var(--text);
+  border: none;
+  padding: 8px 16px;
+  margin-top: 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-go-back:hover {
+  background-color: var(--accent);
+}
+
+.btn-go-back i {
+  font-size: 1.2em;
 }
 </style>
