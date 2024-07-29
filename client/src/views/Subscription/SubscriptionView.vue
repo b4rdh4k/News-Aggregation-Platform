@@ -28,6 +28,10 @@ const goBack = () => {
   router.go(-1)
 }
 
+const subscribe = async (planId) => {
+  await planStore.createPaymentSession(planId)
+}
+
 onMounted(() => {
   fetchPlans()
 })
@@ -57,6 +61,7 @@ onMounted(() => {
           <p class="font-light sm:text-sm">{{ essentialPlan.description }}</p>
           <a
             class="cursor-pointer bg-secondary dark:bg-dark-secondary w-full rounded-md p-3 text-center text-sm font-semibold text-white shadow-sm hover:-translate-y-1"
+            @click="subscribe(essentialPlan.id)"
             >Get started</a
           >
           <ul role="list" class="mb-8 space-y-4 text-left text-sm">
@@ -74,6 +79,7 @@ onMounted(() => {
           <p class="font-light sm:text-sm">{{ basicPlan.description }}</p>
           <a
             class="cursor-pointer bg-secondary dark:bg-dark-secondary w-full rounded-md p-3 text-center text-sm font-semibold text-white shadow-sm hover:-translate-y-1"
+            @click="subscribe(basicPlan.id)"
             >Get started</a
           >
           <ul role="list" class="mb-8 space-y-4 text-left text-sm">
