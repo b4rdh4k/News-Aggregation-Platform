@@ -1,27 +1,27 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
 import { useToast } from 'vue-toastification'
+import {useRouter } from 'vue-router'
 
 const toast = useToast()
 const allNews = ref([])
-const visibleNews = ref([])
-const page = ref(1)
-const perPage = 10
-const hasNews = computed(() => visibleNews.value.length > 0)
 const isLoading = ref(false)
+const router = useRouter()
 
-const loadMoreNews = async () => {
+const goBack = () => {
+  router.go(-1)
+}
+
+const loadNews = async () => {
   if (isLoading.value) return
   isLoading.value = true
   try {
-    const response = await fetch(`/categories.json?page=${page.value}&perPage=${perPage}`)
+    const response = await fetch('/categories.json')
     if (!response.ok) throw new Error('Network response was not ok')
     const data = await response.json()
 
-    allNews.value = [...allNews.value, ...data.flatMap((category) => category.articles || [])]
-    visibleNews.value = allNews.value.slice(0, perPage * page.value)
-    page.value++
+    allNews.value = data.flatMap((category) => category.articles || [])
   } catch (error) {
     console.error('Failed to fetch news:', error)
     toast.error('Failed to fetch news.')
@@ -30,43 +30,33 @@ const loadMoreNews = async () => {
   }
 }
 
-const handleScroll = () => {
-  const container = document.querySelector('.news-container')
-  if (container && container.scrollHeight - container.scrollTop === container.clientHeight) {
-    loadMoreNews()
-  }
-}
-
 onMounted(async () => {
-  await nextTick() 
-  loadMoreNews() 
-  window.addEventListener('scroll', handleScroll)
+  await nextTick()
+  loadNews()
 })
-
-onBeforeUnmount(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
-
 </script>
-
 
 <template>
   <div class="container mx-auto p-4">
-  <router-link to="articles">
-    <h2
-      class="text-3xl text-accent dark:text-dark-accent font-bold mb-4 pb-2 border-b-[1px] border-accent dark:border-dark-accent hover:underline"
-    >
-      Latest News  <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
-
-    </h2>
-  </router-link>  
-
     <div
-      v-if="hasNews"
+        class="flex justify-between items-center mb-4 pb-4 border-b-2 border-dashed border-accent dark:border-dark-accent"
+      >
+    <h2
+      class="text-3xl text-accent dark:text-dark-accent font-bold"
+    >
+      All News
+    </h2>
+    <button @click="goBack" class="btn-go-back">
+      <i class="fa fa-arrow-left" aria-hidden="true"></i>
+      <span class="ml-2">Go Back</span>
+    </button>
+  </div>
+    <div
+      v-if="allNews.length > 0"
       class="news-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
     >
       <div
-        v-for="(article, index) in visibleNews"
+        v-for="(article, index) in allNews"
         :key="index"
         class="card rounded-lg p-2 shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20"
       >
@@ -136,31 +126,20 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <div v-else class="flex justify-center p-4">
+    <div v-if="isLoading" class="flex justify-center p-4">
       <LoadingAnimation />
+    </div>
+
+    <div v-if="!isLoading && allNews.length === 0" class="flex justify-center p-4">
+      <p>No news available.</p>
     </div>
   </div>
 </template>
 
 <style scoped>
 .news-container {
-  max-height: calc(100vh - 100px); 
   overflow: auto;
 }
-
-.news-container::-webkit-scrollbar {
-  display: none;
-}
-
-.news-container {
-  scrollbar-width: none; 
-}
-
-.news-container {
-  -ms-overflow-style: none;
-}
-
-
 .truncate-text {
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -238,5 +217,26 @@ onBeforeUnmount(() => {
 .text-container .time {
   font-size: 12px;
   margin: 0;
+}
+
+.btn-go-back {
+  background-color: var(--primary);
+  color: var(--text);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-go-back:hover {
+  background-color: var(--accent);
+}
+
+.btn-go-back i {
+  font-size: 1.2em;
 }
 </style>

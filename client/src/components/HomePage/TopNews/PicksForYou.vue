@@ -38,7 +38,7 @@ const goToNewsView = (pick) => {
 
 <template>
   <div
-    class="bg-primary dark:bg-dark-primary rounded-lg p-2 ml-0 sm:ml-0 lg:ml-3 xl:ml-3 items-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-1 gap-2"
+    class="bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20 rounded-lg p-2 ml-0 sm:ml-0 lg:ml-3 xl:ml-3 items-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-1 gap-2"
   >
     <div
       v-for="(pick, index) in picksForYou"

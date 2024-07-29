@@ -20,6 +20,11 @@ export const mainRoutes = [
           component: () => import('@/components/NewsPage/NewsView.vue'),
         },
         {
+          path:'articles',
+          name:'LatestNews',
+          component: () => import ('@/views/Articles/AllArticles.vue'),
+        },
+        {
           path: 'category/:name',
           name: 'Category',
           component: () => import('@/views/Category/CategoryView.vue'),

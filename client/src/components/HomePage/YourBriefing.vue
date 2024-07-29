@@ -98,10 +98,9 @@ onMounted(async () => {
       <div class="text-base text-secondary dark:text-dark-secondary">
         {{ currentDate }}
       </div>
-      <span class="text-[40px]">{{ weatherEmoji }}</span>
-    </div>
+      <span class="text-[40px]" aria-hidden="true" >{{ weatherEmoji }}</span>    </div>
 
-    <div v-if="weatherFetched" class="flex flex-col justify-center items-center py-1 px-4 bg-primary dark:bg-dark-primary text-text dark:text-dark-text rounded-lg">
+    <div v-if="weatherFetched" class="flex flex-col justify-center items-center py-1 px-4 bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20 text-text dark:text-dark-text rounded-lg">
       <div class="mr-4">
         <div class="font-semibold text-lg text-text dark:text-dark-text">
           {{ currentLocation }}

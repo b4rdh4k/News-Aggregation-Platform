@@ -1,7 +1,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useToast } from 'vue-toastification'
+import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue';
 
+const toast = useToast()
 const categories = ref([])
+const loading = ref(true);
 
 onMounted(async () => {
   try {
@@ -11,7 +15,9 @@ onMounted(async () => {
     categories.value = data
   } catch (error) {
     console.error('Failed to fetch categories:', error)
-    // ERROR PER USERIN!!!!
+    toast.error('Failed to fetch categories.')
+  } finally {
+    loading.value = false
   }
 })
 
@@ -35,11 +41,16 @@ const limitedCategories = computed(() => {
         Embark on a journey through diverse topics and stay updated.
       </p>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+
+    <div v-if="loading" class="flex justify-center items-center h-48">
+      <LoadingAnimation />
+    </div>
+
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
       <div
         v-for="(category, index) in limitedCategories"
         :key="index"
-        class="bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20 p-4 rounded-lg shadow-md flex flex-col"
+        class="shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20 p-4 rounded-lg flex flex-col"
       >
         <h5
           class="text-accent dark:text-dark-accent font-bold mb-4 pb-2 border-b-[1px] border-primary dark:border-dark-primary"

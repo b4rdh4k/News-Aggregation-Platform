@@ -12,17 +12,20 @@
         <h5 class="mb-2.5 font-bold uppercase">Get around</h5>
 
         <ul class="mb-0 list-none text-accent dark:text-dark-accent">
-          <router-link to="/login" class="hover:underline">
+          <router-link to="login" class="hover:underline">
             <li>Log in</li>
           </router-link>
           <router-link to="/" class="hover:underline">
             <li>Home</li>
           </router-link>
-          <router-link to="/for-you" class="hover:underline">
+          <router-link to="for-you" class="hover:underline">
             <li>FYP</li>
           </router-link>
-          <router-link to="/subscription" class="hover:underline">
+          <router-link to="subscription" class="hover:underline">
             <li>Subscription</li>
+          </router-link>
+          <router-link to="articles">
+          Articles
           </router-link>
         </ul>
       </div>
