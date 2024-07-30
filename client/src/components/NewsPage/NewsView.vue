@@ -1,19 +1,21 @@
 <template>
   <div>
     <!-- News Details -->
-    <h1 class="text-2xl font-bold">{{ news.title }}</h1>
+    <h1 class="text-2xl font-bold">{{ news.Title || 'Title not available' }}</h1>
     <p class="text-sm text-gray-600">
-      Published on {{ new Date(news.publishedAt).toLocaleDateString() }} 
-      • Author: {{ news.author || 'Unknown' }}
-      • Views: {{ news.views || 0 }}
+      Published on {{ formattedDate(news.PublishedAt) }} 
+      • Author: {{ news.Author || 'Unknown' }}
+      • Views: {{ news.Views || 0 }}
       • Likes: {{ news.likes || 0 }}
     </p>
     <img
-      :src="news.imageUrl"
+      :src="news.ImageUrl"
       alt="News Image"
       class="w-full h-48 object-cover mb-4 rounded-lg shadow-md"
+      v-if="news.ImageUrl"
     />
-    <p class="text-base text-gray-800 mb-4">{{ news.content || 'No Content Available' }}</p>
+    <p v-else class="text-base text-gray-800 mb-4">No image available</p>
+    <p class="text-base text-gray-800 mb-4">{{ news.Content || 'No Content Available' }}</p>
 
     <!-- Description Section -->
     <div v-if="news.description" class="mt-4">
@@ -52,31 +54,22 @@ export default {
       newsId: this.$route.params.id,
       news: {},
       commentContent: '',
-      comments: [] // Store comments
+      comments: []
     }
   },
   methods: {
     async fetchNewsDetails(id) {
-      // Simulated API call - replace this with your actual API call
-      const allNews = [
-        // Simulated news data
-        {
-          id: '1f9245c6-8bac-4277-abd6-b2062483ca78',
-          title: 'Tatum ‘will play’ for Team USA vs. South Sudan after Sunday benching, Kerr says - The New York Times',
-          time: '2 hours ago',
-          author: null,
-          imageUrl: 'https://via.placeholder.com/500',
-          content: 'No Content',
-          description: '<a href="https://news.google.com/rss/articles/CBMiVWh0dHBzOi8vd3d3Lm55dGltZXMuY29tL2F0aGxldGljLzU2NjU0NTQvMjAyNC8wNy8yOS9qYXlzb24tdGF0dW0tb2x5bXBpY3MtYmFza2V0YmFsbC_SAQA?oc=5" target="_blank">Tatum ‘will play’ for Team USA vs. South Sudan after Sunday benching, Kerr says</a>&nbsp;&nbsp;<font color="#6f6f6f">The New York Times</font><strong><a href="https://news.google.com/stories/CAAqNggKIjBDQklTSGpvSmMzUnZjbmt0TXpZd1NoRUtEd2pBd0p1SURCRURSSTRoaXBNZkN5Z0FQAQ?hl=en-US&gl=US&ceid=US:en&oc=5" target="_blank">View Full Coverage on Google News</a></strong>',
-          id: '1f9245c6-8bac-4277-abd6-b2062483ca78',
-          imageUrl: 'https://via.placeholder.com/500',
-          publishedAt: '2024-07-29T20:35:27Z',
-          views: 0,
-          likes: 0,
+      try {
+        const response = await fetch(`https://api.sapientia.life/article/${id}`)
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
         }
-      ]
-
-      this.news = allNews.find((newsItem) => newsItem.id === this.newsId)
+        const data = await response.json()
+        console.log('Fetched news details:', data) // Log the fetched news details
+        this.news = data.value.Value
+      } catch (error) {
+        console.error('Error fetching news details:', error)
+      }
 
       // Simulated fetch for comments - replace this with actual API call
       const allComments = [
@@ -97,6 +90,11 @@ export default {
       ]
 
       this.comments = allComments.filter((comment) => comment.articleId === id)
+    },
+    formattedDate(date) {
+      if (!date) return 'Unknown date'
+      const parsedDate = new Date(date)
+      return isNaN(parsedDate) ? 'Invalid Date' : parsedDate.toLocaleDateString()
     },
     async submitComment() {
       if (!this.commentContent.trim()) {
@@ -126,8 +124,8 @@ export default {
         }
 
         const data = await response.json()
-        this.comments.push(data) // Add the new comment to the list
-        this.commentContent = '' // Clear the comment input
+        this.comments.push(data)
+        this.commentContent = ''
       } catch (error) {
         console.error('Error submitting comment:', error)
       }
@@ -149,7 +147,6 @@ export default {
 </script>
 
 <style scoped>
-/* Style adjustments */
 textarea {
   resize: none;
 }

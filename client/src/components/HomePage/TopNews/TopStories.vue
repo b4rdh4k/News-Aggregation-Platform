@@ -25,10 +25,8 @@ const fetchTopStories = async () => {
     console.log('Fetched data:', data.Value.Articles)
 
     // Update topStories based on the structure of data
-    if (Array.isArray(data.Value.Articles)) {
+    if (data.Value && Array.isArray(data.Value.Articles)) {
       topStories.splice(0, topStories.length, ...data.Value.Articles)
-    } else if (data.value && Array.isArray(data.value)) {
-      topStories.splice(0, topStories.length, ...data.value)
     } else {
       console.error('Fetched data does not contain the expected array structure:', data)
     }
@@ -49,7 +47,6 @@ const goToNewsView = (story) => {
     router.push({ name: 'News', params: { id: story.Id } })
   } else {
     console.error('Missing story ID:', story)
-    console.log('Navigating to story with ID:', story)
   }
 }
 </script>
