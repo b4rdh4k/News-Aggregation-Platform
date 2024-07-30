@@ -168,18 +168,18 @@ const register = async () => {
         case 9:
           toast.error('Invalid birthdate.')
           break
-          case 10:
-          toast.error('Invalid date.');
-          break;
-          case 12:
-          toast.error('Username cannot be empty.');
-          break;
-          case 15:
-          toast.error('Birthdate is the same as the current one.');
-          break;
-          case 16:
-          toast.error('Full name cannot be empty.');
-          break;
+        case 10:
+          toast.error('Invalid date.')
+          break
+        case 12:
+          toast.error('Username cannot be empty.')
+          break
+        case 15:
+          toast.error('Birthdate is the same as the current one.')
+          break
+        case 16:
+          toast.error('Full name cannot be empty.')
+          break
         default:
           toast.error('Failed to register user.')
       }
@@ -287,7 +287,7 @@ const register = async () => {
             class="w-full py-2 mb-4 px-4 bg-secondary dark:bg-dark-secondary text-text dark:text-dark-text rounded hover:bg-accent dark:hover:bg-dark-accent"
             :disabled="loading"
           >
-            <span v-if="loading">  Registering...  <i class="fas fa-spinner fa-spin"></i></span>
+            <span v-if="loading"> Registering... <i class="fas fa-spinner fa-spin"></i></span>
             <span v-else>Sign Up</span>
           </button>
           <p class="text-center">

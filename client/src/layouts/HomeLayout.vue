@@ -15,4 +15,3 @@ import AppFooter from "../components/shared/Navigation/AppFooter.vue";
     <AppFooter />
   </div>
 </template>
-

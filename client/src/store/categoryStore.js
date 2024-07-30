@@ -139,31 +139,31 @@ export const useCategoryStore = defineStore('categoryStore', {
         ]
       }
     ],
-    selectedCategories: JSON.parse(localStorage.getItem('selectedCategories')) || [],
+    selectedCategories: JSON.parse(localStorage.getItem('selectedCategories')) || []
   }),
   actions: {
     addCategory(category) {
       if (this.selectedCategories.length < 8 && !this.selectedCategories.includes(category)) {
-        this.selectedCategories.push(category);
-        this.saveSelectedCategories();
+        this.selectedCategories.push(category)
+        this.saveSelectedCategories()
       }
     },
     removeCategory(category) {
-      this.selectedCategories = this.selectedCategories.filter((cat) => cat !== category);
-      this.saveSelectedCategories();
+      this.selectedCategories = this.selectedCategories.filter((cat) => cat !== category)
+      this.saveSelectedCategories()
     },
     setSelectedCategories(categories) {
-      this.selectedCategories = categories;
-      this.saveSelectedCategories();
+      this.selectedCategories = categories
+      this.saveSelectedCategories()
     },
     initializeDefaults() {
       if (this.selectedCategories.length === 0) {
-        this.selectedCategories = this.categories.slice(0, 3);
-        this.saveSelectedCategories();
+        this.selectedCategories = this.categories.slice(0, 3)
+        this.saveSelectedCategories()
       }
     },
     saveSelectedCategories() {
-      localStorage.setItem('selectedCategories', JSON.stringify(this.selectedCategories));
+      localStorage.setItem('selectedCategories', JSON.stringify(this.selectedCategories))
     }
   }
-});
+})

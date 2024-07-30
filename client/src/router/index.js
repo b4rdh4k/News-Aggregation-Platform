@@ -14,9 +14,9 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
-});
+  routes
+})
 
 router.beforeEach(requireAuth);
 
-export default router;
+export default router

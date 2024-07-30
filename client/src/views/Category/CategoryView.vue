@@ -25,6 +25,7 @@ onMounted(async () => {
   } catch (error) {
     console.error('Failed to fetch categories:', error)
     toast.error('Failed to fetch categories.')
+    toast.error('Failed to fetch categories.')
   }
 })
 

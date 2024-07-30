@@ -26,7 +26,7 @@ app.component('ScrollToTopButton', Scroll2TopButton);
 const pinia = createPinia()
 app.use(pinia)
 
-const userStore = useUserStore(pinia) 
+const userStore = useUserStore(pinia)
 if (localStorage.getItem('token')) {
   userStore.token = localStorage.getItem('token')
 }

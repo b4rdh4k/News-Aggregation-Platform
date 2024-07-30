@@ -16,4 +16,3 @@ import AdsComponent from "../components/shared/AdsAside.vue";
     <AppFooter />
   </div>
 </template>
-

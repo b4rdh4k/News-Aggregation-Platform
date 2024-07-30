@@ -1,93 +1,52 @@
+<template>
+  <ArticleList :articles="topStories" @click="goToNewsView" />
+</template>
+
 <script setup>
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import ArticleList from '@/components/ArticleList.vue' // Adjust path as necessary
 
 const router = useRouter()
 
-const topStories = reactive([
-  {
-    id: 1,
-    category: 'World',
-    title: 'Ukraine Looms Over NATO Summit, and Biden Is Defiant on Running',
-    time: '5 hours ago',
-    company: 'The New York Times'
-  },
-  {
-    id: 2,
-    category: 'Politics',
-    title: 'Congressional Democrats',
-    time: '1 hour ago',
-    company: 'The Daily Caller'
-  },
-  {
-    id: 3,
-    category: 'Business',
-    title: 'The 2022 NFL Draft is coming to Las Vegas',
-    time: '2 hours ago',
-    company: 'The Washington Post'
-  },
-  {
-    id: 4,
-    category: 'Technology',
-    title: 'The 2022 NFL Draft is coming to Las Vegas',
-    time: '2 hours ago',
-    company: 'The Wall Street Journal'
-  }
-])
+// Reactive data for top stories
+const topStories = reactive([])
 
+// Function to fetch top stories
+const fetchTopStories = async () => {
+  try {
+    const response = await fetch('https://api.sapientia.life/article/all')
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+    const data = await response.json()
+
+    // Log the entire fetched data to inspect its structure
+    console.log('Fetched data:', data.Value.Articles)
+
+    // Update topStories based on the structure of data
+    if (data.Value && Array.isArray(data.Value.Articles)) {
+      topStories.splice(0, topStories.length, ...data.Value.Articles)
+    } else {
+      console.error('Fetched data does not contain the expected array structure:', data)
+    }
+  } catch (error) {
+    console.error('Error fetching top stories:', error)
+  }
+}
+
+// Fetch data when component mounts
+onMounted(() => {
+  fetchTopStories()
+})
+
+// Function to navigate to news view
 const goToNewsView = (story) => {
-  if (story && story.id) {
-    router.push({ name: 'News', params: { id: story.id } })
+  if (story && story.Id) {
+    console.log('Navigating to story with ID:', story.Id)
+    router.push({ name: 'News', params: { id: story.Id } })
   } else {
-    console.error('Missing story ID')
+    console.error('Missing story ID:', story)
   }
 }
 </script>
-
-<template>
-  <div
-    v-for="story in topStories"
-    :key="story.id"
-    class="container mb-4 cursor-pointer"
-    @click="goToNewsView(story)"
-  >
-    <div class="flex flex-col sm:flex-row md:flex-row lg:flex-row xl:flex-row">
-      <img
-        src="@/assets/Biden.webp"
-        rel="preload"
-        alt="News Story Image"
-        class="items-start w-auto h-auto hover:animate-pulse rounded-lg sm:max-w-[350px] md:max-w-[400px] lg:max-w-[400px] xl:max-w-[400px] max-h[300px]"
-      />
-      <div
-        class="flex flex-col justify-between sm:ml-4 md:ml-4 lg:ml-4 xl:ml-4 mt-2 md:mt-0 lg:mt-0 xl:mt-0"
-      >
-        <div>
-          <router-link :to="`/category/${story.category}`" @click.stop>
-            <button
-              class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent px-2 -ml-1 rounded-xl"
-            >
-              <p class="text-text dark:text-dark-text">{{ story.category }}</p>
-            </button>
-          </router-link>
-          <h4 class="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl">
-            {{ story.title }}
-          </h4>
-        </div>
-        <div>
-          <router-link :to="`/source/${story.company}`" class="mb-2" @click.stop>
-            <p
-              class="text-accent dark:text-dark-accent italic font-serif cursor-pointer hover:text-primary dark:hover:text-dark-primary"
-            >
-              {{ story.company }}
-            </p>
-          </router-link>
-          <p
-            class="text-text dark:text-dark-text text-sm sm:text-base md:text-base lg:text-lg xl:text-lg"
-          >
-            {{ story.time }}
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
