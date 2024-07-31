@@ -4,6 +4,8 @@ export const fetchApi = async (url, options = {}) => {
   const userStore = useUserStore();
   const token = userStore.token || localStorage.getItem('token');
 
+  console.log('Token:', token); // Check the token value
+
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers,
@@ -26,3 +28,4 @@ export const fetchApi = async (url, options = {}) => {
     throw error;
   }
 };
+

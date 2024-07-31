@@ -12,7 +12,7 @@ export const mainRoutes = [
           path: 'for-you',
           name: 'ForYou',
           component: () => import('@/views/PersonalizedFeed/ForYouView.vue'),
-          //meta: { requiresAuth: true },
+          meta: { requiresAuth: true },
         },
         {
           path: 'news/:id',
@@ -25,7 +25,7 @@ export const mainRoutes = [
           component: () => import ('@/views/Articles/AllArticles.vue'),
         },
         {
-          path: 'category/:name',
+          path: '/category/:id',
           name: 'Category',
           component: () => import('@/views/Category/CategoryView.vue'),
           props: true,

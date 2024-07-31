@@ -1,269 +1,91 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useToast } from 'vue-toastification'
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useCategoryStore } from '@/store/categoryStore';
+import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue';
+import { useToast } from 'vue-toastification';
 
-const toast = useToast()
-const category = ref(null)
-const selectedSource = ref('')
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const categoryStore = useCategoryStore();
+const toast = useToast();
+const loading = ref(true);
+const categoryId = route.params.id;
 
-const goBack = () => {
-  router.go(-1)
-}
+const articles = computed(() => categoryStore.articles[categoryId] || []);
+const pages = computed(() => {
+  const totalArticles = articles.value.length;
+  const totalPages = Math.ceil(totalArticles / categoryStore.itemsPerPage.value);
+  return Array.from({ length: totalPages }, (_, i) => i + 1);
+});
+
+const goToPage = (page) => {
+  categoryStore.setPage(categoryId, page);
+};
 
 onMounted(async () => {
-  try {
-    const response = await fetch('/categories.json')
-    if (!response.ok) throw new Error('Network response was not ok')
-    const data = await response.json()
-
-    const categoryName = route.params.name
-    category.value = data.find((cat) => cat.name === categoryName) || null
-  } catch (error) {
-    console.error('Failed to fetch categories:', error)
-    toast.error('Failed to fetch categories.')
-    toast.error('Failed to fetch categories.')
+  if (categoryId) {
+    try {
+      await categoryStore.fetchArticlesByCategory(categoryId);
+    } catch (error) {
+      console.error(`Failed to fetch articles for category ${categoryId}:`, error);
+      toast.error(`Failed to fetch articles for category ${categoryId}.`);
+    } finally {
+      loading.value = false;
+    }
+  } else {
+    console.error('Category ID is not defined.');
   }
-})
-
-const hasCategory = computed(() => category.value !== null)
-
-const filteredArticles = computed(() => {
-  if (!category.value || !category.value.articles) return []
-  if (!selectedSource.value) return category.value.articles
-  return category.value.articles.filter((article) => article.source === selectedSource.value)
-})
-
-const uniqueSources = computed(() => {
-  if (!category.value || !category.value.articles) return []
-  const sources = new Set(category.value.articles.map((article) => article.source))
-  return Array.from(sources)
-})
+});
 </script>
 
 <template>
-  <div v-if="hasCategory" class="container mx-auto p-4">
-    <div
-      class="flex flex-col sm:flex-row items-center justify-between b-4 pb-2 mb-4 border-b-2 border-dashed border-secondary dark:border-dark-secondary"
-    >
-      <h3
-        class="font-bold text-accent dark:text-dark-accent text-xl sm:text-2xl md:text-3xl lg:text-4xl"
-      >
-        {{ category.name }}
+  <div class="container mx-auto p-2">
+    <div class="b-4 pb-2 mb-4 border-b-2 border-dashed border-secondary dark:border-dark-secondary">
+      <h3 class="font-bold text-accent dark:text-dark-accent mb-1 text-xl sm:text-2xl md:text-3xl lg:text-4xl">
+        Category Articles
       </h3>
-      <div>
-        <select
-          id="sourceFilter"
-          v-model="selectedSource"
-          class="mt-1 block w-full py-2 px-4 border bg-background border-secondary rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-accent dark:focus:border-dark-accent text-sm md:text-lg dark:bg-dark-background dark:border-dark-secondary dark:text-dark-text"
+      <p class="text-secondary dark:text-dark-secondary font-thin italic text-base lg:text-lg">
+        Browse all articles for this category.
+      </p>
+    </div>
+
+    <div v-if="loading" class="flex justify-center items-center h-48">
+      <LoadingAnimation />
+    </div>
+
+    <div v-else>
+      <div v-if="articles.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+        <div
+          v-for="(article, idx) in articles"
+          :key="idx"
+          class="shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20 p-4 rounded-lg flex flex-col"
         >
-          <option value="">All Sources</option>
-          <option v-for="source in uniqueSources" :key="source" :value="source">
-            {{ source }}
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
-      <div
-        v-for="(article, index) in filteredArticles"
-        :key="index"
-        class="rounded-lg p-2 bg-primary dark:bg-dark-primary bg-opacity-50 dark:bg-opacity-80"
-      >
-        <div class="img rounded-lg">
-          <img
-            :src="article.image"
-            alt="Article image"
-            class="w-full h-full object-cover hover:animate-pulse rounded-lg"
-          />
-          <div class="save">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 683 683"
-              height="683"
-              width="683"
-              class="svg"
-            >
-              <g clip-path="url(#clip0_993_25)">
-                <mask
-                  height="683"
-                  width="683"
-                  y="0"
-                  x="0"
-                  maskUnits="userSpaceOnUse"
-                  style="mask-type: luminance"
-                  id="mask0_993_25"
-                >
-                  <path fill="white" d="M0 -0.00012207H682.667V682.667H0V-0.00012207Z"></path>
-                </mask>
-                <g mask="url(#mask0_993_25)">
-                  <path
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-miterlimit="10"
-                    stroke-width="40"
-                    stroke="#CED8DE"
-                    d="M148.535 19.9999C137.179 19.9999 126.256 24.5092 118.223 32.5532C110.188 40.5866 105.689 51.4799 105.689 62.8439V633.382C105.689 649.556 118.757 662.667 134.931 662.667H135.039C143.715 662.667 151.961 659.218 158.067 653.09C186.451 624.728 270.212 540.966 304.809 506.434C314.449 496.741 327.623 491.289 341.335 491.289C355.045 491.289 368.22 496.741 377.859 506.434C412.563 541.074 496.752 625.242 524.816 653.348C530.813 659.314 538.845 662.667 547.308 662.667C563.697 662.667 576.979 649.395 576.979 633.019V62.8439C576.979 51.4799 572.48 40.5866 564.447 32.5532C556.412 24.5092 545.489 19.9999 534.133 19.9999H148.535Z"
-                  ></path>
-                </g>
-              </g>
-              <defs>
-                <clipPath id="clip0_993_25">
-                  <rect fill="white" height="682.667" width="682.667"></rect>
-                </clipPath>
-              </defs>
-            </svg>
-          </div>
+          <a :href="article.link" class="block hover:underline">
+            <div class="flex flex-col items-start">
+              <img :src="article.image" alt="Article image" class="w-full h-48 object-cover rounded" />
+              <div class="mt-2">
+                <h3 class="text-lg font-semibold truncate-multiline">{{ article.title }}</h3>
+                <router-link :to="`/source/${article.source}`" class="mb-2" @click.stop>
+                  <p class="text-accent dark:text-dark-accent italic font-serif cursor-pointer hover:text-primary dark:hover:text-dark-primary">
+                    {{ article.source }}
+                  </p>
+                </router-link>
+                <p class="text-text dark:text-dark-text text-sm sm:text-base md:text-base lg:text-lg xl:text-lg">
+                  {{ article.time }}
+                </p>
+              </div>
+            </div>
+          </a>
         </div>
+      </div>
 
-        <div class="p-2 pb-0 text-container">
-          <div class="items-center pb-2 border-b-2 border-accent dark:border-dark-accent">
-            <h5 class="truncate-text hover:underline">{{ article.title }}</h5>
-            <p>{{ article.source }} | {{ article.time }}</p>
-          </div>
-          <div class="flex justify-end p-4">
-            <router-link :to="article.link" class="flex items-center space-x-2">
-              <p class="m-0">Read More</p>
-              <i
-                class="fa fa-arrow-circle-right"
-                aria-hidden="true"
-                style="font-size: 1.5em; color: var(--accent)"
-              ></i>
-            </router-link>
-          </div>
+      <div v-if="!loading && articles.length">
+        <div class="pagination">
+          <button v-for="page in pages" :key="page" @click="goToPage(page)">
+            {{ page }}
+          </button>
         </div>
       </div>
     </div>
-
-    <button @click="goBack" class="btn-go-back">
-      <i class="fa fa-arrow-left" aria-hidden="true"></i>
-      <span class="ml-2">Go Back</span>
-    </button>
-  </div>
-  <div v-else class="container flex items-center justify-center p-4">
-    <LoadingAnimation />
   </div>
 </template>
-
-<style scoped>
-.truncate-text {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-select option {
-  background-color: var(--primary);
-  color: var(--text);
-}
-
-.card {
-  width: 100%;
-  transition: 0.2s ease-in-out;
-}
-
-.card:hover {
-  cursor: pointer;
-}
-
-.img {
-  width: 100%;
-  height: 13em;
-  background: linear-gradient(var(--primary), var(--accent));
-  display: flex;
-  align-items: top;
-  justify-content: right;
-  position: relative;
-}
-
-.save {
-  transition: 0.2s ease-in-out;
-  border-radius: 10px;
-  margin: 10px;
-  width: 30px;
-  height: 30px;
-  background-color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.save .svg {
-  transition: 0.2s ease-in-out;
-  width: 15px;
-  height: 15px;
-}
-
-.save:hover .svg {
-  fill: var(--accent);
-}
-
-.text {
-  padding: 7px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: space-around;
-}
-
-.text .h3 {
-  font-size: medium;
-  font-weight: 600;
-  color: black;
-  text-align: center;
-}
-
-.text .p {
-  color: #999999;
-  font-size: 13px;
-  margin: 0px;
-  text-align: center;
-  padding: 5px;
-}
-
-.text .author,
-.text .time {
-  font-family: system-ui;
-  color: #666666;
-  font-size: 12px;
-  text-align: center;
-  margin: 0px;
-}
-
-.icon {
-  font-size: 20px;
-  color: var(--primary);
-}
-
-.btn-go-back {
-  background-color: var(--primary);
-  color: var(--text);
-  border: none;
-  padding: 8px 16px;
-  margin-top: 16px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-}
-
-.btn-go-back:hover {
-  background-color: var(--accent);
-}
-
-.btn-go-back i {
-  font-size: 1.2em;
-}
-</style>
