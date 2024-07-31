@@ -2,14 +2,35 @@
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
 import { useToast } from 'vue-toastification'
+import { useRouter } from 'vue-router'
 
 const toast = useToast()
+const router = useRouter()
 const allNews = ref([])
 const visibleNews = ref([])
 const page = ref(1)
 const perPage = 10
 const hasNews = computed(() => visibleNews.value.length > 0)
 const isLoading = ref(false)
+
+const fetchAllStories = async () => {
+  try {
+    const response = await fetch('https://api.sapientia.life/article/all')
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+    const data = await response.json()
+    if (data.Value && Array.isArray(data.Value.Articles)) {
+      allNews.value = data.Value.Articles
+      visibleNews.value = allNews.value.slice(0, perPage * page.value)
+    } else {
+      console.error('Fetched data does not contain the expected array structure:', data)
+    }
+  } catch (error) {
+    console.error('Error fetching all stories:', error)
+    toast.error('Failed to fetch stories.')
+  }
+}
 
 const loadMoreNews = async () => {
   if (isLoading.value) return
@@ -18,7 +39,6 @@ const loadMoreNews = async () => {
     const response = await fetch(`/categories.json?page=${page.value}&perPage=${perPage}`)
     if (!response.ok) throw new Error('Network response was not ok')
     const data = await response.json()
-
     allNews.value = [...allNews.value, ...data.flatMap((category) => category.articles || [])]
     visibleNews.value = allNews.value.slice(0, perPage * page.value)
     page.value++
@@ -32,47 +52,48 @@ const loadMoreNews = async () => {
 
 const handleScroll = () => {
   const container = document.querySelector('.news-container')
-  if (container && container.scrollHeight - container.scrollTop === container.clientHeight) {
+  if (container && container.scrollHeight - container.scrollTop <= container.clientHeight) {
     loadMoreNews()
   }
 }
 
+const goToNewsView = (articleId) => {
+  if (articleId) {
+    router.push({ name: 'News', params: { id: articleId } })
+  } else {
+    console.error('Missing article ID:', articleId)
+  }
+}
+
 onMounted(async () => {
-  await nextTick() 
-  loadMoreNews() 
+  await nextTick()
+  fetchAllStories()
   window.addEventListener('scroll', handleScroll)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll)
 })
-
 </script>
-
 
 <template>
   <div class="container mx-auto p-4">
-  <router-link to="articles">
-    <h2
-      class="text-3xl text-accent dark:text-dark-accent font-bold mb-4 pb-2 border-b-[1px] border-accent dark:border-dark-accent hover:underline"
-    >
-      Latest News  <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+    <router-link to="articles">
+      <h2 class="text-3xl text-accent dark:text-dark-accent font-bold mb-4 pb-2 border-b-[1px] border-accent dark:border-dark-accent hover:underline">
+        Latest News  <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+      </h2>
+    </router-link>  
 
-    </h2>
-  </router-link>  
-
-    <div
-      v-if="hasNews"
-      class="news-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-    >
+    <div v-if="hasNews" class="news-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <div
         v-for="(article, index) in visibleNews"
         :key="index"
         class="card rounded-lg p-2 shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20"
+        @click="goToNewsView(article.Id)"
       >
         <div class="img rounded-lg">
           <img
-            :src="article.image"
+            :src="article.ImageUrl || 'https://via.placeholder.com/500'"
             alt="Article image"
             class="w-full h-full object-cover rounded-lg hover:animate-pulse"
           />
@@ -119,11 +140,11 @@ onBeforeUnmount(() => {
 
         <div class="text-container p-2 pb-0">
           <div class="items-center pb-2">
-            <h5 class="truncate-text">{{ article.title }}</h5>
-            <p>{{ article.source }} | {{ article.time }}</p>
+            <h5 class="truncate-text">{{ article.Title }}</h5>
+            <p>{{ article.Source }} | {{ article.Time }}</p>
           </div>
           <div class="flex justify-end p-4 border-t-2 border-accent dark:border-dark-accent">
-            <router-link :to="article.link" class="flex items-center space-x-2">
+            <router-link :to="{ name: 'News', params: { id: article.Id } }" class="flex items-center space-x-2">
               <p class="m-0">Read More</p>
               <i
                 class="fa fa-arrow-circle-right"
@@ -159,7 +180,6 @@ onBeforeUnmount(() => {
 .news-container {
   -ms-overflow-style: none;
 }
-
 
 .truncate-text {
   display: -webkit-box;
