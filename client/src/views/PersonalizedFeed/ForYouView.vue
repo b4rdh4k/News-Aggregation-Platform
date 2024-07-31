@@ -5,14 +5,18 @@ import PreferencesModal from '@/components/YourTopics/PreferencesModal.vue'
 import { useCategoryStore } from '@/store/categoryStore'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
 
+// Define router and store
 const router = useRouter()
 const categoryStore = useCategoryStore()
 
+// Define state
 const loading = ref(true)
-const selectedCategories = computed(() => categoryStore.selectedCategories)
-
 const showModal = ref(false)
 
+// Computed properties
+const selectedCategories = computed(() => categoryStore.selectedCategories)
+
+// Methods
 const openModal = () => {
   showModal.value = true
 }
@@ -29,6 +33,7 @@ const goToNewsView = (story) => {
   }
 }
 
+// Lifecycle hooks
 onMounted(async () => {
   try {
     await categoryStore.initializeDefaults()
@@ -39,11 +44,10 @@ onMounted(async () => {
   }
 })
 </script>
-
 <template>
   <div class="p-4">
     <div v-if="loading" class="flex justify-center items-center h-48">
-    <LoadingAnimation />
+      <LoadingAnimation />
     </div>
 
     <div v-else>
@@ -63,14 +67,14 @@ onMounted(async () => {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div
           v-for="category in selectedCategories"
-          :key="category.title"
+          :key="category.name"
           class="p-4 rounded-lg shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20"
         >
-          <router-link :to="`/category/${category.title}`" class="mb-2" @click.stop>
+          <router-link :to="`/category/${category.name}`" class="mb-2" @click.stop>
             <button
               class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent px-2 rounded-xl -m-1"
             >
-              <p class="text-text dark:text-dark-text">{{ category.title }}</p>
+              <p class="text-text dark:text-dark-text">{{ category.name }}</p>
             </button>
           </router-link>
           <ul>
@@ -103,6 +107,8 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
+
 
 <style scoped>
 .truncate-title {
