@@ -3,8 +3,7 @@ import { initTheme } from './utils/theme'
 import Toast, { POSITION } from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import Scroll2TopButton from './components/shared/ScrollToTopButton.vue'
-import { getStripe } from './utils/stripe'
-
+import { VueStripe } from '@vue-stripe/vue-stripe';
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -18,10 +17,12 @@ app.use(Toast, {
   position: POSITION.TOP_RIGHT,
   timeout: 3000
 })
-app.config.globalProperties.$stripe = getStripe();
 
-app.component('ScrollToTopButton', Scroll2TopButton);
+app.use(VueStripe, {
+  pk: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY,
+});
 
+app.component('ScrollToTopButton', Scroll2TopButton)
 
 const pinia = createPinia()
 app.use(pinia)
@@ -30,7 +31,6 @@ const userStore = useUserStore(pinia)
 if (localStorage.getItem('token')) {
   userStore.token = localStorage.getItem('token')
 }
-
 
 app.use(router)
 
