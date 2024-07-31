@@ -51,6 +51,8 @@ const router = useRouter()
 const trendingNews = ref([])
 const visibleTrendingNews = ref([])
 const hasTrendingNews = computed(() => visibleTrendingNews.value.length > 0)
+const page = ref(1)
+const perPage = 10
 const fetchTrendingNews = async () => {
   try {
     const response = await fetch('https://api.sapientia.life/article/trending',{params:{limit: 5}})
@@ -60,6 +62,7 @@ const fetchTrendingNews = async () => {
     const data = await response.json()
     if (data && Array.isArray(data.Value)) {
       trendingNews.value = data.Value
+      visibleTrendingNews.value = trendingNews.value.slice(0, perPage * page.value)
     } else {
       console.error('Fetched data does not contain the expected array structure:', data)
     }

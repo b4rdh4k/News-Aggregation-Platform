@@ -20,11 +20,11 @@ const fetchAllStories = async () => {
       throw new Error('Network response was not ok')
     }
     const data = await response.json()
-    if (data.Value && Array.isArray(data.Value)) {
-      allNews.value = data.Value
-      visibleNews.value = allNews.value.slice(0, perPage * page.value)
+    if (data.Value && Array.isArray(data.Value.Articles)) {
+      allNews.value = data.Value.Articles
+      visibleNews.value = allNews.value.slice(0, perPage)
     } else {
-    console.error('Fetched data does not contain the expected array structure:', data.value)
+    console.error('Fetched data does not contain the expected array structure:', data.Value.Articles)
     }
   } catch (error) {
     console.error('Error fetching all stories:', error)
