@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
 import { useToast } from 'vue-toastification'
 import { useRouter } from 'vue-router'
@@ -8,10 +8,9 @@ const toast = useToast()
 const router = useRouter()
 const allNews = ref([])
 const visibleNews = ref([])
-const page = ref(1)
-const perPage = 10
-const hasNews = computed(() => visibleNews.value.length > 0)
+const perPage = 12
 const isLoading = ref(false)
+const hasNews = computed(() => visibleNews.value.length > 0)
 
 const fetchAllStories = async () => {
   try {
@@ -20,40 +19,15 @@ const fetchAllStories = async () => {
       throw new Error('Network response was not ok')
     }
     const data = await response.json()
-    if (data.Value && Array.isArray(data.Value)) {
-      allNews.value = data.Value
-      visibleNews.value = allNews.value.slice(0, perPage * page.value)
+    if (data.Value && Array.isArray(data.Value.Articles)) {
+      allNews.value = data.Value.Articles
+      visibleNews.value = allNews.value.slice(0, perPage)
     } else {
-    console.error('Fetched data does not contain the expected array structure:', data.value)
+      console.error('Fetched data does not contain the expected array structure:', data.Value.Articles)
     }
   } catch (error) {
     console.error('Error fetching all stories:', error)
     toast.error('Failed to fetch stories.')
-  }
-}
-
-const loadMoreNews = async () => {
-  if (isLoading.value) return
-  isLoading.value = true
-  try {
-    const response = await fetch(`/categories.json?page=${page.value}&perPage=${perPage}`)
-    if (!response.ok) throw new Error('Network response was not ok')
-    const data = await response.json()
-    allNews.value = [...allNews.value, ...data.flatMap((category) => category.articles || [])]
-    visibleNews.value = allNews.value.slice(0, perPage * page.value)
-    page.value++
-  } catch (error) {
-    console.error('Failed to fetch news:', error)
-    toast.error('Failed to fetch news.')
-  } finally {
-    isLoading.value = false
-  }
-}
-
-const handleScroll = () => {
-  const container = document.querySelector('.news-container')
-  if (container && container.scrollHeight - container.scrollTop <= container.clientHeight) {
-    loadMoreNews()
   }
 }
 
@@ -68,13 +42,9 @@ const goToNewsView = (articleId) => {
 onMounted(async () => {
   await nextTick()
   fetchAllStories()
-  window.addEventListener('scroll', handleScroll)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('scroll', handleScroll)
 })
 </script>
+
 
 <template>
   <div class="container mx-auto p-4">
@@ -164,23 +134,6 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.news-container {
-  max-height: calc(100vh - 100px); 
-  overflow: auto;
-}
-
-.news-container::-webkit-scrollbar {
-  display: none;
-}
-
-.news-container {
-  scrollbar-width: none; 
-}
-
-.news-container {
-  -ms-overflow-style: none;
-}
-
 .truncate-text {
   display: -webkit-box;
   -webkit-line-clamp: 3;

@@ -40,6 +40,7 @@
   </div>
 </template>
 
+
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
@@ -50,16 +51,18 @@ const toast = useToast()
 const router = useRouter()
 const trendingNews = ref([])
 const visibleTrendingNews = ref([])
+const perPage = 8
 const hasTrendingNews = computed(() => visibleTrendingNews.value.length > 0)
 const fetchTrendingNews = async () => {
   try {
-    const response = await fetch('https://api.sapientia.life/article/trending',{params:{limit: 5}})
+    const response = await fetch('https://api.sapientia.life/article/trending')
     if (!response.ok) {
       throw new Error('Network response was not ok')
     }
     const data = await response.json()
     if (data && Array.isArray(data.Value)) {
       trendingNews.value = data.Value
+      visibleTrendingNews.value = trendingNews.value.slice(0, perPage)
     } else {
       console.error('Fetched data does not contain the expected array structure:', data)
     }
@@ -83,24 +86,8 @@ onMounted(async () => {
 })
 </script>
 
+
 <style scoped>
-.news-container {
-  max-height: calc(100vh - 100px); 
-  overflow: auto;
-}
-
-.news-container::-webkit-scrollbar {
-  display: none;
-}
-
-.news-container {
-  scrollbar-width: none; 
-}
-
-.news-container {
-  -ms-overflow-style: none;
-}
-
 .truncate-text {
   display: -webkit-box;
   -webkit-line-clamp: 3;
