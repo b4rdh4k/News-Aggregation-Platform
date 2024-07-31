@@ -32,7 +32,7 @@ const closeModal = () => {
 };
 
 const addCategory = (category) => {
-  if (!selectedCategories.value.some((c) => c.id === category.id) && selectedCategories.value.length < 8) {
+  if (!selectedCategories.value.some((c) => c.id === category.id) && selectedCategories.value.length < 9) {
     selectedCategories.value.push(category);
   }
 };
@@ -76,6 +76,7 @@ const onDragEnd = () => {
           <div class="mt-6 md:mt-0 md:px-2">
             <h4>Selected Categories</h4>
             <p class="mb-2">Drag and drop to reorder your feed.</p>
+            <p class="mb-2">You can only pick 9.</p>
             <draggable v-model="selectedCategories" @end="onDragEnd" itemKey="id">
               <template #item="{ element }">
                 <div

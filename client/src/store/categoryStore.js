@@ -39,7 +39,7 @@ export const useCategoryStore = defineStore('category', () => {
   };
 
   const addCategory = (category) => {
-    if (!selectedCategories.value.includes(category) && selectedCategories.value.length < 8) {
+    if (!selectedCategories.value.includes(category) && selectedCategories.value.length < 9) {
       selectedCategories.value.push(category);
       setSelectedCategories(selectedCategories.value);
     }
