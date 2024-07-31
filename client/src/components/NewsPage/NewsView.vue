@@ -1,28 +1,177 @@
+<script setup>
+import { ref, watch, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { ShareNetwork } from 'vue-social-sharing'
+
+const route = useRoute()
+
+const newsId = ref(route.params.id)
+const news = ref({})
+const commentContent = ref('')
+const comments = ref([])
+const shareUrl = ref('')
+
+async function fetchNewsDetails(id) {
+  try {
+    const response = await fetch(`https://api.sapientia.life/article/${id}`)
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+    const data = await response.json()
+    news.value = data.value.Value || {}
+    shareUrl.value = window.location.href
+    postViewData(id)
+  } catch (error) {
+    console.error('Error fetching news details:', error)
+  }
+
+  const allComments = [
+    {
+      id: 1,
+      userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      articleId: id,
+      content: 'Great article!',
+      createdAt: '2024-07-25T08:00:00Z'
+    },
+    {
+      id: 2,
+      userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      articleId: id,
+      content: 'Very informative.',
+      createdAt: '2024-07-25T09:00:00Z'
+    }
+  ]
+
+  comments.value = allComments.filter((comment) => comment.articleId === id)
+}
+
+async function postViewData(id) {
+  try {
+    const response = await fetch(`https://api.sapientia.life/article/view/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+    console.log('View data posted successfully.')
+  } catch (error) {
+    console.error('Error posting view data:', error)
+  }
+}
+
+function formattedDate(date) {
+  if (!date) return 'Unknown date'
+  const parsedDate = new Date(date)
+  return isNaN(parsedDate) ? 'Invalid Date' : parsedDate.toLocaleDateString()
+}
+
+async function submitComment() {
+  if (!commentContent.value.trim()) {
+    alert('Comment content is required')
+    return
+  }
+
+  const commentData = {
+    userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    articleId: newsId.value,
+    content: commentContent.value,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+
+  try {
+    const response = await fetch('https://test.erzen.tk/comment/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(commentData)
+    })
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const data = await response.json()
+    comments.value.push(data)
+    commentContent.value = ''
+  } catch (error) {
+    console.error('Error submitting comment:', error)
+  }
+}
+
+watch(
+  () => route.params.id,
+  (newId) => {
+    newsId.value = newId
+    fetchNewsDetails(newId)
+  },
+  { immediate: true }
+)
+
+onMounted(() => {
+  fetchNewsDetails(newsId.value)
+})
+</script>
+
 <template>
   <div>
-    <!-- News Details -->
-    <h1 class="text-2xl font-bold">{{ news?.Title || 'Title not available' }}</h1>
+    <h1 class="text-2xl font-bold">{{ news.Title || 'Title not available' }}</h1>
     <p class="text-sm text-gray-600">
-      Published on {{ formattedDate(news?.PublishedAt) }} 
-      • Author: {{ news?.Author || 'Unknown' }}
-      • Views: {{ news?.Views || 0 }}
-      • Likes: {{ news?.likes || 0 }}
+      Published on {{ formattedDate(news.PublishedAt) }} • Author: {{ news.Author || 'Unknown' }} •
+      Views: {{ news.Views || 0 }} • Likes: {{ news.likes || 0 }}
     </p>
     <img
-      :src="news?.ImageUrl"
+      :src="news.ImageUrl"
       alt="News Image"
       class="w-full h-48 object-cover mb-4 rounded-lg shadow-md"
-      v-if="news?.ImageUrl"
+      v-if="news.ImageUrl"
     />
     <p v-else class="text-base text-gray-800 mb-4">No image available</p>
-    <p class="text-base text-gray-800 mb-4">{{ news?.Content || 'No Content Available' }}</p>
+    <p class="text-base text-gray-800 mb-4">{{ news.content || 'No Content Available' }}</p>
 
-    <!-- Description Section -->
-    <div v-if="news?.description" class="mt-4">
-      <div v-html="news?.description" class="text-gray-700"></div>
+    <div class="p-2 mt-2">
+      <ShareNetwork
+        network="telegram"
+        :url="shareUrl"
+        title="Check out this article I read in Sapientia!"
+        description="Interesting and very easy to read"
+      >
+        <button class="px-4 py-2 m-1 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+          <i class="fa fa-telegram" aria-hidden="true"></i> Share on Telegram
+        </button>
+      </ShareNetwork>
+      <ShareNetwork
+        network="twitter"
+        :url="shareUrl"
+        title="Check out this article I read in Sapientia!"
+        description="Interesting and very easy to read"
+        twitter-user="sapientia"
+        hashtags="sapientia,newsaggregation"
+      >
+        <button class="px-4 py-2 m-1 bg-[#229ED9] text-white rounded-md hover:bg-blue-500">
+          <i class="fa fa-twitter" aria-hidden="true"></i> Share on Twitter
+        </button>
+      </ShareNetwork>
+      <ShareNetwork
+        network="whatsapp"
+        :url="shareUrl"
+        title="Check out this article I read in Sapientia!"
+        description="Interesting and very easy to read"
+      >
+        <button class="px-4 py-2 m-1 bg-green-500 text-white rounded-md hover:bg-green-600">
+          <i class="fa fa-whatsapp" aria-hidden="true"></i> Share on WhatsApp
+        </button>
+      </ShareNetwork>
     </div>
 
-    <!-- Comment Section -->
+    <div v-if="news.description" class="mt-4">
+      <div v-html="news.description" class="text-gray-700"></div>
+    </div>
+
     <div class="mt-6">
       <textarea
         v-model="commentContent"
@@ -45,123 +194,6 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'NewsView',
-  data() {
-    return {
-      newsId: this.$route.params.id,
-      news: {}, // Initialize as an empty object
-      commentContent: '',
-      comments: []
-    }
-  },
-  methods: {
-    async fetchNewsDetails(id) {
-      try {
-        const response = await fetch(`https://api.sapientia.life/article/${id}`)
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
-        }
-        const data = await response.json()
-        console.log('Fetched news details:', data) // Log the fetched news details
-        this.news = data.value.Value || {} // Ensure news is always an object
-        this.postViewData(id) // Post view data after fetching news details
-      } catch (error) {
-        console.error('Error fetching news details:', error)
-      }
-
-      // Simulated fetch for comments - replace this with actual API call
-      const allComments = [
-        {
-          id: 1,
-          userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          articleId: id,
-          content: 'Great article!',
-          createdAt: '2024-07-25T08:00:00Z'
-        },
-        {
-          id: 2,
-          userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          articleId: id,
-          content: 'Very informative.',
-          createdAt: '2024-07-25T09:00:00Z'
-        }
-      ]
-
-      this.comments = allComments.filter((comment) => comment.articleId === id)
-    },
-    async postViewData(id) {
-      try {
-        const response = await fetch(`https://api.sapientia.life/article/view/${id}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
-        }
-        console.log('View data posted successfully.')
-      } catch (error) {
-        console.error('Error posting view data:', error)
-      }
-    },
-    formattedDate(date) {
-      if (!date) return 'Unknown date'
-      const parsedDate = new Date(date)
-      return isNaN(parsedDate) ? 'Invalid Date' : parsedDate.toLocaleDateString()
-    },
-    async submitComment() {
-      if (!this.commentContent.trim()) {
-        alert('Comment content is required')
-        return
-      }
-
-      const commentData = {
-        userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6', // Replace with actual user ID
-        articleId: this.newsId,
-        content: this.commentContent,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
-
-      try {
-        const response = await fetch('https://test.erzen.tk/comment/create', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(commentData)
-        })
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
-        }
-
-        const data = await response.json()
-        this.comments.push(data)
-        this.commentContent = ''
-      } catch (error) {
-        console.error('Error submitting comment:', error)
-      }
-    }
-  },
-  watch: {
-    '$route.params.id': {
-      handler(newId) {
-        this.newsId = newId
-        this.fetchNewsDetails(newId)
-      },
-      immediate: true
-    }
-  },
-  created() {
-    this.fetchNewsDetails(this.newsId)
-  }
-}
-</script>
 
 <style scoped>
 textarea {
