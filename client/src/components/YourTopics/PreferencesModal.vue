@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch } from 'vue'; // Removed onMounted
 import { useCategoryStore } from '@/store/categoryStore';
 import draggable from 'vuedraggable';
 import ModalFormat from '@/components/shared/Interactions/ModalFormat.vue';
@@ -14,27 +14,15 @@ const categoryStore = useCategoryStore();
 const categories = computed(() => categoryStore.categories);
 const selectedCategories = ref([]);
 
-const defaultCategories = computed(() => {
-  console.log('Default Categories:', categories.value); // Debug statement
-  if (!categories.value) return [];
-  return categories.value.slice(0, 3);
-});
-
 const availableCategories = computed(() => {
-  console.log('Available Categories:', categories.value); // Debug statement
   if (!categories.value) return [];
   return categories.value.filter((category) => !selectedCategories.value.includes(category));
 });
 
-watch(() => props.show, (newValue) => {
+watch(() => props.show, async (newValue) => {
   if (newValue) {
-    selectedCategories.value = [...defaultCategories.value];
-  }
-});
-
-onMounted(() => {
-  if (!categories.value.length) {
-    categoryStore.fetchCategories();
+    await categoryStore.fetchCategories(); // Fetch categories when modal opens
+    selectedCategories.value = [...categoryStore.selectedCategories]; // Set selected categories
   }
 });
 
@@ -113,9 +101,7 @@ const onDragEnd = () => {
       </div>
     </div>
   </ModalFormat>
-  <div v-if="!props.show">Modal is not shown</div> <!-- Debug visibility -->
 </template>
-
 
 <style scoped>
 .category-item {

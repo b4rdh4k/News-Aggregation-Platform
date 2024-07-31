@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { fetchApi } from '@/utils/fetchApi';  
 
 export const useCategoryStore = defineStore('category', () => {
@@ -7,6 +7,8 @@ export const useCategoryStore = defineStore('category', () => {
   const selectedCategories = ref([]);
 
   const fetchCategories = async () => {
+    if (categories.value.length > 0) return; 
+
     try {
       const data = await fetchApi('/category/all');
       console.log('Fetched categories:', data); 
@@ -19,8 +21,6 @@ export const useCategoryStore = defineStore('category', () => {
       console.error('Failed to fetch categories', error);
     }
   };
-  
-  
 
   const addCategory = (category) => {
     if (!selectedCategories.value.includes(category) && selectedCategories.value.length < 8) {
@@ -32,14 +32,16 @@ export const useCategoryStore = defineStore('category', () => {
     selectedCategories.value = selectedCategories.value.filter((cat) => cat !== category);
   };
 
-  fetchCategories();
+  const setSelectedCategories = (newCategories) => {
+    selectedCategories.value = newCategories;
+  };
 
   return {
     categories,
     selectedCategories,
     addCategory,
     removeCategory,
-    setSelectedCategories: (newCategories) => { selectedCategories.value = newCategories; },
+    setSelectedCategories,
     fetchCategories, 
   };
 });
