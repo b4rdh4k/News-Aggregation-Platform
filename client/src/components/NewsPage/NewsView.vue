@@ -1,25 +1,25 @@
 <template>
   <div>
     <!-- News Details -->
-    <h1 class="text-2xl font-bold">{{ news.Title || 'Title not available' }}</h1>
+    <h1 class="text-2xl font-bold">{{ news?.Title || 'Title not available' }}</h1>
     <p class="text-sm text-gray-600">
-      Published on {{ formattedDate(news.PublishedAt) }} 
-      • Author: {{ news.Author || 'Unknown' }}
-      • Views: {{ news.Views || 0 }}
-      • Likes: {{ news.likes || 0 }}
+      Published on {{ formattedDate(news?.PublishedAt) }} 
+      • Author: {{ news?.Author || 'Unknown' }}
+      • Views: {{ news?.Views || 0 }}
+      • Likes: {{ news?.likes || 0 }}
     </p>
     <img
-      :src="news.ImageUrl"
+      :src="news?.ImageUrl"
       alt="News Image"
       class="w-full h-48 object-cover mb-4 rounded-lg shadow-md"
-      v-if="news.ImageUrl"
+      v-if="news?.ImageUrl"
     />
     <p v-else class="text-base text-gray-800 mb-4">No image available</p>
-    <p class="text-base text-gray-800 mb-4">{{ news.Content || 'No Content Available' }}</p>
+    <p class="text-base text-gray-800 mb-4">{{ news?.Content || 'No Content Available' }}</p>
 
     <!-- Description Section -->
-    <div v-if="news.description" class="mt-4">
-      <div v-html="news.description" class="text-gray-700"></div>
+    <div v-if="news?.description" class="mt-4">
+      <div v-html="news?.description" class="text-gray-700"></div>
     </div>
 
     <!-- Comment Section -->
@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       newsId: this.$route.params.id,
-      news: {},
+      news: {}, // Initialize as an empty object
       commentContent: '',
       comments: []
     }
@@ -66,7 +66,8 @@ export default {
         }
         const data = await response.json()
         console.log('Fetched news details:', data) // Log the fetched news details
-        this.news = data.value.Value
+        this.news = data.value.Value || {} // Ensure news is always an object
+        this.postViewData(id) // Post view data after fetching news details
       } catch (error) {
         console.error('Error fetching news details:', error)
       }
@@ -90,6 +91,22 @@ export default {
       ]
 
       this.comments = allComments.filter((comment) => comment.articleId === id)
+    },
+    async postViewData(id) {
+      try {
+        const response = await fetch(`https://api.sapientia.life/article/view/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+        console.log('View data posted successfully.')
+      } catch (error) {
+        console.error('Error posting view data:', error)
+      }
     },
     formattedDate(date) {
       if (!date) return 'Unknown date'

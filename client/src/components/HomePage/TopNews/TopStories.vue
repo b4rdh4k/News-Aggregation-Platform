@@ -21,9 +21,6 @@ const fetchTopStories = async () => {
     }
     const data = await response.json()
 
-    // Log the entire fetched data to inspect its structure
-    console.log('Fetched data:', data.Value.Articles)
-
     // Update topStories based on the structure of data
     if (data.Value && Array.isArray(data.Value.Articles)) {
       topStories.splice(0, topStories.length, ...data.Value.Articles)
