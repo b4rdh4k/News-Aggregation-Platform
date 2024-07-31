@@ -1,11 +1,11 @@
 <script setup>
-import { ref, computed, watch } from 'vue'; // Removed onMounted
+import { ref, computed, watch } from 'vue';
 import { useCategoryStore } from '@/store/categoryStore';
 import draggable from 'vuedraggable';
 import ModalFormat from '@/components/shared/Interactions/ModalFormat.vue';
 
 const props = defineProps({
-  show: Boolean
+  show: Boolean,
 });
 
 const emit = defineEmits(['close']);
@@ -14,16 +14,17 @@ const categoryStore = useCategoryStore();
 const categories = computed(() => categoryStore.categories);
 const selectedCategories = ref([]);
 
-const availableCategories = computed(() => {
-  if (!categories.value) return [];
-  return categories.value.filter((category) => !selectedCategories.value.includes(category));
-});
-
 watch(() => props.show, async (newValue) => {
   if (newValue) {
-    await categoryStore.fetchCategories(); // Fetch categories when modal opens
-    selectedCategories.value = [...categoryStore.selectedCategories]; // Set selected categories
+    await categoryStore.fetchCategories();
+    selectedCategories.value = [...categoryStore.selectedCategories];
   }
+});
+
+const availableCategories = computed(() => {
+  return categories.value.filter(
+    (category) => !selectedCategories.value.some((selected) => selected.id === category.id)
+  );
 });
 
 const closeModal = () => {
@@ -31,13 +32,13 @@ const closeModal = () => {
 };
 
 const addCategory = (category) => {
-  if (!selectedCategories.value.includes(category) && selectedCategories.value.length < 8) {
+  if (!selectedCategories.value.some((c) => c.id === category.id) && selectedCategories.value.length < 8) {
     selectedCategories.value.push(category);
   }
 };
 
 const removeCategory = (category) => {
-  selectedCategories.value = selectedCategories.value.filter((cat) => cat !== category);
+  selectedCategories.value = selectedCategories.value.filter((cat) => cat.id !== category.id);
 };
 
 const savePreferences = () => {
@@ -49,7 +50,6 @@ const onDragEnd = () => {
   categoryStore.setSelectedCategories(selectedCategories.value);
 };
 </script>
-
 
 <template>
   <ModalFormat v-if="props.show" @close="closeModal">
@@ -92,10 +92,7 @@ const onDragEnd = () => {
         </div>
       </div>
       <div class="flex justify-end mt-4 mr-2">
-        <button
-          class="rounded-lg p-4 px-6 bg-accent dark:bg-dark-accent hover:bg-opacity-20 dark:hover:bg-opacity-20"
-          @click="savePreferences"
-        >
+        <button class="rounded-lg p-4 px-6 bg-accent dark:bg-dark-accent hover:bg-opacity-20 dark:hover:bg-opacity-20" @click="savePreferences">
           Save
         </button>
       </div>
