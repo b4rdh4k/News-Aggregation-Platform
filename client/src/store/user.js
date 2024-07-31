@@ -17,6 +17,10 @@ export const useUserStore = defineStore('user', () => {
   const { user, getUserInfo } = useUser()
   const { setupMFA, verifyMFA, generateBackupCodes } = useMFA()
 
+  const fetchUserInfo = async () => {
+    await getUserInfo(); // Ensure this method fetches and sets the user data in `user`
+  };
+
   return {
     token,
     decodedToken,
@@ -27,6 +31,7 @@ export const useUserStore = defineStore('user', () => {
     refreshToken,
     forgotPassword,
     changePassword,
+    fetchUserInfo,
     getUserInfo,
     setupMFA,
     verifyMFA,

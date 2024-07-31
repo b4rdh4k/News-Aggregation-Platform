@@ -4,6 +4,7 @@ import VueJwtDecode from 'vue-jwt-decode'
 
 export function useAuth() {
   const token = ref(localStorage.getItem('token') || null)
+  const refreshToken = ref(localStorage.getItem('refreshToken') || null) // Added refreshToken
   const decodedToken = ref(token.value ? VueJwtDecode.decode(token.value) : null)
   const toast = useToast()
 
@@ -20,7 +21,9 @@ export function useAuth() {
 
       if (response.ok) {
         token.value = data.accessToken
+        refreshToken.value = data.refreshToken // Store refreshToken
         localStorage.setItem('token', data.accessToken)
+        localStorage.setItem('refreshToken', data.refreshToken) // Store refreshToken
         decodedToken.value = VueJwtDecode.decode(data.accessToken)
       } else {
         throw new Error(data.message || 'Login failed')
@@ -44,7 +47,9 @@ export function useAuth() {
 
       if (response.ok) {
         token.value = data.accessToken
+        refreshToken.value = data.refreshToken // Store refreshToken
         localStorage.setItem('token', data.accessToken)
+        localStorage.setItem('refreshToken', data.refreshToken) // Store refreshToken
         decodedToken.value = VueJwtDecode.decode(data.accessToken)
       } else {
         throw new Error(data.message || 'Registration failed')
@@ -56,17 +61,22 @@ export function useAuth() {
 
   const logout = () => {
     token.value = null
+    refreshToken.value = null // Clear refreshToken
     decodedToken.value = null
     localStorage.removeItem('token')
+    localStorage.removeItem('refreshToken') // Clear refreshToken
   }
 
-  const refreshToken = async () => {
+  const refreshAccessToken = async () => { // Renamed function to avoid conflict
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          refreshToken: localStorage.getItem('refreshToken') // Send the refresh token
+        })
       })
       const data = await response.json()
 
@@ -126,11 +136,12 @@ export function useAuth() {
 
   return {
     token,
+    refreshToken, // Expose refreshToken
     decodedToken,
     login,
     register,
     logout,
-    refreshToken,
+    refreshAccessToken, // Expose refreshAccessToken method
     forgotPassword,
     changePassword
   }

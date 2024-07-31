@@ -4,12 +4,18 @@ import { mainRoutes } from '@/router/mainRoutes';
 import { basicsRoutes } from '@/router/basicRoutes';
 import {adminRoutes} from '@/router/adminRoutes';
 import { requireAuth } from './guards';
+import UserProfile from '@/views/Account/UserProfile.vue';
 
 const routes = [
   ...homeRoutes,
   ...mainRoutes,
   ...basicsRoutes,
   ...adminRoutes,
+  { path: '/profile',
+    name: 'UserProfile', 
+    component: UserProfile, 
+    meta: { requiresAuth: true } 
+  }
 ];
 
 const router = createRouter({
