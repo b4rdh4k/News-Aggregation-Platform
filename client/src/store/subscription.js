@@ -1,7 +1,6 @@
-// stores/subscription.js
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { fetchApi } from '@/utils/fetchApi'; // Correct import syntax
+import { fetchApi } from '@/utils/fetchApi'; 
 
 export const useSubscriptionStore = defineStore('subscription', () => {
   const activePlan = ref(null);
