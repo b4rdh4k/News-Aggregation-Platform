@@ -31,7 +31,6 @@ app.use(pinia)
 const userStore = useUserStore(pinia)
 if (localStorage.getItem('token')) {
   userStore.token = localStorage.getItem('token')
-  // Fetch user info if token is present
   userStore.fetchUserInfo().catch(err => {
     console.error('Failed to fetch user info:', err)
   });

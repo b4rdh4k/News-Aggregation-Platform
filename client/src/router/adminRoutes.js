@@ -14,16 +14,19 @@ export const adminRoutes = [
         path: '',
         name: 'AdminHome',
         component: Home,
+        meta : { requiresAdmin: true }
       },
       {
         path: 'users',
         name: 'UserModeration',
-        component: () => import('@/admin/AdminViews/UserModeration.vue')
+        component: () => import('@/admin/AdminViews/UserModeration.vue'),
+        meta : { requiresAdmin: true }
       },
       {
         path: 'comments',
         name: 'CommentModeration',
-        component: () => import('@/admin/AdminViews/CommentModeration.vue')
+        component: () => import('@/admin/AdminViews/CommentModeration.vue'),
+        meta : { requiresAdmin: true }
       }
     ]
   }
