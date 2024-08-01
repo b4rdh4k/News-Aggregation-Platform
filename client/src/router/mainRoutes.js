@@ -35,12 +35,6 @@ export const mainRoutes = [
           name: 'Source',
           component: () => import('@/views/Source/SourceView.vue'),
         },
-        {
-          path: '/profile',
-          name: 'UserProfile',
-          component: () => import('@/views/Account/UserProfile.vue'),
-          //meta: { requiresAuth: true }
-        },
       ],
     },
   ];
