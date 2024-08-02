@@ -1,7 +1,9 @@
 import * as signalR from '@microsoft/signalr';
-//import { useToast } from 'vue-toastification';
+import { useToast } from 'vue-toastification';
+import { useNotificationsStore } from '@/store/notifications';
 
-//const toast = useToast();
+const notificationsStore = useNotificationsStore();
+const toast = useToast();
 
 const connection = new signalR.HubConnectionBuilder()
   .withUrl(`${import.meta.env.VITE_API_URL}/notificationHub`) 
@@ -10,7 +12,8 @@ const connection = new signalR.HubConnectionBuilder()
 
 connection.on('ReceiveArticleNotification', (article) => {
   console.log('New article received:', article);
-    //toast.success('New article received');
+  notificationsStore.addNotification(article);
+  toast.success('New article received');
 });
 
 export function startConnection() {

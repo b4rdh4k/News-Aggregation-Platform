@@ -5,12 +5,15 @@ import ThemeToggle from '@/components/shared/ThemeToggle.vue'
 import TabsHeader from './TabsHeader.vue'
 import router from '@/router'
 import { useToast } from 'vue-toastification'
+import { startConnection } from '@/services/signalR'
+import { useNotificationsStore } from '@/store/notifications'
 
 const userStore = useUserStore()
 const toast = useToast()
 const showSearch = ref(false)
 const searchQuery = ref('')
-const showNotifications = ref(false) // State to control notifications dropdown
+const showNotifications = ref(false)
+const notificationsStore = useNotificationsStore()
 
 const isLoggedIn = computed(() => !!userStore.token)
 
@@ -37,6 +40,7 @@ const toggleNotifications = () => {
 onMounted(() => {
   if (userStore.token) {
     console.log('Token:', userStore.token)
+    startConnection()
   }
 })
 </script>
@@ -105,11 +109,17 @@ onMounted(() => {
                 v-show="showNotifications"
                 class="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-background border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-20"
               >
-                <!-- Example Notifications List -->
                 <div class="p-2">
-                  <p class="text-gray-800 dark:text-gray-200">Notification 1</p>
-                  <p class="text-gray-800 dark:text-gray-200">Notification 2</p>
-                  <!-- Add more notifications here -->
+                  <p
+                    v-for="(notification, index) in notificationsStore.notifications"
+                    :key="index"
+                    class="text-gray-800 dark:text-gray-200"
+                  >
+                    {{ notification.message }}
+                  </p>
+                  <p v-if="notificationsStore.notifications.length === 0" class="text-gray-800 dark:text-gray-200">
+                    No new notifications
+                  </p>
                 </div>
               </div>
             </button>
@@ -135,7 +145,6 @@ onMounted(() => {
         class="p-2 rounded bg-primary dark:bg-dark-primary w-full"
       />
     </div>
-
     <TabsHeader />
   </header>
 </template>
