@@ -115,7 +115,7 @@ watch(searchQuery, (newValue) => {
           <div v-if="!isLoggedIn">
             <router-link
               to="/login"
-              class="block w-full border-b-[1px] border-accent dark:border-dark-accent px-4 py-2 text-left hover:bg-primary hover:rounded-t-md dark:hover:bg-dark-primary"
+              class="login-button block w-full border-b-[1px] border-accent dark:border-dark-accent px-4 py-2 text-left hover:bg-primary hover:rounded-t-md dark:hover:bg-dark-primary"
             >
               Login
             </router-link>

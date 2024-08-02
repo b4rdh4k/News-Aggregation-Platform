@@ -12,19 +12,19 @@ const isActive = (tab) => {
   <div
     class="flex flex-wrap text-base text-secondary dark:text-dark-secondary lg:text-xl xl:text-xl 2xl:text-xl mt-2"
   >
-    <router-link :to="{ name: 'Home' }" class="tab-button" :class="{ active: isActive('Home') }">
+    <router-link :to="{ name: 'Home' }" class="tab-button tabs-home" :class="{ active: isActive('Home') }">
       <h6 class="font-semibold">Home</h6>
     </router-link>
     <router-link
       :to="{ name: 'ForYou' }"
-      class="tab-button"
+      class="tab-button tabs-foryou"
       :class="{ active: isActive('ForYou') }"
     >
       <h6>Personal</h6>
     </router-link>
     <router-link
       :to="{ name: 'Categories' }"
-      class="tab-button"
+      class="tab-button tabs-categories"
       :class="{ active: isActive('Categories') }"
     >
       <h6>Categories</h6>

@@ -111,7 +111,7 @@ onMounted(async () => {
     <div v-else>
       <button
         @click="getCurrentLocation"
-        class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent text-text dark:text-dark-text p-3 rounded-xl"
+        class="weather-button bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent text-text dark:text-dark-text p-3 rounded-xl"
       >
         Get Weather
       </button>

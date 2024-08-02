@@ -6,6 +6,7 @@ import PicksForYou from '@/components/HomePage/TopNews/PicksForYou.vue'
 import SubscriptionCta from '@/components/HomePage/SubscriptionCta.vue'
 import LatestNews from '@/components/HomePage/LatestNews.vue'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
+import PopupTour from '@/components/shared/Interactions/PopupTour.vue'
 
 const loading = ref(true)
 
@@ -32,7 +33,7 @@ onMounted(() => {
     >
       <div class="w-full lg:w-3/4">
         <h2
-          class="text-3xl text-accent dark:text-dark-accent font-bold mb-4 pb-2 border-b-[1px] border-accent dark:border-dark-accent"
+          class="finish-button text-3xl text-accent dark:text-dark-accent font-bold mb-4 pb-2 border-b-[1px] border-accent dark:border-dark-accent"
         >
           Top stories
         </h2>
@@ -86,7 +87,7 @@ onMounted(() => {
           </p>
           <router-link to="/subscription">
             <button
-              class="bg-accent dark:bg-dark-accent hover:bg-secondary dark:hover:bg-dark-secondary text-text dark:text-dark-text text-lg p-6 px-8 rounded-md mt-4"
+              class="subcribe-button bg-accent dark:bg-dark-accent hover:bg-secondary dark:hover:bg-dark-secondary text-text dark:text-dark-text text-lg p-6 px-8 rounded-md mt-4"
             >
               LEARN MORE
             </button>
@@ -94,5 +95,6 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    <PopupTour />
   </div>
 </template>

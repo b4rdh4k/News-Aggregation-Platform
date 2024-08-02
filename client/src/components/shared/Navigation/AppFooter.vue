@@ -13,7 +13,7 @@
         </div>
 
         <div class="mb-6">
-          <h5 class="mb-2.5 font-bold uppercase">Get around</h5>
+          <h5 class="footer-button mb-2.5 font-bold uppercase">Get around</h5>
 
         <ul class="mb-0 list-none text-accent dark:text-dark-accent">
           <router-link to="login" class="hover:underline">
