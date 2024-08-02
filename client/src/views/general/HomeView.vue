@@ -23,7 +23,7 @@ onMounted(() => {
     </div>
 
     <div v-else class="container mx-auto">
-      <WeatherWidget />
+      <WeatherWidget data-test="WeatherWidget" />
     </div>
 
     <div
@@ -36,18 +36,18 @@ onMounted(() => {
         >
           Top stories
         </h2>
-        <TopStories />
+        <TopStories data-test="TopStories" />
       </div>
       <div class="w-auto lg:w-1/4">
         <h2 class="text-3xl text-accent dark:text-dark-accent font-bold mb-4 lg:ml-4 xl:ml-4">
           Picks for you
         </h2>
-        <PicksForYou />
+        <PicksForYou data-test="PicksForYou" />
       </div>
     </div>
 
     <div v-if="!loading">
-      <LatestNews />
+      <LatestNews data-test="LatestNews" />
     </div>
 
     <div
@@ -69,7 +69,7 @@ onMounted(() => {
       >
         <div class="w-full lg:w-1/2 lg:justify-end hidden lg:flex">
           <div class="animation">
-            <SubscriptionCta />
+            <SubscriptionCta data-test="SubscriptionCta" />
           </div>
         </div>
         <div

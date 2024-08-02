@@ -9,24 +9,29 @@ const categoryStore = useCategoryStore();
 const loading = ref(true);
 const currentPage = ref(1);
 const itemsPerPage = 3;
+const error = ref(false);
 
+// Fetch categories on mount and handle errors
 onMounted(async () => {
   try {
     await categoryStore.fetchCategories();
   } catch (error) {
     console.error('Failed to fetch categories:', error);
     toast.error('Failed to fetch categories.');
+    error.value = true;
   } finally {
     loading.value = false;
   }
 });
 
+// Compute paginated categories
 const paginatedCategories = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
   return categoryStore.categories.slice(start, end);
 });
 
+// Pagination controls
 const nextPage = () => {
   if (currentPage.value * itemsPerPage < categoryStore.categories.length) {
     currentPage.value++;
@@ -38,9 +43,16 @@ const prevPage = () => {
     currentPage.value--;
   }
 };
+
+// Handle empty state
+const noCategories = computed(() => {
+  return !loading.value && !error.value && categoryStore.categories.length === 0;
+});
 </script>
+
 <template>
   <div class="container mx-auto p-2">
+    <!-- Page Header -->
     <div class="b-4 pb-2 mb-4 border-b-2 border-dashed border-secondary dark:border-dark-secondary">
       <h3 class="font-bold text-accent dark:text-dark-accent mb-1 text-xl sm:text-2xl md:text-3xl lg:text-4xl">
         Explore the News Universe
@@ -50,40 +62,56 @@ const prevPage = () => {
       </p>
     </div>
 
+    <!-- Loading Animation -->
     <div v-if="loading" class="flex justify-center items-center h-48">
       <LoadingAnimation />
     </div>
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-      <div
-        v-for="(category, index) in paginatedCategories"
-        :key="index"
-        class="shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20 p-4 rounded-lg flex flex-col"
-      >
-        <h5 class="text-accent dark:text-dark-accent font-bold mb-4 pb-2 border-b-[1px] border-primary dark:border-dark-primary">
-          {{ category.name }}
-        </h5>
-        <div v-if="category.articles && category.articles.length > 0" class="flex flex-col lg:flex-row gap-4 flex-grow">
-          <!-- Existing article display code -->
+
+    <!-- Error Message -->
+    <div v-if="error" class="flex justify-center items-center h-48">
+      <p>There was an error loading the categories. Please try again later.</p>
+    </div>
+
+    <!-- Categories Grid -->
+    <div v-else>
+      <div v-if="noCategories" class="flex justify-center items-center h-48">
+        <p>No categories available.</p>
+      </div>
+      <div v-else>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+          <div
+            v-for="(category, index) in paginatedCategories"
+            :key="index"
+            class="shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20 p-4 rounded-lg flex flex-col"
+          >
+            <h5 class="text-accent dark:text-dark-accent font-bold mb-4 pb-2 border-b-[1px] border-primary dark:border-dark-primary">
+              {{ category.name }}
+            </h5>
+            <div v-if="category.articles && category.articles.length > 0" class="flex flex-col lg:flex-row gap-4 flex-grow">
+              <!-- Existing article display code -->
+            </div>
+            <div v-else>
+              <p>No articles available in this category.</p>
+            </div>
+            <div class="flex justify-end pt-2 mt-auto">
+              <router-link :to="`/category/${category.id}`">
+                <button class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent text-text dark:text-dark-text p-3 rounded-xl">
+                  More articles
+                </button>
+              </router-link>
+            </div>
+          </div>
         </div>
-        <div v-else>
-          <p>No articles available in this category.</p>
-        </div>
-        <div class="flex justify-end pt-2 mt-auto">
-          <router-link :to="`/category/${category.id}`">
-            <button class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent text-text dark:text-dark-text p-3 rounded-xl">
-              More articles
-            </button>
-          </router-link>
+        <!-- Pagination Controls -->
+        <div class="flex justify-between mt-4">
+          <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 bg-gray-300 rounded">
+            Previous
+          </button>
+          <button @click="nextPage" :disabled="currentPage * itemsPerPage >= categoryStore.categories.length" class="px-4 py-2 bg-gray-300 rounded">
+            Next
+          </button>
         </div>
       </div>
-    </div>
-    <div class="flex justify-between mt-4">
-      <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 bg-gray-300 rounded">
-        Previous
-      </button>
-      <button @click="nextPage" :disabled="currentPage * itemsPerPage >= categoryStore.categories.length" class="px-4 py-2 bg-gray-300 rounded">
-        Next
-      </button>
     </div>
   </div>
 </template>
@@ -98,4 +126,3 @@ const prevPage = () => {
   text-overflow: ellipsis;
 }
 </style>
-

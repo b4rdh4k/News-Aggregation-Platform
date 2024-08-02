@@ -1,0 +1,10 @@
+
+{
+    "accessToken": "fakeToken",
+    "user": {
+      "id": 1,
+      "email": "testuser@example.com",
+      "name": "Test User"
+    }
+  }
+  
