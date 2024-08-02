@@ -6,6 +6,7 @@ import { useCommentsStore } from '@/store/comments'
 import { useUser } from '@/composables/user/useUser'
 
 const route = useRoute()
+const { userId, getUserInfo } = useUser()
 const commentsStore = useCommentsStore()
 
 const newsId = ref(route.params.id)
@@ -57,6 +58,11 @@ async function submitComment() {
     return
   }
 
+  if (!userId.value) {
+    alert('User ID is required to submit a comment')
+    return
+  }
+
   const commentData = {
     userId: userId.value,
     articleId: newsId.value,
@@ -80,6 +86,7 @@ watch(
 )
 
 onMounted(() => {
+  getUserInfo()
   fetchNewsDetails(newsId.value)
   commentsStore.loadComments(newsId.value)
 })
