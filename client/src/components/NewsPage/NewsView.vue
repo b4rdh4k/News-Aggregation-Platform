@@ -2,13 +2,15 @@
 import { ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ShareNetwork } from 'vue-social-sharing'
+import { useCommentsStore } from '@/store/comments'
+import { useUser } from '@/composables/user/useUser'
 
 const route = useRoute()
+const commentsStore = useCommentsStore()
 
 const newsId = ref(route.params.id)
 const news = ref({})
 const commentContent = ref('')
-const comments = ref([])
 const shareUrl = ref('')
 
 async function fetchNewsDetails(id) {
@@ -24,25 +26,6 @@ async function fetchNewsDetails(id) {
   } catch (error) {
     console.error('Error fetching news details:', error)
   }
-
-  const allComments = [
-    {
-      id: 1,
-      userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-      articleId: id,
-      content: 'Great article!',
-      createdAt: '2024-07-25T08:00:00Z'
-    },
-    {
-      id: 2,
-      userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-      articleId: id,
-      content: 'Very informative.',
-      createdAt: '2024-07-25T09:00:00Z'
-    }
-  ]
-
-  comments.value = allComments.filter((comment) => comment.articleId === id)
 }
 
 async function postViewData(id) {
@@ -75,32 +58,15 @@ async function submitComment() {
   }
 
   const commentData = {
-    userId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    userId: userId.value,
     articleId: newsId.value,
     content: commentContent.value,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
 
-  try {
-    const response = await fetch('https://test.erzen.tk/comment/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(commentData)
-    })
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
-    }
-
-    const data = await response.json()
-    comments.value.push(data)
-    commentContent.value = ''
-  } catch (error) {
-    console.error('Error submitting comment:', error)
-  }
+  await commentsStore.addComment(commentData);
+  commentContent.value = '';
 }
 
 watch(
@@ -108,12 +74,14 @@ watch(
   (newId) => {
     newsId.value = newId
     fetchNewsDetails(newId)
+    commentsStore.loadComments(newId)
   },
   { immediate: true }
 )
 
 onMounted(() => {
   fetchNewsDetails(newsId.value)
+  commentsStore.loadComments(newsId.value)
 })
 </script>
 
@@ -184,8 +152,8 @@ onMounted(() => {
       >
         Submit Comment
       </button>
-      <div v-if="comments.length" class="mt-4 space-y-2">
-        <div v-for="comment in comments" :key="comment.id" class="p-4 border rounded-md shadow-sm">
+      <div v-if="commentsStore.comments.length" class="mt-4 space-y-2">
+        <div v-for="comment in commentsStore.comments" :key="comment.id" class="p-4 border rounded-md shadow-sm">
           <p class="text-gray-800">{{ comment.content }}</p>
           <p class="text-xs text-gray-500">{{ new Date(comment.createdAt).toLocaleString() }}</p>
         </div>

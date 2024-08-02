@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useAuth } from '@/composables/user/useAuth';
 
 export function useUser() {
@@ -40,8 +40,11 @@ export function useUser() {
     }
   }
 
+  const userId = computed(() => user.value?.id || null);
+
   return {
     user,
+    userId,
     getUserInfo
   }
 }
