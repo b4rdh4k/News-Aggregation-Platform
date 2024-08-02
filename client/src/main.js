@@ -3,7 +3,7 @@ import { initTheme } from './utils/theme'
 import Toast, { POSITION } from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import Scroll2TopButton from './components/shared/ScrollToTopButton.vue'
-import { VueStripe } from '@vue-stripe/vue-stripe';
+
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -19,9 +19,6 @@ app.use(Toast, {
   timeout: 3000
 })
 
-app.use(VueStripe, {
-  pk: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY,
-});
 
 app.component('ScrollToTopButton', Scroll2TopButton)
 

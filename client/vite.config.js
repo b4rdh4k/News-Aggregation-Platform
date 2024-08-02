@@ -24,6 +24,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      'vue-social-sharing': 'vue-social-sharing/dist/vue-social-sharing.esm.js',
     },
   },
 });

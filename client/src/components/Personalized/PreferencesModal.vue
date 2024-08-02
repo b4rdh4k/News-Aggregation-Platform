@@ -56,18 +56,18 @@ const onDragEnd = () => {
     <div class="bg-secondary dark:bg-dark-secondary p-4 max-h-screen overflow-y-auto rounded-lg flex flex-col h-full">
       <div class="flex-grow">
         <h3>Manage your preferences</h3>
-        <p>Select up to 8 categories to customize your news feed.</p>
+        <p>Select up to 9 categories to customize your news feed.</p>
         <hr class="my-4 border-dashed" />
         <div class="flex flex-col md:flex-row justify-between mt-2">
           <div>
             <h4>All Categories</h4>
             <p>Click on a category to add it to your feed.</p>
-            <ul class="mt-4">
+            <ul class="categories-grid mt-4">
               <li
                 v-for="category in availableCategories"
                 :key="category.id"
                 @click="addCategory(category)"
-                class="mb-2 bg-primary dark:bg-dark-primary rounded-md p-2 cursor-pointer category-item"
+                class="category-item bg-primary dark:bg-dark-primary"
               >
                 {{ category.name }}
               </li>
@@ -76,7 +76,6 @@ const onDragEnd = () => {
           <div class="mt-6 md:mt-0 md:px-2">
             <h4>Selected Categories</h4>
             <p class="mb-2">Drag and drop to reorder your feed.</p>
-            <p class="mb-2">You can only pick 9.</p>
             <draggable v-model="selectedCategories" @end="onDragEnd" itemKey="id">
               <template #item="{ element }">
                 <div
@@ -104,6 +103,10 @@ const onDragEnd = () => {
 <style scoped>
 .category-item {
   transition: background-color 0.3s;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
 }
 
 .category-item:hover {
@@ -113,5 +116,11 @@ const onDragEnd = () => {
 .sortable-ghost {
   background-color: #af6dee;
   opacity: 0.8;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
 }
 </style>
