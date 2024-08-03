@@ -1,8 +1,9 @@
+// guardian-newsStore.js
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { fetchApi } from '@/utils/fetchApi';
 
-export const useNewsStore = defineStore('news', () => {
+export const useGuardianNewsStore = defineStore('news', () => {
   const news = ref([]);
   const loading = ref(false);
   const currentPage = ref(1);
