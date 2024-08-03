@@ -55,7 +55,7 @@ const hasTrendingNews = computed(() => visibleTrendingNews.value.length > 0)
 
 const fetchTrendingNews = async () => {
   try {
-    const response = await fetch('https://localhost:7298/article/trending')
+    const response = await fetch('https://api.sapientia.life/article/trending')
     if (!response.ok) {
       throw new Error('Network response was not ok')
     }

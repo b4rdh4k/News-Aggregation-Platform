@@ -9,6 +9,10 @@ import { useNewsStore } from '@/store/guardian-newsStore'
 const categoryStore = useCategoryStore()
 const newsStore = useNewsStore()
 
+console.log(newsStore)  // Check if newsStore is correctly initialized
+console.log(typeof newsStore.fetchNews)  // Check the type of fetchNews
+
+
 const loading = ref(true)
 const showModal = ref(false)
 const modalVisible = ref(false)

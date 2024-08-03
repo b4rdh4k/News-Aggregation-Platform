@@ -1,6 +1,5 @@
 import HomeView from '@/views/general/HomeView.vue'
 import HomeLayout from '@/layouts/HomeLayout.vue'
-import ArticleView from '@/views/PersonalizedFeed/GuardianArticleView.vue'
 export const homeRoutes = [
   {
     path: '/',
@@ -19,10 +18,9 @@ export const homeRoutes = [
       {
         path: 'for-you',
         name: 'ForYou',
-        component: () => import('@/views/PersonalizedFeed/ForYouView.vue')
-        //meta: { requiresAuth: true },
+        component: () => import('@/views/PersonalizedFeed/ForYouView.vue'),
+        meta: { requiresAuth: true },
       },
-      { path: '/guardian-news/:id', component: ArticleView, props: true },
       {
         path: 'news/:id',
         name: 'News',

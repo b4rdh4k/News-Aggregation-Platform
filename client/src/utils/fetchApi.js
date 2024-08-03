@@ -6,11 +6,15 @@ export const fetchApi = async (url, options = {}, useGuardianAPI = false) => {
     : import.meta.env.VITE_API_URL;
 
   const userStore = useUserStore();
-  const token = userStore.token || localStorage.getItem('token');
+  let token = userStore.token;
+
+  if (!token) {
+    token = localStorage.getItem('token');
+  }
 
   const headers = {
-    ...options.headers,
     'Content-Type': 'application/json',
+    ...options.headers,
   };
 
   if (!useGuardianAPI && token) {
