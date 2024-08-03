@@ -52,6 +52,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
 
 const props = defineProps({
   articles: {
