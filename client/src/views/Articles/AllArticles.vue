@@ -2,11 +2,12 @@
 import { ref, onMounted, nextTick } from 'vue'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
 import { useToast } from 'vue-toastification'
-import {useRouter } from 'vue-router'
+import { useNewsStore } from '@/store/newsStore.js'
+import { useRouter } from 'vue-router'
 
 const toast = useToast()
-const allNews = ref([])
-const isLoading = ref(false)
+const newsStore = useNewsStore()
+const isLoading = ref(true)
 const router = useRouter()
 
 const goBack = () => {
@@ -14,20 +15,19 @@ const goBack = () => {
 }
 
 const loadNews = async () => {
-  if (isLoading.value) return
-  isLoading.value = true
   try {
-    const response = await fetch('/categories.json')
-    if (!response.ok) throw new Error('Network response was not ok')
-    const data = await response.json()
-
-    allNews.value = data.flatMap((category) => category.articles || [])
+    isLoading.value = true
+    await newsStore.fetchAllStories()
   } catch (error) {
     console.error('Failed to fetch news:', error)
     toast.error('Failed to fetch news.')
   } finally {
     isLoading.value = false
   }
+}
+
+const handlePageChange = (page) => {
+  newsStore.fetchPage(page)
 }
 
 onMounted(async () => {
@@ -39,24 +39,25 @@ onMounted(async () => {
 <template>
   <div class="container mx-auto p-4">
     <div
-        class="flex justify-between items-center mb-4 pb-4 border-b-2 border-dashed border-accent dark:border-dark-accent"
-      >
-    <h2
-      class="text-3xl text-accent dark:text-dark-accent font-bold"
+      class="flex justify-between items-center mb-4 pb-4 border-b-2 border-dashed border-accent dark:border-dark-accent"
     >
-      All News
-    </h2>
-    <button @click="goBack" class="btn-go-back">
-      <i class="fa fa-arrow-left" aria-hidden="true"></i>
-      <span class="ml-2">Go Back</span>
-    </button>
-  </div>
+      <h2
+        class="text-3xl text-accent dark:text-dark-accent font-bold"
+      >
+        All News
+      </h2>
+      <button @click="goBack" class="btn-go-back">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        <span class="ml-2">Go Back</span>
+      </button>
+    </div>
+
     <div
-      v-if="allNews.length > 0"
+      v-if="!isLoading && newsStore.visibleNews.length > 0"
       class="news-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
     >
       <div
-        v-for="(article, index) in allNews"
+        v-for="(article, index) in newsStore.visibleNews"
         :key="index"
         class="card rounded-lg p-2 shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20"
       >
@@ -131,8 +132,18 @@ onMounted(async () => {
       <LoadingAnimation />
     </div>
 
-    <div v-if="!isLoading && allNews.length === 0" class="flex justify-center p-4">
+    <div v-if="!isLoading && newsStore.visibleNews.length === 0" class="flex justify-center p-4">
       <p>No news available.</p>
+    </div>
+
+    <div v-if="!isLoading && newsStore.totalPages > 1" class="pagination-controls flex justify-between mt-4">
+      <button @click="handlePageChange(newsStore.currentPage - 1)" :disabled="newsStore.currentPage === 1">
+        Previous
+      </button>
+      <span>Page {{ newsStore.currentPage }} of {{ newsStore.totalPages }}</span>
+      <button @click="handlePageChange(newsStore.currentPage + 1)" :disabled="newsStore.currentPage === newsStore.totalPages">
+        Next
+      </button>
     </div>
   </div>
 </template>
