@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useToast } from 'vue-toastification'
 
-// newsStore.js
 export const useNewsStore = defineStore('news', () => {
   const toast = useToast()
   const allNews = ref([])
@@ -15,9 +14,8 @@ export const useNewsStore = defineStore('news', () => {
         throw new Error('Network response was not ok')
       }
       const data = await response.json()
-      console.log('Fetched data:', data) // Log the fetched data
+      console.log('Fetched data:', data) 
       
-      // Adjust data handling based on the actual structure
       if (data && data.value && Array.isArray(data.value)) {
         allNews.value = data.value
       } else {

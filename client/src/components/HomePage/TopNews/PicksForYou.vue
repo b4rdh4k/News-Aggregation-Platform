@@ -1,39 +1,24 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useViewHistoryStore } from '@/store/viewHistoryStore'; 
 
 const router = useRouter()
-
-const picksForYou = ref([
-  {
-    id: 1,
-    source: 'New York Times',
-    title: 'Dead Online Shooter Refunds DrDisrespect Skins In The Worst Way',
-    time: '23 hours ago'
-  },
-  {
-    id: 2,
-    source: 'The Guardian',
-    title: 'Netflix’s next live event is a Joe Rogan comedy special',
-    time: '1 hour ago'
-  },
-  {
-    id: 3,
-    source: 'The Washington Post',
-    title: 'The 2022 NFL Draft is coming to Las Vegas',
-    time: '2 hours ago'
-  },
-  {
-    id: 4,
-    source: 'The Wall Street Journal',
-    title: 'The 2022 NFL Draft is coming to Las Vegas',
-    time: '2 hours ago'
-  }
-])
+const viewHistoryStore = useViewHistoryStore();
+const picksForYou = ref([]); 
 
 const goToNewsView = (pick) => {
   router.push({ name: 'News', params: { id: pick.id } })
 }
+
+onMounted(async () => {
+  try {
+    await viewHistoryStore.fetchViewHistory(); 
+    picksForYou.value = viewHistoryStore.viewHistory.slice(0, 4);
+  } catch (error) {
+    console.error('Error fetching view history:', error);
+  }
+});
 </script>
 
 <template>
@@ -42,7 +27,7 @@ const goToNewsView = (pick) => {
   >
     <div
       v-for="(pick, index) in picksForYou"
-      :key="pick.id"
+      :key="index"
       class="mb-1 cursor-pointer mr-1"
       @click="goToNewsView(pick)"
     >

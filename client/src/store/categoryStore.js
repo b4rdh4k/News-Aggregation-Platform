@@ -12,18 +12,16 @@ export const useCategoryStore = defineStore('category', () => {
 const fetchCategories = async () => {
   try {
     const response = await fetchApi('/category/all');
-    console.log('API response:', response); // Log the raw response
+    console.log('API response:', response); 
 
-    // Check if 'value' and 'Value' properties exist and are valid
     if (response && response.value && Array.isArray(response.value.Value)) {
-      // Transform and set categories
       categories.value = response.value.Value.map(category => ({
         id: category.Id,
         name: category.Name,
         description: category.Description,
         articles: category.Articles
       }));
-      console.log('Categories fetched:', categories.value); // Log the fetched categories
+      console.log('Categories fetched:', categories.value); 
     } else {
       console.error('Unexpected data format for categories:', response);
     }
@@ -106,7 +104,7 @@ const fetchCategories = async () => {
     fetchCategories,
     fetchArticlesByCategory,
     setSelectedCategories,
-    initializeFromServer, // Use this function to initialize preferences when the user logs in
+    initializeFromServer, 
     addCategory,
     removeCategory,
     setPage,

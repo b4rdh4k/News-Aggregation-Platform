@@ -1,4 +1,3 @@
-// LatestNews.vue
 <script setup>
 import { onMounted, nextTick } from 'vue'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
