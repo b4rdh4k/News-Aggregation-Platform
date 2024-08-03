@@ -1,22 +1,50 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue';
+import { useUserStore } from '@/store/user'; // Ensure this path is correct
 
-const username = ref('john_doe')
-const fullName = ref('John Doe')
-const email = ref('john@example.com')
-const birthdate = ref('1990-01-01')
-const profilePicture = ref(null)
-const profilePicturePreview = ref(null)
-const newPassword = ref('')
-const confirmNewPassword = ref('')
-const currentPassword = ref('')
+const userStore = useUserStore();
 
-const MAX_WIDTH = 2048; 
-const MAX_HEIGHT = 2048; 
-const MIN_WIDTH = 400; 
-const MIN_HEIGHT = 400; 
-const MAX_FILE_SIZE = 25 * 1024 * 1024; //25 mb
+const username = ref('');
+const fullName = ref('');
+const email = ref('');
+const birthdate = ref('');
+const profilePicture = ref(null);
+const profilePicturePreview = ref(null);
+const newPassword = ref('');
+const confirmNewPassword = ref('');
+const currentPassword = ref('');
 
+// Constants for file validation
+const MAX_WIDTH = 2048;
+const MAX_HEIGHT = 2048;
+const MIN_WIDTH = 400;
+const MIN_HEIGHT = 400;
+const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
+
+// Load user data when component mounts
+onMounted(async () => {
+  try {
+    if (userStore.token) {
+      await userStore.fetchUser();
+      const user = userStore.user;
+
+      if (user) {
+        username.value = user.username || '';
+        fullName.value = user.fullName || '';
+        email.value = user.email || '';
+        birthdate.value = user.birthdate || '';
+        // If user has a profile picture URL, set it for preview
+        if (user.profileImage) {
+          profilePicturePreview.value = user.profileImage;
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error loading user data:', error);
+  }
+});
+
+// Handle profile picture change
 const handleProfilePictureChange = (file) => {
   if (!file) return;
 
@@ -51,44 +79,62 @@ const handleProfilePictureChange = (file) => {
     }
   };
   img.src = URL.createObjectURL(file);
-}
+};
 
 const handleFileInput = (event) => {
-  handleProfilePictureChange(event.target.files[0])
-}
+  handleProfilePictureChange(event.target.files[0]);
+};
 
 const handleDrop = (event) => {
-  event.preventDefault()
+  event.preventDefault();
   if (event.dataTransfer.files.length) {
-    handleProfilePictureChange(event.dataTransfer.files[0])
+    handleProfilePictureChange(event.dataTransfer.files[0]);
   }
-}
+};
 
-const preventDefault = (event) => event.preventDefault()
+const preventDefault = (event) => event.preventDefault();
 
 const removeProfilePicture = () => {
-  profilePicture.value = null
-  profilePicturePreview.value = null
-}
+  profilePicture.value = null;
+  profilePicturePreview.value = null;
+};
 
-const updateProfile = () => {
+const updateProfile = async () => {
   if (newPassword.value && newPassword.value !== confirmNewPassword.value) {
-    alert('New passwords do not match')
-    return
+    alert('New passwords do not match');
+    return;
   }
 
-  alert('Profile updated successfully')
-  // Mock logic to demonstrate data handling
-  console.log({
-    username: username.value,
-    fullName: fullName.value,
-    email: email.value,
-    birthdate: birthdate.value,
-    profilePicture: profilePicture.value,
-    newPassword: newPassword.value,
-    currentPassword: currentPassword.value
-  })
-}
+  try {
+    // Update user profile
+    await userStore.updateUser({
+      username: username.value,
+      fullName: fullName.value,
+      email: email.value,
+      birthdate: birthdate.value,
+    });
+
+    // Update profile image
+    if (profilePicture.value) {
+      const formData = new FormData();
+      formData.append('profileImage', profilePicture.value);
+      await userStore.updateProfileImage(formData);
+    }
+
+    // Change password if provided
+    if (newPassword.value) {
+      await userStore.changePassword({
+        currentPassword: currentPassword.value,
+        newPassword: newPassword.value,
+      });
+    }
+
+    alert('Profile updated successfully');
+  } catch (error) {
+    console.error('Error updating profile:', error.message);
+    alert('Failed to update profile');
+  }
+};
 </script>
 
 <template>

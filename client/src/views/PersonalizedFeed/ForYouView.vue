@@ -42,7 +42,7 @@ const changePage = async (page) => {
 }
 
 onMounted(async () => {
-  categoryStore.initializeFromLocalStorage()
+  await categoryStore.initializeFromServer()
   await newsStore.fetchNews(currentPage.value)
   loading.value = false
 })
@@ -50,11 +50,14 @@ onMounted(async () => {
 
 <template>
   <div class="p-4">
+    <!-- Loading Animation -->
     <div v-if="loading" class="flex justify-center items-center h-48">
       <LoadingAnimation />
     </div>
 
+    <!-- Content After Loading -->
     <div v-else>
+      <!-- Categories Section -->
       <div class="mb-16 bg-primary bg-opacity-20 dark:bg-dark-primary dark:bg-opacity-20 p-2 rounded-lg">
         <div
           class="flex justify-between items-center mb-4 pb-2 border-b-[1px] border-accent dark:border-dark-accent"
@@ -87,6 +90,7 @@ onMounted(async () => {
         </div>
       </div>
 
+      <!-- News Section -->
       <div
         class="flex justify-between items-center mb-4 pb-2 border-b-2 border-dashed border-accent dark:border-dark-accent"
       >
@@ -111,6 +115,7 @@ onMounted(async () => {
         </div>
       </div>
 
+      <!-- Pagination Controls -->
       <div class="flex justify-center items-center mt-4">
         <button
           :disabled="currentPage === 1"
@@ -129,12 +134,22 @@ onMounted(async () => {
         </button>
       </div>
 
+      <!-- Modals -->
       <ArticleModal :show="modalVisible" :article="selectedArticle" @close="closeArticleModal" />
-
       <PreferencesModal :show="showModal" @close="closeModal" />
     </div>
   </div>
 </template>
+
+<style scoped>
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</style>
 
 <style scoped>
 .line-clamp-2 {

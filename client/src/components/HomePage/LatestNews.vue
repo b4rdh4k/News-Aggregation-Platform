@@ -1,3 +1,4 @@
+// LatestNews.vue
 <script setup>
 import { onMounted, nextTick } from 'vue'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
@@ -8,8 +9,8 @@ const newsStore = useNewsStore()
 
 onMounted(async () => {
   await nextTick()
-  newsStore.fetchAllStories()
-  })
+  await newsStore.fetchAllStories()
+})
 </script>
 
 <template>
@@ -29,4 +30,3 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-

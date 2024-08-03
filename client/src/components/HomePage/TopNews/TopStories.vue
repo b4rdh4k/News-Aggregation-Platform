@@ -5,11 +5,11 @@
         v-for="(article, index) in visibleTrendingNews"
         :key="index"
         class="card rounded-lg p-2 shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20"
-        @click="goToNewsView(article.Id)"
+        @click="goToNewsView(article.id)"
       >
         <div class="img rounded-lg">
           <img
-            :src="article.ImageUrl || 'https://via.placeholder.com/500'"
+            :src="article.imageUrl || 'https://via.placeholder.com/500'"
             alt="Article image"
             class="w-full h-full object-cover rounded-lg hover:animate-pulse"
           />
@@ -17,11 +17,11 @@
 
         <div class="text-container p-2 pb-0">
           <div class="items-center pb-2">
-            <h5 class="truncate-text">{{ article.Title }}</h5>
-            <p>{{ article.Source }} | {{ article.Time }}</p>
+            <h5 class="truncate-text">{{ article.title }}</h5>
+            <p>{{ article.source }} | {{ article.publishedAt }}</p>
           </div>
           <div class="flex justify-end p-4 border-t-2 border-accent dark:border-dark-accent">
-            <router-link :to="{ name: 'News', params: { id: article.Id } }" class="flex items-center space-x-2">
+            <router-link :to="{ name: 'News', params: { id: article.id } }" class="flex items-center space-x-2">
               <p class="m-0">Read More</p>
               <i
                 class="fa fa-arrow-circle-right"
@@ -40,7 +40,6 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
@@ -53,15 +52,17 @@ const trendingNews = ref([])
 const visibleTrendingNews = ref([])
 const perPage = 8
 const hasTrendingNews = computed(() => visibleTrendingNews.value.length > 0)
+
 const fetchTrendingNews = async () => {
   try {
-    const response = await fetch('https://api.sapientia.life/article/trending')
+    const response = await fetch('https://localhost:7298/article/trending')
     if (!response.ok) {
       throw new Error('Network response was not ok')
     }
     const data = await response.json()
-    if (data && Array.isArray(data.Value)) {
-      trendingNews.value = data.Value
+    console.log('API Response:', data) // Log the response to inspect it
+    if (data && Array.isArray(data.value)) {
+      trendingNews.value = data.value
       visibleTrendingNews.value = trendingNews.value.slice(0, perPage)
     } else {
       console.error('Fetched data does not contain the expected array structure:', data)
@@ -71,6 +72,7 @@ const fetchTrendingNews = async () => {
     toast.error('Failed to fetch trending news.')
   }
 }
+
 
 const goToNewsView = (articleId) => {
   if (articleId) {
@@ -85,7 +87,6 @@ onMounted(async () => {
   fetchTrendingNews()
 })
 </script>
-
 
 <style scoped>
 .truncate-text {

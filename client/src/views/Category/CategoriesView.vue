@@ -24,8 +24,10 @@ onMounted(async () => {
   }
 });
 
+
 // Compute paginated categories
 const paginatedCategories = computed(() => {
+  console.log('Paginated categories:', categoryStore.categories); // Debugging
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
   return categoryStore.categories.slice(start, end);
