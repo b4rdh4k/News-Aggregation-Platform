@@ -3,10 +3,10 @@ import { ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ShareNetwork } from 'vue-social-sharing'
 import { useCommentsStore } from '@/store/comments'
-import { useUser } from '@/composables/user/useUser'
+import { useUserStore } from '@/store/user'
 
 const route = useRoute()
-const { userId, getUserInfo } = useUser()
+const { userId, fetchUser } = useUserStore()
 const commentsStore = useCommentsStore()
 
 const newsId = ref(route.params.id)
@@ -86,7 +86,7 @@ watch(
 )
 
 onMounted(() => {
-  getUserInfo()
+  fetchUser()
   fetchNewsDetails(newsId.value)
   commentsStore.loadComments(newsId.value)
 })

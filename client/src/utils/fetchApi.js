@@ -25,13 +25,14 @@ export const fetchApi = async (
     const response = await fetch(`${baseUrl}${url}`, {
       ...options,
       headers,
-      credentials: 'include' // Ensure credentials are included
+      credentials: 'include'
     })
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
+    
     }
-
+    console.log('response', response) 
     return await response.json()
   } catch (error) {
     console.error('Fetch error:', error)
