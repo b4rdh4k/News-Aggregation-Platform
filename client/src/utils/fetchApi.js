@@ -1,39 +1,42 @@
-import { useUserStore } from '@/store/user';
+import { useUserStore } from '@/store/user'
 
-export const fetchApi = async (url, options = {}, useGuardianAPI = false) => {
+export const fetchApi = async (
+  url,
+  options = { redirect: 'follow', credentials: 'include' },
+  useGuardianAPI = false
+) => {
   const baseUrl = useGuardianAPI
     ? import.meta.env.VITE_GUARDIAN_API_URL
-    : import.meta.env.VITE_API_URL;
+    : import.meta.env.VITE_API_URL
 
-  const userStore = useUserStore();
-  let token = userStore.token;
-
-  if (!token) {
-    token = localStorage.getItem('token');
-  }
+  const userStore = useUserStore()
+  const token = userStore.token || localStorage.getItem('token')
 
   const headers = {
-    'Content-Type': 'application/json',
     ...options.headers,
-  };
+    'Content-Type': 'application/json'
+  }
 
   if (!useGuardianAPI && token) {
-    headers.Authorization = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`
   }
 
   try {
     const response = await fetch(`${baseUrl}${url}`, {
       ...options,
       headers,
-    });
+      credentials: 'include'
+    })
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status}`)
+    
     }
-
-    return await response.json();
+    console.log('response', response) 
+    return await response.json()
   } catch (error) {
-    console.error('Fetch error:', error);
-    throw error;
+    console.error('Fetch error:', error)
+    throw error
   }
-};
+}
+

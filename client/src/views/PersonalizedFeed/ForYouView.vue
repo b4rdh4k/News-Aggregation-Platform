@@ -1,56 +1,56 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import PreferencesModal from '@/components/Personalized/PreferencesModal.vue'
-import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
-import ArticleModal from '@/components/Personalized/ArticleModal.vue'
-import { useCategoryStore } from '@/store/categoryStore'
-import { useNewsStore } from '@/store/guardian-newsStore'
+import { ref, computed, onMounted } from 'vue';
+import PreferencesModal from '@/components/Personalized/PreferencesModal.vue';
+import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue';
+import ArticleModal from '@/components/Personalized/ArticleModal.vue';
+import { useCategoryStore } from '@/store/categoryStore';
+import { useGuardianNewsStore } from '@/store/guardian-newsStore';
 
-const categoryStore = useCategoryStore()
-const newsStore = useNewsStore()
+const categoryStore = useCategoryStore();
+const newsStore = useGuardianNewsStore();
 
-console.log(newsStore)  // Check if newsStore is correctly initialized
-console.log(typeof newsStore.fetchNews)  // Check the type of fetchNews
+console.log(newsStore); // Check if newsStore is correctly initialized
+console.log(typeof newsStore.fetchNews); // Check the type of fetchNews
 
+const loading = ref(true);
+const showModal = ref(false);
+const modalVisible = ref(false);
+const selectedArticle = ref(null);
+const selectedCategories = computed(() => categoryStore.selectedCategories);
 
-const loading = ref(true)
-const showModal = ref(false)
-const modalVisible = ref(false)
-const selectedArticle = ref(null)
-const selectedCategories = computed(() => categoryStore.selectedCategories)
-
-const currentPage = ref(1)
-const totalPages = computed(() => newsStore.totalPages)
+const currentPage = ref(1);
+const totalPages = computed(() => newsStore.totalPages);
 
 const openModal = () => {
-  showModal.value = true
-}
+  showModal.value = true;
+};
 
 const closeModal = () => {
-  showModal.value = false
-}
+  showModal.value = false;
+};
 
 const openArticleModal = (article) => {
-  selectedArticle.value = article
-  modalVisible.value = true
-}
+  selectedArticle.value = article;
+  modalVisible.value = true;
+};
 
 const closeArticleModal = () => {
-  modalVisible.value = false
-  selectedArticle.value = null
-}
+  modalVisible.value = false;
+  selectedArticle.value = null;
+};
 
 const changePage = async (page) => {
-  currentPage.value = page
-  await newsStore.fetchNews(page)
-}
+  currentPage.value = page;
+  await newsStore.fetchNews(page);
+};
 
 onMounted(async () => {
-  await categoryStore.initializeFromServer()
-  await newsStore.fetchNews(currentPage.value)
-  loading.value = false
-})
+  await categoryStore.initializeFromServer();
+  await newsStore.fetchNews(currentPage.value);
+  loading.value = false;
+});
 </script>
+
 
 <template>
   <div class="p-4">

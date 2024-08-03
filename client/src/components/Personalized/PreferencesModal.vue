@@ -31,22 +31,25 @@ const closeModal = () => {
   emit('close');
 };
 
-const addCategory = (category) => {
+const addCategory = async (category) => {
   if (!selectedCategories.value.some((c) => c.id === category.id) && selectedCategories.value.length < 9) {
     selectedCategories.value.push(category);
+    await categoryStore.addCategory(category); // Add the category to the server preferences
   }
 };
 
-const removeCategory = (category) => {
+const removeCategory = async (category) => {
   selectedCategories.value = selectedCategories.value.filter((cat) => cat.id !== category.id);
+  await categoryStore.removeCategory(category); // Remove the category from the server preferences
 };
 
-const savePreferences = () => {
-  categoryStore.setSelectedCategories(selectedCategories.value);
+const savePreferences = async () => {
+  await categoryStore.setSelectedCategories(selectedCategories.value);
   closeModal();
 };
 
 const onDragEnd = () => {
+  // Optionally, save preferences on drag end if needed
   categoryStore.setSelectedCategories(selectedCategories.value);
 };
 </script>

@@ -13,10 +13,7 @@ export const useUserStore = defineStore('user', () => {
   const fetchUser = async () => {
     try {
       const response = await fetchApi('/auth/info', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token.value}`,
-        },
+        method: 'GET'
       });
 
       if (response.ok) {
@@ -24,6 +21,7 @@ export const useUserStore = defineStore('user', () => {
       } else {
         throw new Error('Failed to fetch user info');
       }
+
     } catch (error) {
       console.error('Error fetching user info:', error);
       toast.error('Error fetching user info');
@@ -151,7 +149,7 @@ export const useUserStore = defineStore('user', () => {
         token.value = data.accessToken;
         localStorage.setItem('token', data.accessToken);
         decodedToken.value = VueJwtDecode.decode(data.accessToken);
-        await fetchUser(); // Fetch user info after login
+        await fetchUser();
       } else {
         throw new Error(data.message || 'Login failed');
       }
