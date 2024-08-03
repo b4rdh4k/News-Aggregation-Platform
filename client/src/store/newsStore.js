@@ -9,7 +9,7 @@ export const useNewsStore = defineStore('news', () => {
 
   const fetchAllStories = async () => {
     try {
-      const response = await fetch('https://api.sapientia.life/article/all')
+      const response = await fetch('https://localhost:7298/article/all')
       if (!response.ok) {
         throw new Error('Network response was not ok')
       }

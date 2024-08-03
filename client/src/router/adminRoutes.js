@@ -5,6 +5,7 @@ export const adminRoutes = [
   {
     path: '/',
     redirect: '/admin', 
+    meta : { requiresAdmin: true }
   },
   {
     path: '/admin',

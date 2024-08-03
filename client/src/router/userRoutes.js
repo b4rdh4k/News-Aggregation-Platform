@@ -11,6 +11,9 @@ export const userRoutes = [
         path: 'profile',
         name: 'UserHome',
         component: UserHome,
+        meta: {
+          requiresAuth: true
+        }
       },
       {
         path: 'bookmarks',
