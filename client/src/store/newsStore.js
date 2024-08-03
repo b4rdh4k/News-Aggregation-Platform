@@ -16,10 +16,11 @@ export const useNewsStore = defineStore('news', () => {
       const data = await response.json()
       console.log('Fetched data:', data) 
       
-      if (data && data.value && Array.isArray(data.value)) {
-        allNews.value = data.value
+      if (data && data.Value && Array.isArray(data.Value.Articles)) {
+        allNews.value = data.Value.Articles
       } else {
         console.error('Fetched data does not contain the expected array structure:', data)
+        toast.error('Failed to fetch stories. Unexpected data structure.')
       }
     } catch (error) {
       console.error('Error fetching all stories:', error)
@@ -37,4 +38,3 @@ export const useNewsStore = defineStore('news', () => {
     fetchAllStories
   }
 })
-
