@@ -1,47 +1,23 @@
 <template>
   <div class="container mx-auto p-4">
-    <div v-if="hasTrendingNews" class="news-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      <div
-        v-for="(article, index) in visibleTrendingNews"
-        :key="index"
-        class="card rounded-lg p-2 shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20"
-        @click="goToNewsView(article.id)"
-      >
-        <div class="img rounded-lg">
-          <img
-            :src="article.imageUrl || 'https://via.placeholder.com/500'"
-            alt="Article image"
-            class="w-full h-full object-cover rounded-lg hover:animate-pulse"
-          />
-        </div>
-
-        <div class="text-container p-2 pb-0">
-          <div class="items-center pb-2">
-            <h5 class="truncate-text">{{ article.title }}</h5>
-            <p>{{ article.source }} | {{ article.publishedAt }}</p>
-          </div>
-          <div class="flex justify-end p-4 border-t-2 border-accent dark:border-dark-accent">
-            <router-link :to="{ name: 'News', params: { id: article.id } }" class="flex items-center space-x-2">
-              <p class="m-0">Read More</p>
-              <i
-                class="fa fa-arrow-circle-right"
-                aria-hidden="true"
-                style="font-size: 1.5em; color: var(--accent)"
-              ></i>
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div v-else class="flex justify-center p-4">
+    <div v-if="isLoading" class="flex justify-center p-4">
       <LoadingAnimation />
+    </div>
+    <div v-else>
+      <NewsCard
+        :articles="visibleTrendingNews"
+        :totalPages="totalPages"
+        :currentPage="currentPage"
+        :hasNews="hasTrendingNews"
+        @page-change="handlePageChange"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
+import NewsCard from '@/components/shared/NewsCard.vue'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
 import { useToast } from 'vue-toastification'
 import { useRouter } from 'vue-router'
@@ -51,6 +27,10 @@ const router = useRouter()
 const trendingNews = ref([])
 const visibleTrendingNews = ref([])
 const perPage = 8
+const currentPage = ref(1)
+const totalPages = computed(() => Math.ceil(trendingNews.value.length / perPage))
+const isLoading = ref(true)
+
 const hasTrendingNews = computed(() => visibleTrendingNews.value.length > 0)
 
 const fetchTrendingNews = async () => {
@@ -61,25 +41,30 @@ const fetchTrendingNews = async () => {
     }
     const data = await response.json()
     console.log('API Response:', data) // Log the response to inspect it
-    if (data && Array.isArray(data.value)) {
-      trendingNews.value = data.value
-      visibleTrendingNews.value = trendingNews.value.slice(0, perPage)
+    if (data && Array.isArray(data.Value)) {
+      trendingNews.value = data.Value
+      updateVisibleNews()
     } else {
       console.error('Fetched data does not contain the expected array structure:', data)
+      toast.error('Failed to load trending news. Please try again later.')
     }
   } catch (error) {
     console.error('Error fetching trending news:', error)
-    toast.error('Failed to fetch trending news.')
+    toast.error('An error occurred while fetching trending news.')
+  } finally {
+    isLoading.value = false
   }
 }
 
+const updateVisibleNews = () => {
+  const start = (currentPage.value - 1) * perPage
+  const end = start + perPage
+  visibleTrendingNews.value = trendingNews.value.slice(start, end)
+}
 
-const goToNewsView = (articleId) => {
-  if (articleId) {
-    router.push({ name: 'News', params: { id: articleId } })
-  } else {
-    console.error('Missing article ID:', articleId)
-  }
+const handlePageChange = (page) => {
+  currentPage.value = page
+  updateVisibleNews()
 }
 
 onMounted(async () => {
@@ -89,6 +74,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* Use the styles from NewsList.vue */
 .truncate-text {
   display: -webkit-box;
   -webkit-line-clamp: 3;
