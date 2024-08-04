@@ -23,8 +23,8 @@ const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
 onMounted(async () => {
   try {
     if (userStore.token) {
-      await userStore.refreshAuthToken();
-      await userStore.fetchUser();
+      await userStore.refreshAuthToken(); // Attempt to refresh token
+      await userStore.fetchUser(); // Fetch user details after refreshing
       const user = userStore.user;
 
       if (user) {
@@ -38,8 +38,10 @@ onMounted(async () => {
     }
   } catch (error) {
     console.error('Error loading user data:', error);
+    // Optional: Handle specific cases like logging out the user if needed
   }
 });
+
 
 // Handle profile picture change
 const handleProfilePictureChange = (file) => {

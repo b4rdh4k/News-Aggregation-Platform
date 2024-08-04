@@ -26,8 +26,11 @@ export const fetchApi = async (url, options = {redirect: "follow", credentials: 
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorDetails = await response.text(); // or response.json() if applicable
+      console.error(`HTTP error! status: ${response.status}, details: ${errorDetails}`);
+      throw new Error(`HTTP error! status: ${response.status}, details: ${errorDetails}`);
     }
+    
 
     console.log('response', response);
     return await response.json();

@@ -6,6 +6,7 @@ import { useToast } from 'vue-toastification';
 
 export const useUserStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token') || null);
+  const refreshToken = ref(localStorage.getItem('refreshToken') || null);
   const decodedToken = ref(token.value ? VueJwtDecode.decode(token.value) : null);
   const user = ref(null);
   const toast = useToast();
@@ -28,20 +29,25 @@ export const useUserStore = defineStore('auth', () => {
   };
 
   const refreshAuthToken = async () => {
-    if (!token.value) return;
-
+    if (!refreshToken.value) return;
+  
     try {
-      const response = await authService.refreshAuthToken(token.value);
-      token.value = response.accessToken;
-      localStorage.setItem('token', response.accessToken);
-      decodedToken.value = VueJwtDecode.decode(response.accessToken);
-      await fetchUser(); // Fetch user info after refreshing token
+      const response = await authService.refreshAuthToken(refreshToken.value);
+      if (response?.accessToken) {
+        token.value = response.accessToken;
+        localStorage.setItem('token', response.accessToken);
+        decodedToken.value = VueJwtDecode.decode(response.accessToken);
+        await fetchUser(); // Fetch user info after refreshing token
+      } else {
+        throw new Error('Failed to refresh token');
+      }
     } catch (error) {
       console.error('Error refreshing token:', error);
       toast.error('Error refreshing token');
       logout(); // Log out user if token refresh fails
     }
   };
+  
 
   const updateUser = async (userUpdateData) => {
     if (!user.value?.Id || !token.value) return;
@@ -69,7 +75,9 @@ export const useUserStore = defineStore('auth', () => {
     try {
       const response = await authService.login(credentials);
       token.value = response.accessToken;
+      refreshToken.value = response.refreshToken;
       localStorage.setItem('token', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
       decodedToken.value = VueJwtDecode.decode(response.accessToken);
       await fetchUser();
     } catch (error) {
@@ -82,7 +90,9 @@ export const useUserStore = defineStore('auth', () => {
     try {
       const response = await authService.register(userInfo);
       token.value = response.accessToken;
+      refreshToken.value = response.refreshToken;
       localStorage.setItem('token', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
       decodedToken.value = VueJwtDecode.decode(response.accessToken);
       await fetchUser(); // Fetch user info after registration
     } catch (error) {
@@ -102,6 +112,7 @@ export const useUserStore = defineStore('auth', () => {
     try {
       const { accessToken, refreshToken } = await authService.handleProviderCallback();
       token.value = accessToken;
+      refreshToken.value = refreshToken;
       localStorage.setItem('token', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       decodedToken.value = VueJwtDecode.decode(accessToken);
@@ -113,9 +124,11 @@ export const useUserStore = defineStore('auth', () => {
 
   const logout = () => {
     token.value = null;
+    refreshToken.value = null;
     decodedToken.value = null;
     user.value = null;
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
   };
 
@@ -130,6 +143,7 @@ export const useUserStore = defineStore('auth', () => {
 
   return {
     token,
+    refreshToken,
     decodedToken,
     user,
     fetchUser,

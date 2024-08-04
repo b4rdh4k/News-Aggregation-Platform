@@ -44,13 +44,14 @@ export const authService = {
     }
   },
 
-  async refreshAuthToken(token) {
+  async refreshAuthToken(refreshToken) {
     try {
       const response = await fetchApi('/auth/refresh', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ refreshToken }),
       });
       return response;
     } catch (error) {
@@ -89,7 +90,6 @@ export const authService = {
   },
 
   async loginWithProvider(provider) {
-    
     try {
       window.location.href = `https://89xx7tdx-5095.euw.devtunnels.ms/auth/login-${provider}`;
     } catch (error) {
@@ -114,7 +114,7 @@ export const authService = {
       throw new Error(error.message);
     }
   },
-  
+
   async logout() {
     try {
       await fetchApi('/auth/logout', {
