@@ -49,7 +49,6 @@ const savePreferences = async () => {
 };
 
 const onDragEnd = () => {
-  // Optionally, save preferences on drag end if needed
   categoryStore.setSelectedCategories(selectedCategories.value);
 };
 </script>

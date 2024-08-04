@@ -26,13 +26,15 @@ export const useAdsStore = defineStore('ads', {
         this.error = null;
         const response = await fetchApi('/ads/allActive', {
           method: 'GET',
-          query: { range }, 
+          query: { range },
         });
+        console.log('Fetched ads:', response);
         this.ads = response;
       } catch (error) {
         this.error = error.message;
       }
     },
+    
 
     async fetchAd(id) {
       try {
