@@ -1,7 +1,7 @@
 import { useUserStore } from '@/store/user';
 
 export const fetchApi = async (url, options = {}) => {
-  const baseUrl = import.meta.env.VITE_API_URL; // Use the main API URL
+  const baseUrl = import.meta.env.VITE_API_URL; 
 
   const userStore = useUserStore();
   const token = userStore.token || localStorage.getItem('token');
@@ -11,7 +11,6 @@ export const fetchApi = async (url, options = {}) => {
     'Content-Type': 'application/json',
   };
 
-  // Add Authorization header if token exists
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
@@ -20,7 +19,7 @@ export const fetchApi = async (url, options = {}) => {
     const response = await fetch(`${baseUrl}${url}`, {
       ...options,
       headers,
-      credentials: 'include', // Include credentials if needed
+      credentials: 'include',
     });
 
     if (!response.ok) {

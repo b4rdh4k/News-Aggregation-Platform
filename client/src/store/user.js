@@ -11,22 +11,12 @@ export const useUserStore = defineStore('user', () => {
   const toast = useToast();
 
   const fetchUser = async () => {
-    try {
       const response = await fetchApi('/auth/info', {
         method: 'GET'
       });
 
-      if (response.ok) {
         user.value = await response.json();
-      } else {
-        throw new Error('Failed to fetch user info');
-      }
 
-    } catch (error) {
-      console.error('Error fetching user info:', error);
-      toast.error('Error fetching user info');
-      // Handle token refresh if necessary
-    }
   };
 
   const refreshAuthToken = async () => {
