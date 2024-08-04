@@ -12,6 +12,7 @@ export const useUserStore = defineStore('user', () => {
 
   const requestOptions = {
     method: 'GET',
+    credentials: 'include',
   };
 
   async function check_if_logged_in() {

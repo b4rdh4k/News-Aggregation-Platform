@@ -1,6 +1,6 @@
 import { useUserStore } from '@/store/user';
 
-export const fetchApi = async (url, options = {}) => {
+export const fetchApi = async (url, options = {redirect: "follow", credentials: "include"}) => {
   const baseUrl = import.meta.env.VITE_API_URL; 
 
   const userStore = useUserStore();
