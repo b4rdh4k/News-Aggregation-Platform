@@ -5,6 +5,7 @@ export const fetchApi = async (url, options = {redirect: "follow", credentials: 
 
   const userStore = useUserStore();
   const token = userStore.token || localStorage.getItem('token');
+  console.log('Token used:', token); // Debug line to check the token value
 
   const headers = {
     ...options.headers,
@@ -14,6 +15,8 @@ export const fetchApi = async (url, options = {redirect: "follow", credentials: 
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
+  console.log('API URL:', `${baseUrl}${url}`); // Debug line to check the full URL
+
 
   try {
     const response = await fetch(`${baseUrl}${url}`, {

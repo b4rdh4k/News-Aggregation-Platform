@@ -60,7 +60,7 @@ onMounted(async () => {
           :key="idx"
           class="shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20 p-4 rounded-lg flex flex-col"
         >
-          <a :href="article.link" class="block hover:underline">
+          <router-link :to="`/news/${article.id}`" class="block hover:underline">
             <div class="flex flex-col items-start">
               <img :src="article.image" alt="Article image" class="w-full h-48 object-cover rounded" />
               <div class="mt-2">
@@ -75,8 +75,11 @@ onMounted(async () => {
                 </p>
               </div>
             </div>
-          </a>
+          </router-link>
         </div>
+      </div>
+      <div v-else>
+        <p class="text-center text-gray-500 dark:text-gray-400">No Articles Found</p>
       </div>
 
       <div v-if="!loading && articles.length">

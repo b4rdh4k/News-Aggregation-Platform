@@ -13,8 +13,10 @@
             alt="Article image"
             class="w-full h-full object-cover rounded-lg hover:animate-pulse"
           />
+          <button class="bookmark-btn" @click.stop="toggleBookmark(article.Id)">
+            <i class="fa" :class="isBookmarked(article.Id) ? 'fa-bookmark' : 'fa-bookmark-o'" aria-hidden="true"></i>
+          </button>
         </div>
-
         <div class="text-container p-2 pb-0">
           <div class="items-center pb-2">
             <h5 class="truncate-text">{{ article.Title }}</h5>
@@ -52,6 +54,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { useBookmarkStore } from '@/store/bookmark'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
 
 const props = defineProps({
@@ -80,6 +83,7 @@ const props = defineProps({
 const emit = defineEmits(['page-change'])
 
 const router = useRouter()
+const bookmarkStore = useBookmarkStore()
 
 const handleClick = (articleId) => {
   if (articleId) {
@@ -94,10 +98,32 @@ const readMoreLink = (articleId) => ({ name: 'News', params: { id: articleId } }
 const handlePageChange = (page) => {
   emit('page-change', page)
 }
+
+const toggleBookmark = async (articleId) => {
+  const existingBookmark = bookmarkStore.bookmarks.find(bookmark => bookmark.articleId === articleId);
+  if (existingBookmark) {
+    await bookmarkStore.removeBookmark(existingBookmark.id);
+  } else {
+    await bookmarkStore.addBookmark(articleId);
+  }
+};
+
+const isBookmarked = (articleId) => {
+  return bookmarkStore.bookmarks.some(bookmark => bookmark.articleId === articleId);
+};
 </script>
 
 <style scoped>
-/* Same styles as before */
+.bookmark-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5em;
+  color: var(--accent);
+}
 .truncate-text {
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -140,40 +166,10 @@ const handlePageChange = (page) => {
   position: absolute;
   top: 10px;
   right: 10px;
-}
-
-.save .svg {
-  transition: 0.2s ease-in-out;
-  width: 15px;
-  height: 15px;
-}
-
-.save:hover .svg {
-  fill: var(--accent);
-}
-
-.text-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-grow: 1;
-  padding: 7px 20px;
-}
-
-.text-container h5 {
-  font-size: medium;
-  font-weight: 600;
-  margin: 0;
-}
-
-.text-container p {
-  font-size: 13px;
-  margin: 0;
-}
-
-.text-container .author,
-.text-container .time {
-  font-size: 12px;
-  margin: 0;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5em;
+  color: var(--accent);
 }
 </style>
