@@ -42,7 +42,7 @@ const fetchTrendingNews = async () => {
     const data = await response.json()
     console.log('API Response:', data) // Log the response to inspect it
     if (data && Array.isArray(data.Value)) {
-      trendingNews.value = data.Value
+      trendingNews.value = data.Value || data.value
       updateVisibleNews()
     } else {
       console.error('Fetched data does not contain the expected array structure:', data)

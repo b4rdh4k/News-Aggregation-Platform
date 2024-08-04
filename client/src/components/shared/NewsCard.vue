@@ -1,31 +1,45 @@
 <template>
   <div class="container mx-auto p-4">
-    <div v-if="hasNews" class="news-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <div
+      v-if="hasNews"
+      class="news-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+    >
       <div
         v-for="(article, index) in articles"
         :key="index"
         class="card rounded-lg p-2 shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20"
-        @click="handleClick(article.Id)"
+        @click="handleClick(article.Id || article.id)"
       >
         <div class="img rounded-lg">
           <img
-            :src="article.ImageUrl || 'https://via.placeholder.com/500'"
+            :src="article.ImageUrl || article.imageUrl || 'https://via.placeholder.com/500'"
             alt="Article image"
             class="w-full h-full object-cover rounded-lg hover:animate-pulse"
           />
-          <button class="bookmark-btn" @click.stop="toggleBookmark(article.Id)">
-            <i class="fa" :class="isBookmarked(article.Id) ? 'fa-bookmark' : 'fa-bookmark-o'" aria-hidden="true"></i>
+          <button class="bookmark-btn" @click.stop="toggleBookmark(article.Id || article.id)">
+            <i
+              class="fa"
+              :class="isBookmarked(article.Id || article.id) ? 'fa-bookmark' : 'fa-bookmark-o'"
+              aria-hidden="true"
+            ></i>
           </button>
         </div>
         <div class="text-container p-2 pb-0">
           <div class="items-center pb-2">
-            <h5 class="truncate-text">{{ article.Title }}</h5>
-            <p>{{ article.Source }} | {{ article.Time }}</p>
+            <h5 class="truncate-text">{{ article.Title || article.title }}</h5>
+            <p>{{ article.Source || article.source }} | {{ article.Time || article.time }}</p>
           </div>
           <div class="flex justify-end p-4 border-t-2 border-accent dark:border-dark-accent">
-            <router-link :to="readMoreLink(article.Id)" class="flex items-center space-x-2">
+            <router-link
+              :to="readMoreLink(article.Id || article.id)"
+              class="flex items-center space-x-2"
+            >
               <p class="m-0">Read More</p>
-              <i class="fa fa-arrow-circle-right" aria-hidden="true" style="font-size: 1.5em; color: var(--accent)"></i>
+              <i
+                class="fa fa-arrow-circle-right"
+                aria-hidden="true"
+                style="font-size: 1.5em; color: var(--accent)"
+              ></i>
             </router-link>
           </div>
         </div>
@@ -57,6 +71,7 @@ import { useRouter } from 'vue-router'
 import { useBookmarkStore } from '@/store/bookmark'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
 
+console.log(this.articles);
 const props = defineProps({
   articles: {
     type: Array,
@@ -100,17 +115,19 @@ const handlePageChange = (page) => {
 }
 
 const toggleBookmark = async (articleId) => {
-  const existingBookmark = bookmarkStore.bookmarks.find(bookmark => bookmark.articleId === articleId);
+  const existingBookmark = bookmarkStore.bookmarks.find(
+    (bookmark) => bookmark.articleId === articleId
+  )
   if (existingBookmark) {
-    await bookmarkStore.removeBookmark(existingBookmark.id);
+    await bookmarkStore.removeBookmark(existingBookmark.id)
   } else {
-    await bookmarkStore.addBookmark(articleId);
+    await bookmarkStore.addBookmark(articleId)
   }
-};
+}
 
 const isBookmarked = (articleId) => {
-  return bookmarkStore.bookmarks.some(bookmark => bookmark.articleId === articleId);
-};
+  return bookmarkStore.bookmarks.some((bookmark) => bookmark.articleId === articleId)
+}
 </script>
 
 <style scoped>
