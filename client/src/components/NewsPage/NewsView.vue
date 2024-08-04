@@ -4,14 +4,15 @@ import { useRoute } from 'vue-router'
 import { ShareNetwork } from 'vue-social-sharing'
 import { useUserStore } from '@/store/user'
 import CommentSection from '@/components/NewsPage/CommentSection.vue'
+import { useToast } from 'vue-toastification'
 
 const route = useRoute()
-const { fetchUser } = useUserStore()
+const { fetchUser, user } = useUserStore()
+const toast = useToast()
 
 const newsId = ref(route.params.id)
 const news = ref({})
 const shareUrl = ref('')
-const dummyComments = ref([])
 
 watch(() => route.params.id, (newId) => {
   newsId.value = newId
@@ -25,7 +26,6 @@ async function fetchNewsDetails(id) {
       throw new Error('Network response was not ok')
     }
     const data = await response.json()
-    console.log('Fetched news data:', data) // Log data to verify
     news.value = data.value.Value || {}
     shareUrl.value = window.location.href
     postViewData(id)
@@ -33,7 +33,6 @@ async function fetchNewsDetails(id) {
     console.error('Error fetching news details:', error)
   }
 }
-
 
 async function postViewData(id) {
   try {
@@ -130,12 +129,6 @@ onMounted(() => {
     </div>
 
     <!-- Comment Section -->
-    <CommentSection :comments="dummyComments" />
+    <CommentSection />
   </div>
 </template>
-
-<style scoped>
-textarea {
-  resize: none;
-}
-</style>

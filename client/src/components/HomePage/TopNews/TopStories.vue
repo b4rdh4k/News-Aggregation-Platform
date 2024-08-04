@@ -40,7 +40,7 @@ const fetchTrendingNews = async () => {
       throw new Error('Network response was not ok')
     }
     const data = await response.json()
-    console.log('API Response:', data) // Log the response to inspect it
+    //console.log('API Response:', data) // Log the response to inspect it
     if (data && Array.isArray(data.Value)) {
       trendingNews.value = data.Value
       updateVisibleNews()
