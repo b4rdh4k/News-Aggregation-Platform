@@ -9,9 +9,6 @@ import { useGuardianNewsStore } from '@/store/guardian-newsStore';
 const categoryStore = useCategoryStore();
 const newsStore = useGuardianNewsStore();
 
-console.log(newsStore); // Check if newsStore is correctly initialized
-console.log(typeof newsStore.fetchNews); // Check the type of fetchNews
-
 const loading = ref(true);
 const showModal = ref(false);
 const modalVisible = ref(false);
@@ -50,7 +47,6 @@ onMounted(async () => {
   loading.value = false;
 });
 </script>
-
 
 <template>
   <div class="p-4">
@@ -144,16 +140,6 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-</style>
 
 <style scoped>
 .line-clamp-2 {
