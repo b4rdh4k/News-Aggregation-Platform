@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useUserStore } from '@/store/user';
 import { useToast } from 'vue-toastification';
-import { fetchApi } from '@/utils/fetchApi'; // Ensure this path is correct
+import { fetchApi } from '@/utils/fetchApi';
 
 export const useBookmarkStore = defineStore('bookmark', () => {
   const userStore = useUserStore();
@@ -12,10 +12,19 @@ export const useBookmarkStore = defineStore('bookmark', () => {
   const error = ref(null);
 
   const fetchBookmarks = async () => {
+    if (!userStore.token) {
+      error.value = 'User not authenticated';
+      return;
+    }
+
     isLoading.value = true;
     error.value = null;
     try {
-      const data = await fetchApi('/bookmark/all');
+      const data = await fetchApi('https://89xx7tdx-5095.euw.devtunnels.ms/bookmark/all', {
+        headers: {
+          Authorization: `Bearer ${userStore.token}`,
+        },
+      });
       bookmarks.value = data.Value || [];
     } catch (err) {
       error.value = err.message;
@@ -26,12 +35,21 @@ export const useBookmarkStore = defineStore('bookmark', () => {
   };
 
   const addBookmark = async (articleId) => {
+    if (!userStore.token) {
+      error.value = 'User not authenticated';
+      return;
+    }
+
     isLoading.value = true;
     error.value = null;
     try {
-      const newBookmark = await fetchApi('/bookmark/create', {
+      const newBookmark = await fetchApi('https://89xx7tdx-5095.euw.devtunnels.ms/bookmark/create', {
         method: 'POST',
         body: JSON.stringify({ articleId }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userStore.token}`,
+        },
       });
       bookmarks.value.push(newBookmark);
       toast.success('Bookmark added successfully');
@@ -44,11 +62,19 @@ export const useBookmarkStore = defineStore('bookmark', () => {
   };
 
   const removeBookmark = async (bookmarkId) => {
+    if (!userStore.token) {
+      error.value = 'User not authenticated';
+      return;
+    }
+
     isLoading.value = true;
     error.value = null;
     try {
-      await fetchApi(`/bookmark/${bookmarkId}`, {
+      await fetchApi(`https://89xx7tdx-5095.euw.devtunnels.ms/bookmark/${bookmarkId}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${userStore.token}`,
+        },
       });
       bookmarks.value = bookmarks.value.filter(bookmark => bookmark.id !== bookmarkId);
       toast.success('Bookmark removed successfully');

@@ -33,44 +33,20 @@ onMounted(fetchBookmarkedArticles);
 
 <template>
   <div class="container mx-auto p-4">
-    <div
-      class="flex justify-between items-center mb-4 pb-4 border-b-2 border-dashed border-accent dark:border-dark-accent"
-    >
+    <div class="flex justify-between items-center mb-4 pb-4 border-b-2 border-dashed border-accent dark:border-dark-accent">
       <h2 class="text-3xl text-accent dark:text-dark-accent font-bold">Bookmarked News</h2>
       <button @click="router.go(-1)" class="btn-go-back">
         <i class="fa fa-arrow-left" aria-hidden="true"></i>
         <span class="ml-2">Go Back</span>
       </button>
     </div>
-    <div
-      v-if="bookmarkStore.bookmarks.length > 0"
-      class="news-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-    >
-      <div
-        v-for="(article, index) in bookmarkStore.bookmarks"
-        :key="index"
-        class="card rounded-lg p-2 shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20"
-      >
+    <div v-if="bookmarkStore.bookmarks.length > 0" class="news-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div v-for="(article, index) in bookmarkStore.bookmarks" :key="index" class="card rounded-lg p-2 shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20">
         <div class="img rounded-lg">
-          <img
-            :src="article.image"
-            alt="Article image"
-            class="w-full h-full object-cover rounded-lg hover:animate-pulse"
-          />
+          <img :src="article.image" alt="Article image" class="w-full h-full object-cover rounded-lg hover:animate-pulse" />
           <div class="remove" @click="removeBookmark(article.id)">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              class="w-6 h-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </div>
         </div>
@@ -84,11 +60,7 @@ onMounted(fetchBookmarkedArticles);
           <div class="flex justify-end p-4 border-t-2 border-accent dark:border-dark-accent">
             <router-link :to="article.link" class="flex items-center space-x-2">
               <p class="m-0">Read More</p>
-              <i
-                class="fa fa-arrow-circle-right"
-                aria-hidden="true"
-                style="font-size: 1.5em; color: var(--accent)"
-              ></i>
+              <i class="fa fa-arrow-circle-right" aria-hidden="true" style="font-size: 1.5em; color: var(--accent)"></i>
             </router-link>
           </div>
         </div>
@@ -202,8 +174,8 @@ onMounted(fetchBookmarkedArticles);
     background-color: var(--accent);
   }
 
-  i {
-    font-size: 1.2em;
+  .fa-arrow-left {
+    margin-right: 8px;
   }
 }
 </style>

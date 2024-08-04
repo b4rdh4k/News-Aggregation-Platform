@@ -18,6 +18,7 @@ export const useUserStore = defineStore('auth', () => {
       const response = await authService.fetchUserInfo(token.value);
       if (response?.code !== 40 && response?.code !== 41) {
         user.value = response;
+        console.log('user',user.value.id)
         localStorage.setItem('user', JSON.stringify(response));
       } else {
         user.value = null;
