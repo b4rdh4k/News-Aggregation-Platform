@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { ShareNetwork } from 'vue-social-sharing'
 import { useUserStore } from '@/store/user'
@@ -13,6 +13,11 @@ const news = ref({})
 const shareUrl = ref('')
 const dummyComments = ref([])
 
+watch(() => route.params.id, (newId) => {
+  newsId.value = newId
+  fetchNewsDetails(newsId.value)
+}, { immediate: true })
+
 async function fetchNewsDetails(id) {
   try {
     const response = await fetch(`https://api.sapientia.life/article/${id}`)
@@ -20,6 +25,7 @@ async function fetchNewsDetails(id) {
       throw new Error('Network response was not ok')
     }
     const data = await response.json()
+    console.log('Fetched news data:', data) // Log data to verify
     news.value = data.value.Value || {}
     shareUrl.value = window.location.href
     postViewData(id)
@@ -27,6 +33,7 @@ async function fetchNewsDetails(id) {
     console.error('Error fetching news details:', error)
   }
 }
+
 
 async function postViewData(id) {
   try {

@@ -1,68 +1,75 @@
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
-import { useSearchStore } from '@/store/search';
-import { useUserStore } from '@/store/user';
-import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue';
-import TabsHeader from '@/components/shared/Navigation/TabsHeader.vue';
-import router from '@/router';
-import { useToast } from 'vue-toastification';
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { useSearchStore } from '@/store/search'
+import { useUserStore } from '@/store/user'
+import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue'
+import TabsHeader from '@/components/shared/Navigation/TabsHeader.vue'
+import router from '@/router'
+import { useToast } from 'vue-toastification'
 
-const searchStore = useSearchStore();
-const userStore = useUserStore();
-const toast = useToast();
-const showSearch = ref(false);
-const searchQuery = ref('');
-const isLoggedIn = computed(() => !!userStore.token);
-const searchInputRef = ref(null);
-const searchInputRefSmall = ref(null);
+const searchStore = useSearchStore()
+const userStore = useUserStore()
+const toast = useToast()
+const showSearch = ref(false)
+const searchQuery = ref('')
+const isLoggedIn = computed(() => !!userStore.token)
+const searchInputRef = ref(null)
+const searchInputRefSmall = ref(null)
 
 const toggleSearch = () => {
-  showSearch.value = !showSearch.value;
+  showSearch.value = !showSearch.value
   nextTick(() => {
     if (showSearch.value) {
       if (window.innerWidth < 1024) {
-        searchInputRefSmall.value?.focus();
+        searchInputRefSmall.value?.focus()
       } else {
-        searchInputRef.value?.focus();
+        searchInputRef.value?.focus()
       }
     }
-  });
-};
+  })
+}
 
 const performSearch = () => {
   if (searchQuery.value) {
-    searchStore.search(searchQuery.value);
+    searchStore.search(searchQuery.value)
   }
-};
+}
 
 const handleLogout = async () => {
-  await userStore.logout();
-  toast.success('Logout successful!');
-  router.push('/');
-};
+  await userStore.logout()
+  toast.success('Logout successful!')
+  router.push('/')
+}
 
 const handleKeydown = (event) => {
   if (event.key === '/') {
-    event.preventDefault();
-    toggleSearch();
+    event.preventDefault()
+    toggleSearch()
   }
-};
+}
 
 onMounted(() => {
-  window.addEventListener('keydown', handleKeydown);
-});
+  window.addEventListener('keydown', handleKeydown)
+})
 
 onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeydown);
-});
+  window.removeEventListener('keydown', handleKeydown)
+})
 
 watch(searchQuery, (newValue) => {
   if (newValue) {
-    performSearch();
+    performSearch()
+    console.log('Search results:', searchStore.searchResults)
   }
-});
-</script>
+})
+const handleResultClick = (id) => {
+  console.log('Navigating to:', id)
+  router.push(`/news/${id}`).then(() => {
+    showSearch.value = false 
+  })
+}
 
+</script>
 <template>
   <header
     class="bg-background dark:bg-dark-background text-text dark:text-dark-text pb-0 sticky top-0 shadow-md z-10"
@@ -90,7 +97,9 @@ watch(searchQuery, (newValue) => {
               :key="result.id"
               class="p-2 hover:bg-secondary dark:hover:bg-dark-secondary cursor-pointer"
             >
-              {{ result.title }}
+              <router-link :to="`/news/${result.id}`" class="block">
+                {{ result.title }}
+              </router-link>
             </li>
           </ul>
         </div>
@@ -158,9 +167,12 @@ watch(searchQuery, (newValue) => {
           <li
             v-for="result in searchStore.searchResults"
             :key="result.id"
+            @click="() => handleResultClick(result.id)"
             class="p-2 hover:bg-secondary dark:hover:bg-dark-secondary cursor-pointer"
           >
-            {{ result.title }}
+            <router-link :to="`/news/${result.id}`">
+              {{ result.title }}
+            </router-link>
           </li>
         </ul>
       </div>

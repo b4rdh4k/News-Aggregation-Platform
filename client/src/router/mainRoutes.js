@@ -7,6 +7,7 @@ export const mainRoutes = [
           path: 'news/:id',
           name: 'News',
           component: () => import('@/components/NewsPage/NewsView.vue'),
+          props: route => ({ id: route.params.id })
         },
       ],
     },
