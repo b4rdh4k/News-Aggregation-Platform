@@ -32,7 +32,27 @@ export const basicsRoutes = [
         path: 'cancel',
         name: 'Cancel',
         component: () => import('@/views/Subscription/CancelPayment.vue')
-      }
+      },
+      {
+        path: 'gdpr',
+        name: 'GDPR',
+        component: () => import('@/views/general/Security/GDPRView.vue')
+      },
+      {
+        path: 'privacy-policy',
+        name: 'PrivacyPolicy',
+        component: () => import('@/views/general/Security/PrivacyPolicy.vue')
+      },
+      {
+        path: 'terms-of-service',
+        name: 'TermsOfService',
+        component: () => import('@/views/general/Security/ToSView.vue')
+      },
+      {
+        path: 'cookie-policy',
+        name: 'CookiePolicy',
+        component: () => import('@/views/general/Security/CookiePolicy.vue')
+      },
     ]
   }
 ]

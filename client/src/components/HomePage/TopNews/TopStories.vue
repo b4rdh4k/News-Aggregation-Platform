@@ -74,7 +74,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Use the styles from NewsList.vue */
 .truncate-text {
   display: -webkit-box;
   -webkit-line-clamp: 3;

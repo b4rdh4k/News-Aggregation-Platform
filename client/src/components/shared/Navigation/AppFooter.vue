@@ -38,18 +38,18 @@
           <h5 class="mb-2.5 font-bold uppercase">Security</h5>
 
           <ul class="mb-0 list-none text-accent dark:text-dark-accent">
-            <li>
-              <a href="#!">Privacy Policy</a>
-            </li>
-            <li>
-              <a href="#!">ToS</a>
-            </li>
-            <li>
-              <a href="#!">GDPR</a>
-            </li>
-            <li>
-              <a href="#!">Cookies</a>
-            </li>
+            <router-link to="privacy-policy" class="hover:underline">
+              <li>Privacy Policy</li>
+            </router-link>
+            <router-link to="terms-of-service" class="hover:underline">
+              <li>Terms of Service</li>
+            </router-link>
+            <router-link to="gdpr" class="hover:underline">
+              <li>GDPR</li>
+            </router-link>
+            <router-link to="cookie-policy" class="hover:underline">
+              <li>Cookies</li>
+            </router-link>
           </ul>
         </div>
       </div>

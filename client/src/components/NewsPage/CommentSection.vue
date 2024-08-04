@@ -3,7 +3,10 @@ import { ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCommentsStore } from '@/store/comments'
 import { useUserStore } from '@/store/user'
+import ReportModal from '@/components/NewsPage/ReportModal.vue'
+import { useToast } from 'vue-toastification'
 
+const toast = useToast()
 const route = useRoute()
 const { userId, fetchUser } = useUserStore()
 const commentsStore = useCommentsStore()
@@ -12,6 +15,8 @@ const newsId = ref(route.params.id)
 const news = ref({})
 const commentContent = ref('')
 const shareUrl = ref('')
+const showReportModal = ref(false)
+const selectedCommentId = ref(null)
 
 // Dummy comments data
 const dummyComments = [
@@ -26,35 +31,28 @@ const dummyComments = [
   {
     id: 2,
     userId: 2,
-    username: 'JaneSmith',
+    username: 'JohnDoe',
     userProfilePhoto: 'https://via.placeholder.com/50',
-    content: 'I found some points quite insightful. Thanks for sharing!',
-    createdAt: '2024-08-03T11:15:00Z'
+    content: 'Great article! Very informative.',
+    createdAt: '2024-08-03T10:30:00Z'
   },
   {
     id: 3,
     userId: 3,
-    username: 'AlexJohnson',
+    username: 'JohnDoe',
     userProfilePhoto: 'https://via.placeholder.com/50',
-    content: 'Could use more details on the topic, but overall a good read.',
-    createdAt: '2024-08-03T12:00:00Z'
+    content: 'Great article! Very informative.',
+    createdAt: '2024-08-03T10:30:00Z'
   },
   {
     id: 4,
     userId: 4,
-    username: 'AlexJohnson',
+    username: 'JohnDoe',
     userProfilePhoto: 'https://via.placeholder.com/50',
-    content: 'Could use more details on the topic, but overall a good read.',
-    createdAt: '2024-08-03T12:00:00Z'
-  },
-  {
-    id: 5,
-    userId: 5,
-    username: 'AlexJohnson',
-    userProfilePhoto: 'https://via.placeholder.com/50',
-    content: 'Could use more details on the topic, but overall a good read.',
-    createdAt: '2024-08-03T12:00:00Z'
+    content: 'Great article! Very informative.',
+    createdAt: '2024-08-03T10:30:00Z'
   }
+  // ... (rest of dummy comments)
 ]
 
 async function fetchNewsDetails(id) {
@@ -101,27 +99,50 @@ function clearComment() {
 
 async function submitComment() {
   if (!commentContent.value.trim()) {
-    alert('Comment content is required')
+    toast.error('Comment content is required')
     return
   }
 
   if (!userId.value) {
-    alert('User ID is required to submit a comment')
+    toast.error('User ID is required to submit a comment')
     return
   }
 
-  const commentData = {
-    id: dummyComments.length + 1,
-    userId: userId.value,
-    username: 'CurrentUser', // Replace with actual user's username
-    userProfilePhoto: 'https://via.placeholder.com/50', // Replace with actual user's profile photo URL
-    content: commentContent.value,
-    createdAt: new Date().toISOString(),
-  }
+  try {
+    const commentData = {
+      id: dummyComments.length + 1,
+      userId: userId.value,
+      username: 'CurrentUser', // Replace with actual user's username
+      userProfilePhoto: 'https://via.placeholder.com/50', // Replace with actual user's profile photo URL
+      content: commentContent.value,
+      createdAt: new Date().toISOString(),
+    }
 
-  // Simulating adding a comment to the store
-  dummyComments.push(commentData)
-  commentContent.value = ''
+    // Simulating adding a comment to the store
+    dummyComments.push(commentData)
+    toast.success('Comment added successfully!')
+    commentContent.value = ''
+  } catch (error) {
+    toast.error('Failed to add comment.')
+  }
+}
+
+function openReportModal(commentId) {
+  selectedCommentId.value = commentId
+  showReportModal.value = true
+}
+
+function handleReportSubmit(data) {
+  console.log('Report submitted:', { ...data, commentId: selectedCommentId.value })
+  // Handle report submission (e.g., send to server)
+  showReportModal.value = false
+}
+
+function handleKeydown(event) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault()
+    submitComment()
+  }
 }
 
 watch(
@@ -144,46 +165,48 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="mt-6">
-    <!-- Display Comments Section -->
-    <div v-if="dummyComments.length" class="mt-4 space-y-2 max-h-96 overflow-y-auto">
-      <div
-        v-for="comment in dummyComments"
-        :key="comment.id"
-        class="flex p-4 border border-accent dark:border-dark-accent rounded-md shadow-sm items-start"
-      >
-        <img
-          :src="comment.userProfilePhoto"
-          alt="User Profile"
-          class="w-12 h-12 rounded-full mr-4"
-        />
-        <div class="flex-1">
-          <p class="font-semibold">{{ comment.username }}</p>
-          <p class="text-text dark:text-dark-text">{{ comment.content }}</p>
-          <p class="text-xs text-gray-500">{{ new Date(comment.createdAt).toLocaleString() }}</p>
-        </div>
-        <button
-          class="ml-4 text-red-600 hover:text-red-800"
-          @click="() => alert('Report comment functionality not implemented')"
+  <div class="py-4">
+    <div class="mt-6">
+      <!-- Display Comments Section -->
+      <div v-if="dummyComments.length" class="mt-4 space-y-2 max-h-96 overflow-y-auto">
+        <div
+          v-for="comment in dummyComments"
+          :key="comment.id"
+          class="flex p-4 border border-accent dark:border-dark-accent rounded-md shadow-sm items-start"
         >
-        <i class="fa fa-flag-o"></i>
-        </button>
+          <img
+            :src="comment.userProfilePhoto"
+            alt="User Profile"
+            class="w-12 h-12 rounded-full mr-4"
+          />
+          <div class="flex-1">
+            <p class="font-semibold">{{ comment.username }}</p>
+            <p class="text-text dark:text-dark-text">{{ comment.content }}</p>
+            <p class="text-xs text-gray-500">{{ new Date(comment.createdAt).toLocaleString() }}</p>
+          </div>
+          <button
+            class="ml-4 text-red-600 hover:text-red-800"
+            @click="openReportModal(comment.id)"
+          >
+            <i class="fa fa-flag-o"></i>
+          </button>
+        </div>
       </div>
+      <p v-else class="text-text dark:text-dark-text mt-4">No comments yet.</p>
     </div>
-    <p v-else class="text-text dark:text-dark-text mt-4">No comments yet.</p>
-  </div>
-      <!-- Add Comment Section -->
-      <div class="flex items-center mb-4 mt-4">
+    <!-- Add Comment Section -->
+    <div class="flex items-center mb-4 mt-4">
       <img
-        src="https://via.placeholder.com/50" 
+        src="https://via.placeholder.com/50"
         alt="User Profile"
         class="w-12 h-12 rounded-full"
       />
       <textarea
         v-model="commentContent"
         placeholder="Add a comment..."
-        class="flex-1 ml-4 p-2 border border-accent dark:border-dark-accent rounded-md bg-primary dark:bg-dark-primary text-text"
+        class="flex-1 ml-4 p-2 border border-accent dark:border-dark-accent rounded-md text-text dark:text-dark-text outline-none"
         rows="2"
+        @keydown="handleKeydown"
       />
     </div>
     <div class="flex justify-end">
@@ -195,12 +218,18 @@ onMounted(() => {
       </button>
       <button
         @click="clearComment"
-        class="px-4 py-2 rounded-md bg-gray-300 dark:bg-dark-gray text-black dark:text-textrounded-md hover:bg-opacity-80 dark:hover:bg-opacity-80"
+        class="px-4 py-2 rounded-md bg-gray-300 dark:bg-dark-gray text-black dark:text-text hover:bg-opacity-80 dark:hover:bg-opacity-80"
       >
         Clear
       </button>
     </div>
-
+  </div>
+  <!-- Report Modal -->
+  <ReportModal
+    v-if="showReportModal"
+    @closeModal="showReportModal = false"
+    @submitReport="handleReportSubmit"
+  />
 </template>
 
 <style scoped>
