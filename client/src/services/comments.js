@@ -2,7 +2,7 @@ import { ref } from 'vue';
 
 export async function fetchComments(articleId) {
   try {
-    const response = await fetch(`https://api.sapientia.life/comment/article/${articleId}`);
+    const response = await fetch(`https://89xx7tdx-5095.euw.devtunnels.ms/comment/article/${articleId}`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -16,7 +16,7 @@ export async function fetchComments(articleId) {
 
 export async function postComment(commentData) {
   try {
-    const response = await fetch('https://api.sapientia.life/comment/create', {
+    const response = await fetch('https://89xx7tdx-5095.euw.devtunnels.ms/comment/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

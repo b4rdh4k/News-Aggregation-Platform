@@ -1,20 +1,20 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useUserStore } from '../../store/user'
-import { useRouter } from 'vue-router'
-import { useToast } from 'vue-toastification'
-import lottie from 'lottie-web'
-import animationData from '@/assets/media/LoginAnimation.json'
+import { ref, onMounted } from 'vue';
+import { useUserStore } from '../../store/user';
+import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
+import lottie from 'lottie-web';
+import animationData from '@/assets/media/LoginAnimation.json';
 
-const email = ref('')
-const password = ref('')
-const emailError = ref('')
-const passwordError = ref('')
-const userStore = useUserStore()
-const router = useRouter()
-const toast = useToast()
-const lottieContainer = ref(null)
-const loading = ref(false)
+const email = ref('');
+const password = ref('');
+const emailError = ref('');
+const passwordError = ref('');
+const userStore = useUserStore();
+const router = useRouter();
+const toast = useToast();
+const lottieContainer = ref(null);
+const loading = ref(false);
 
 onMounted(() => {
   lottie.loadAnimation({
@@ -22,67 +22,63 @@ onMounted(() => {
     renderer: 'svg',
     loop: true,
     autoplay: true,
-    animationData
-  })
-})
+    animationData,
+  });
+});
 
 const validateForm = () => {
-  emailError.value = ''
-  passwordError.value = ''
+  emailError.value = '';
+  passwordError.value = '';
 
   if (!email.value) {
-    emailError.value = 'Email is required'
+    emailError.value = 'Email is required';
   } else if (!/\S+@\S+\.\S+/i.test(email.value)) {
-    emailError.value = 'Email is invalid'
+    emailError.value = 'Email is invalid';
   }
 
   if (!password.value) {
-    passwordError.value = 'Password is required'
+    passwordError.value = 'Password is required';
   } else if (password.value.length < 6) {
-    passwordError.value = 'Password is incorrect'
+    passwordError.value = 'Password is incorrect';
   } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)/.test(password.value)) {
-    passwordError.value = 'Password is incorrect'
+    passwordError.value = 'Password is incorrect';
   }
 
-  return !emailError.value && !passwordError.value
-}
+  return !emailError.value && !passwordError.value;
+};
 
 const login = async () => {
   if (!validateForm()) {
-    toast.error('Please fill out all required fields correctly.')
-    return
+    toast.error('Please fill out all required fields correctly.');
+    return;
   }
 
-  loading.value = true
+  loading.value = true;
 
   try {
-    await userStore.login({ email: email.value.toLowerCase(), password: password.value })
-    toast.success('Login successful!')
-    router.push('/')
+    await userStore.login({ email: email.value.toLowerCase(), password: password.value });
+    toast.success('Login successful!');
+    router.push('/');
   } catch (error) {
     // Error handling is done in the userStore.login method
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
-const loginWithGoogle = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`
-}
+const loginWithProvider = async (provider) => {
+  try {
+    await userStore.loginWithProvider(provider);
+  } catch (error) {
+    console.error(`Login with ${provider} error:`, error.message);
+    toast.error(`Login with ${provider} failed.`);
+  }
+};
 
-const loginWithDiscord = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL}/auth/discord`
-}
-
-const loginWithGitHub = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL}/auth/github`
-}
 </script>
 
 <template>
-  <div
-    class="flex flex-col md:flex-row min-h-screen bg-background dark:bg-dark-background text-text dark:text-dark-text"
-  >
+  <div class="flex flex-col md:flex-row min-h-screen bg-background dark:bg-dark-background text-text dark:text-dark-text">
     <div class="hidden md:flex flex-1 pl-4">
       <div ref="lottieContainer" class="h-full"></div>
     </div>
@@ -96,7 +92,7 @@ const loginWithGitHub = () => {
           <section class="flex justify-center m-8 items-center gap-4">
             <div class="relative group">
               <button
-                @click="loginWithGoogle"
+                @click="() => loginWithProvider('Google')"
                 class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
               >
                 <i class="fab fa-google text-2xl"></i>
@@ -110,7 +106,7 @@ const loginWithGitHub = () => {
 
             <div class="relative group">
               <button
-                @click="loginWithDiscord"
+                @click="() => loginWithProvider('Discord')"
                 class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
               >
                 <i class="fab fa-discord text-2xl"></i>
@@ -124,7 +120,7 @@ const loginWithGitHub = () => {
 
             <div class="relative group">
               <button
-                @click="loginWithGitHub"
+                @click="() => loginWithProvider('GitHub')"
                 class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
               >
                 <i class="fab fa-github text-2xl"></i>

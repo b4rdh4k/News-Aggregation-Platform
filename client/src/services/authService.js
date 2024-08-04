@@ -89,9 +89,9 @@ export const authService = {
   },
 
   async loginWithProvider(provider) {
+    
     try {
-      // Initiate login with provider
-      window.location.href = `https://api.sapientia.life/auth/login-${provider}`;
+      window.location.href = `https://89xx7tdx-5095.euw.devtunnels.ms/auth/login-${provider}`;
     } catch (error) {
       throw new Error(error.message);
     }

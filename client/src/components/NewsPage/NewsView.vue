@@ -20,7 +20,7 @@ watch(() => route.params.id, (newId) => {
 
 async function fetchNewsDetails(id) {
   try {
-    const response = await fetch(`https://api.sapientia.life/article/${id}`)
+    const response = await fetch(`https://89xx7tdx-5095.euw.devtunnels.ms/article/${id}`)
     if (!response.ok) {
       throw new Error('Network response was not ok')
     }
@@ -37,7 +37,7 @@ async function fetchNewsDetails(id) {
 
 async function postViewData(id) {
   try {
-    const response = await fetch(`https://api.sapientia.life/article/view/${id}`, {
+    const response = await fetch(`https://89xx7tdx-5095.euw.devtunnels.ms/article/view/${id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
