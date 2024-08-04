@@ -53,64 +53,19 @@ const login = async () => {
     return
   }
 
-  const normalizedEmail = email.value.toLowerCase()
-
   loading.value = true
 
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: normalizedEmail,
-        password: password.value
-      })
-    })
-
-    const data = await response.json()
-    console.log('Login response:', data)
-
-    if (response.ok) {
-      userStore.$patch({
-        token: data.accessToken,
-        user: data.user
-      })
-      localStorage.setItem('token', data.accessToken)
-      toast.success('Login successful!')
-      router.push('/')
-    } else {
-      console.error('Login failed:', data)
-      switch (data.code) {
-        case 36:
-          toast.error('User not found.')
-          break
-        case 37:
-          toast.error('Invalid password.')
-          break
-        case 38:
-          toast.error('Error creating acess token.')
-          break
-        case 44:
-          toast.error(
-            'Our system has detected multiple login attempts from your IP address     which is a violation of our Terms of Service. As a result     access from your IP has been temporarily blocked for 10 minutes. This measure helps protect our platform from unauthorized access and ensures a secure environment for all users.'
-          )
-          break
-        default:
-          toast.error('Failed to register user.')
-      }
-    }
+    await userStore.login({ email: email.value.toLowerCase(), password: password.value })
+    toast.success('Login successful!')
+    router.push('/')
   } catch (error) {
-    console.error('Error logging in user:', error)
-    if (error.message === 'Failed to fetch') {
-      emailError.value = 'Failed to connect to server'
-    }
-    toast.error('Failed to connect to server.')
+    // Error handling is done in the userStore.login method
   } finally {
     loading.value = false
   }
 }
+
 const loginWithGoogle = () => {
   window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`
 }

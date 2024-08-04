@@ -1,8 +1,14 @@
 <script setup>
 import { ref } from 'vue'
-import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue';
+import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue'
+import { useUserStore } from '@/store/user'
+import { useToast } from 'vue-toastification'
+import { useRouter } from 'vue-router'
 
 const isSidebarOpen = ref(false)
+const userStore = useUserStore()
+const toast = useToast()
+const router = useRouter()
 
 function toggleSidebar() {
   isSidebarOpen.value = !isSidebarOpen.value
@@ -11,6 +17,11 @@ function toggleSidebar() {
 function closeSidebar() {
   isSidebarOpen.value = false
 }
+const handleLogout = async () => {
+  await userStore.logout();
+  toast.success('Logout successful!');
+  router.push('/');
+};
 </script>
 
 <template>
@@ -28,10 +39,16 @@ function closeSidebar() {
         <router-link to="/admin/comments" class="nav-item" @click="closeSidebar"
           >Comments</router-link
         >
+        <router-link to="/profile" class="nav-item" @click="closeSidebar">Profile</router-link>
       </nav>
       <footer class="sidebar-footer">
         <router-link to="/">
-          <button class="button py-2 px-4 rounded">Logout</button>
+          <button
+            @click="handleLogout"
+            class="block w-full border-b-[1px] border-accent dark:border-dark-accent px-4 py-2 text-left hover:bg-primary hover:rounded-t-md dark:hover:bg-dark-primary"
+          >
+            Log out
+          </button>
         </router-link>
       </footer>
     </aside>
@@ -54,7 +71,7 @@ function closeSidebar() {
             />
           </svg>
         </button>
-        <div class="welcome-message">Happy working 💌 </div>
+        <div class="welcome-message">Happy working 💌</div>
         <router-link to="/" class="h-12 flex-shrink-0">
           <img src="@/assets/media/Sapientia-Logo.png" alt="Logo" class="h-full cursor-pointer" />
         </router-link>

@@ -1,79 +1,82 @@
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { useSearchStore } from '@/store/search'
-import { useUserStore } from '@/store/user'
-import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue'
-import TabsHeader from '@/components/shared/Navigation/TabsHeader.vue'
-import router from '@/router'
-import { useToast } from 'vue-toastification'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { useSearchStore } from '@/store/search';
+import { useUserStore } from '@/store/user';
+import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue';
+import TabsHeader from '@/components/shared/Navigation/TabsHeader.vue';
+import router from '@/router';
 
-const searchStore = useSearchStore()
-const userStore = useUserStore()
-const toast = useToast()
-const showSearch = ref(false)
-const searchQuery = ref('')
-const isLoggedIn = computed(() => !!userStore.token)
-const searchInputRef = ref(null)
-const searchInputRefSmall = ref(null)
+const searchStore = useSearchStore();
+const userStore = useUserStore();
+const showSearch = ref(false);
+const searchQuery = ref('');
+const isLoggedIn = computed(() => !!userStore.token);
+const searchInputRef = ref(null);
+const searchInputRefSmall = ref(null);
 
 const toggleSearch = () => {
-  showSearch.value = !showSearch.value
+  showSearch.value = !showSearch.value;
   nextTick(() => {
     if (showSearch.value) {
       if (window.innerWidth < 1024) {
-        searchInputRefSmall.value?.focus()
+        searchInputRefSmall.value?.focus();
       } else {
-        searchInputRef.value?.focus()
+        searchInputRef.value?.focus();
       }
     }
-  })
-}
+  });
+};
 
 const performSearch = () => {
   if (searchQuery.value) {
-    searchStore.search(searchQuery.value)
+    searchStore.search(searchQuery.value);
   }
-}
+};
 
-const handleLogout = async () => {
-  await userStore.logout()
-  toast.success('Logout successful!')
-  router.push('/')
-}
 
 const handleKeydown = (event) => {
   if (event.key === '/') {
-    event.preventDefault()
-    toggleSearch()
+    event.preventDefault();
+    toggleSearch();
   }
-}
+};
 
 onMounted(() => {
-  window.addEventListener('keydown', handleKeydown)
-})
+  window.addEventListener('keydown', handleKeydown);
+});
 
 onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeydown)
-})
+  window.removeEventListener('keydown', handleKeydown);
+});
 
 watch(searchQuery, (newValue) => {
   if (newValue) {
-    performSearch()
-    console.log('Search results:', searchStore.searchResults)
+    performSearch();
+    console.log('Search results:', searchStore.searchResults);
   }
-})
-const handleResultClick = (id) => {
-  console.log('Navigating to:', id)
-  router.push(`/news/${id}`).then(() => {
-    showSearch.value = false 
-  })
-}
+});
 
+const handleResultClick = (id) => {
+  console.log('Navigating to:', id);
+  router.push(`/news/${id}`).then(() => {
+    showSearch.value = false;
+  });
+};
+
+const redirectToProfileOrAdmin = () => {
+  const userRole = userStore.decodedToken?.role?.toLowerCase();
+  console.log('User Role:', userRole);
+
+  if (userRole === 'admin' || userRole === 'premium') {
+    router.push('/admin');
+  } else {
+    router.push('/profile');
+  }
+};
 </script>
+
 <template>
-  <header
-    class="bg-background dark:bg-dark-background text-text dark:text-dark-text pb-0 sticky top-0 shadow-md z-10"
-  >
+  <header class="bg-background dark:bg-dark-background text-text dark:text-dark-text pb-0 sticky top-0 shadow-md z-10">
     <div class="container mx-auto flex flex-wrap justify-around items-center p-4">
       <router-link to="/" class="h-12 flex-shrink-0">
         <img src="@/assets/media/Sapientia-Logo.png" alt="Logo" class="h-full cursor-pointer" />
@@ -130,24 +133,15 @@ const handleResultClick = (id) => {
             </router-link>
           </div>
           <div v-if="isLoggedIn" class="flex flex-row">
-            <router-link to="/profile">
-              <img
-                src="@/assets/media/user-icon.svg"
-                class="max-h-8 max-w-8 cursor-pointer"
-                alt="User Icon"
-              />
-            </router-link>
+            <img
+              src="@/assets/media/user-icon.svg"
+              class="max-h-8 max-w-8 cursor-pointer"
+              alt="User Icon"
+              @click="redirectToProfileOrAdmin"
+            />
           </div>
         </div>
         <ThemeToggle class="md:block" />
-        <div v-if="isLoggedIn">
-          <button
-            @click="handleLogout"
-            class="block w-full border-b-[1px] border-accent dark:border-dark-accent px-4 py-2 text-left hover:bg-primary hover:rounded-t-md dark:hover:bg-dark-primary"
-          >
-            Log out
-          </button>
-        </div>
       </div>
     </div>
     <div v-if="showSearch" class="relative lg:hidden mt-4 mx-2">

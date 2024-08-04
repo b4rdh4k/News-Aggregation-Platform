@@ -1,18 +1,16 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useUserStore } from '@/store/user'; // Ensure this path is correct
+import { useUserStore } from '@/store/user';
 
 const userStore = useUserStore();
 
 const username = ref('');
 const fullName = ref('');
 const email = ref('');
-const birthdate = ref('');
 const profilePicture = ref(null);
 const profilePicturePreview = ref(null);
 const newPassword = ref('');
 const confirmNewPassword = ref('');
-const currentPassword = ref('');
 
 // Constants for file validation
 const MAX_WIDTH = 2048;
@@ -25,6 +23,7 @@ const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
 onMounted(async () => {
   try {
     if (userStore.token) {
+      await userStore.refreshAuthToken();
       await userStore.fetchUser();
       const user = userStore.user;
 
@@ -32,8 +31,6 @@ onMounted(async () => {
         username.value = user.username || '';
         fullName.value = user.fullName || '';
         email.value = user.email || '';
-        birthdate.value = user.birthdate || '';
-        // If user has a profile picture URL, set it for preview
         if (user.profileImage) {
           profilePicturePreview.value = user.profileImage;
         }
@@ -100,34 +97,22 @@ const removeProfilePicture = () => {
 };
 
 const updateProfile = async () => {
-  if (newPassword.value && newPassword.value !== confirmNewPassword.value) {
-    alert('New passwords do not match');
-    return;
-  }
-
   try {
     // Update user profile
     await userStore.updateUser({
       username: username.value,
       fullName: fullName.value,
-      email: email.value,
-      birthdate: birthdate.value,
     });
 
-    // Update profile image
+    // Update profile image if provided
     if (profilePicture.value) {
       const formData = new FormData();
       formData.append('profileImage', profilePicture.value);
       await userStore.updateProfileImage(formData);
     }
 
-    // Change password if provided
-    if (newPassword.value) {
-      await userStore.changePassword({
-        currentPassword: currentPassword.value,
-        newPassword: newPassword.value,
-      });
-    }
+    // Refresh token after updating profile
+    await userStore.refreshAuthToken();
 
     alert('Profile updated successfully');
   } catch (error) {
@@ -135,6 +120,7 @@ const updateProfile = async () => {
     alert('Failed to update profile');
   }
 };
+
 </script>
 
 <template>
@@ -166,11 +152,7 @@ const updateProfile = async () => {
         </div>
         <div class="form-group">
           <label for="email">Email</label>
-          <input id="email" v-model="email" type="email" required />
-        </div>
-        <div class="form-group">
-          <label for="birthdate">Birthdate</label>
-          <input id="birthdate" v-model="birthdate" type="date" required />
+          <input id="email" v-model="email" type="email" required disabled />
         </div>
         <button type="submit" class="update-button">Update Profile</button>
       </form>
@@ -178,10 +160,6 @@ const updateProfile = async () => {
     <div class="form bg-primary bg-opacity-30 p-4 rounded-lg">
       <h4 class="border-b-2 p-2 mb-4 border-primary dark:border-dark-primary">Change your password</h4>
       <form @submit.prevent="updateProfile">
-        <div class="form-group">
-          <label for="currentPassword">Current Password</label>
-          <input id="currentPassword" v-model="currentPassword" type="password" required />
-        </div>
         <div class="form-group">
           <label for="newPassword">New Password</label>
           <input id="newPassword" v-model="newPassword" type="password" />
@@ -195,6 +173,7 @@ const updateProfile = async () => {
     </div>
   </div>
 </template>
+
 
 <style lang="scss" scoped>
 @import '@/views/UserDashboard/styles/base.scss';

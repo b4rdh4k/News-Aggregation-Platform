@@ -14,6 +14,11 @@ export const basicsRoutes = [
         component: () => import('@/views/Account/RegisterView.vue')
       },
       {
+        path: '/auth/',
+        name: 'AuthCallback',
+        component: () => import('@/components/Account/AuthCallback.vue')
+      },
+      {
         path: 'setup-mfa',
         name: 'SetupMFA',
         component: () => import('@/components/Account/setup-mfa.vue')
