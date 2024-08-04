@@ -10,13 +10,30 @@ export const useUserStore = defineStore('user', () => {
   const user = ref(null);
   const toast = useToast();
 
+  const requestOptions = {
+    method: 'GET',
+  };
+
+  async function check_if_logged_in() {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/info`, requestOptions);
+    const result = await response.json();
+    if (result.code !== 40 && result.code !== 41) {
+       localStorage.setItem("user", JSON.stringify(result)); 
+       return true;
+    } else {
+       localStorage.removeItem("user");
+       return false;
+    }
+  }
+
   const fetchUser = async () => {
-      const response = await fetchApi('/auth/info', {
-        method: 'GET'
-      });
+    let response = check_if_logged_in();
 
-        user.value = await response.json();
-
+    if (response) {
+      user.value = JSON.parse(localStorage.getItem("user"));
+    } else {
+      user.value = null;
+    }
   };
 
   const refreshAuthToken = async () => {
