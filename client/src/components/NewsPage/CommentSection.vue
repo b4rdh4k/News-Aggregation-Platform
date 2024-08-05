@@ -5,9 +5,16 @@
       <div
         v-for="comment in comments"
         :key="comment.Id"
-        class="flex p-4 border border-accent dark:border-dark-accent rounded-md shadow-sm items-start"
+        class="relative flex p-4 border border-accent dark:border-dark-accent rounded-md shadow-sm items-start"
       >
-      <img
+        <!-- Report Button -->
+        <button
+          class="absolute top-2 right-2 text-red-600 hover:text-red-800"
+          @click="openReportModal(comment.Id)"
+        >
+          <i class="fa fa-flag-o"></i>
+        </button>
+        <img
           :src="comment.UserProfilePhoto || 'https://via.placeholder.com/50'"
           alt="User Profile"
           class="w-12 h-12 rounded-full mr-4"
@@ -17,12 +24,6 @@
           <p class="text-text dark:text-dark-text">{{ comment.Content }}</p>
           <p class="text-xs text-gray-500">{{ new Date(comment.CreatedAt).toLocaleString() }}</p>
         </div>
-        <button
-          class="ml-4 text-red-600 hover:text-red-800"
-          @click="openReportModal(comment.Id)"
-        >
-          <i class="fa fa-flag-o"></i>
-        </button>
       </div>
     </div>
     <p v-else class="text-text dark:text-dark-text mt-4">No comments yet.</p>
@@ -78,7 +79,6 @@ const route = useRoute()
 const { fetchUser, user } = useUserStore()
 const commentsStore = useCommentsStore()
 const toast = useToast()
-console.log('useriiiiiiiiiiiiii',user)
 
 const newsId = ref(route.params.id)
 const commentContent = ref('')
@@ -166,5 +166,13 @@ function handleKeydown(event) {
 <style scoped>
 textarea {
   resize: none;
+}
+.comment-container {
+  position: relative;
+}
+.report-button {
+  position: absolute;
+  top: 2px;
+  right: 2px;
 }
 </style>
