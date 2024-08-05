@@ -9,10 +9,10 @@ const picksForYou = ref([]);
 
 // Dummy data
 const dummyData = [
-  { id: '1', title: 'Exciting News in Tech', source: 'TechDaily', time: '2 hours ago' },
-  { id: '2', title: 'Latest Trends in AI', source: 'AI Times', time: '5 hours ago' },
-  { id: '3', title: 'Sports Update: Major League Highlights', source: 'SportsNet', time: '1 day ago' },
-  { id: '4', title: 'Finance Tips for the Modern Investor', source: 'Finance World', time: '3 days ago' }
+  { id: '1', title: 'Exciting News in Tech', source: 'TechDaily', createdAt: '2 hours ago' },
+  { id: '2', title: 'Latest Trends in AI', source: 'AI Times', createdAt: '5 hours ago' },
+  { id: '3', title: 'Sports Update: Major League Highlights', source: 'SportsNet', createdAt: '1 day ago' },
+  { id: '4', title: 'Finance Tips for the Modern Investor', source: 'Finance World', createdAt: '3 days ago' }
 ];
 
 onMounted(async () => {
@@ -43,7 +43,7 @@ onMounted(async () => {
       </router-link>
       <div class="flex-1">
         <h4 class="title text-sm font-medium truncate">{{ pick.title }}</h4>
-        <p class="time text-xs text-text dark:text-dark-text truncate">{{ pick.time }}</p>
+        <p class="time text-xs text-text dark:text-dark-text truncate">{{ pick.createdAt }}</p>
       </div>
     </div>
   </div>
