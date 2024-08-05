@@ -15,6 +15,10 @@ const dummyData = [
   { id: '4', title: 'Finance Tips for the Modern Investor', source: 'Finance World', createdAt: '3 days ago' }
 ];
 
+const goToNewsView = (id) => {
+  router.push(`/news/${id}`);
+};
+
 onMounted(async () => {
   try {
     await recommendedStore.fetchRecommendedNews()
@@ -22,7 +26,8 @@ onMounted(async () => {
     if (recommendedStore.recommendedNews.length === 0) {
       picksForYou.value = dummyData;
     } else {
-      picksForYou.value = recommendedStore.recommendedNews.slice(0, 4)
+      picksForYou.value = recommendedStore.recommendedNews.slice(0, 5)
+      console.log('Recommended News:', recommendedStore.recommendedNews)
     }
   } catch (error) {
     console.error('Error fetching recommended news:', error)
@@ -36,7 +41,7 @@ onMounted(async () => {
       v-for="(pick, index) in picksForYou"
       :key="index"
       class="item cursor-pointer flex items-start space-x-2 border-b pb-2 last:border-b-0"
-      @click="goToNewsView(pick)"
+      @click="goToNewsView(pick.id)"
     >
       <router-link :to="`/source/${pick.source}`" class="source text-accent dark:text-dark-accent font-serif text-sm italic hover:text-secondary dark:hover:text-dark-secondary">
         {{ pick.source }}

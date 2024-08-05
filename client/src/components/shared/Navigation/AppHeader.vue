@@ -5,6 +5,10 @@ import { useUserStore } from '@/store/user';
 import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue';
 import TabsHeader from '@/components/shared/Navigation/TabsHeader.vue';
 import router from '@/router';
+import { useToast } from 'vue-toastification';
+import { startConnection , stopConnection} from '@/services/signalR';
+import { useNotificationsStore } from '@/store/notifications';
+
 
 const searchStore = useSearchStore();
 const userStore = useUserStore();
@@ -13,6 +17,13 @@ const searchQuery = ref('');
 const isLoggedIn = computed(() => !!userStore.token);
 const searchInputRef = ref(null);
 const searchInputRefSmall = ref(null);
+const toast = useToast();
+const showNotifications = ref(false);
+const notificationsStore = useNotificationsStore();
+
+const toggleNotifications = () => {
+  showNotifications.value = !showNotifications.value;
+};
 
 const toggleSearch = () => {
   showSearch.value = !showSearch.value;
@@ -43,10 +54,16 @@ const handleKeydown = (event) => {
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown);
+  if (userStore.token) {
+    startConnection();
+  }
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeydown);
+  if (userStore.token) {
+    stopConnection();
+  }
 });
 
 watch(searchQuery, (newValue) => {
@@ -123,6 +140,40 @@ const redirectToProfileOrAdmin = () => {
             d="M21 21l-4.35-4.35m-3.15 1.85a7 7 0 1 0-9.9-9.9 7 7 0 0 0 9.9 9.9z"
           />
         </svg>
+  <div v-if="isLoggedIn" class="flex flex-row">
+    <img
+      src="@/assets/media/user-icon.svg"
+      class="max-h-8 max-w-8 cursor-pointer"
+      alt="User Icon"
+      @click="redirectToProfileOrAdmin"
+    />
+    <!-- Notifications Button -->
+    <button @click="toggleNotifications" class="relative">
+      <img
+        src="@/assets/15782384.png"
+        class="w-10 h-10 cursor-pointer"
+        alt="Notifications Icon"
+      />
+      <!-- Notifications Dropdown -->
+      <div
+        v-show="showNotifications"
+        class="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-background border border-gray-300 dark:border-gray-600 rounded-md shadow-lg z-20"
+      >
+        <div class="p-2">
+          <p
+            v-for="(notification, index) in notificationsStore.notifications"
+            :key="index"
+            class="text-gray-800 dark:text-gray-200"
+          >
+            {{ notification.message }}
+          </p>
+          <p v-if="notificationsStore.notifications.length === 0" class="text-gray-800 dark:text-gray-200">
+            No new notifications
+          </p>
+        </div>
+      </div>
+    </button>
+  </div>
         <div>
           <div v-if="!isLoggedIn">
             <router-link
@@ -174,3 +225,17 @@ const redirectToProfileOrAdmin = () => {
     <TabsHeader />
   </header>
 </template>
+
+<style>
+button.relative {
+  position: relative;
+}
+
+button.relative .absolute {
+  display: none;
+}
+
+button.relative:hover .absolute {
+  display: block;
+}
+</style>
