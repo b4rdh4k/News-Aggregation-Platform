@@ -87,7 +87,7 @@ const loginWithProvider = async (provider) => {
       <div
         class="container max-w-lg mx-auto px-6 bg-background dark:bg-dark-background text-text dark:text-dark-text rounded-lg"
       >
-        <h1 class="text-4xl font-bold mb-4 text-center">Nice to see you again!</h1>
+        <h1 class="text-4xl font-bold mb-4 text-center">Nice to not see you again!</h1>
         <form @submit.prevent="login" autocomplete="on" novalidate>
           <section class="flex justify-center m-8 items-center gap-4">
             <div class="relative group">

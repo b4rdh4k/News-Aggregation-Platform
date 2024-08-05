@@ -14,10 +14,9 @@ export const useNewsStore = defineStore('news', () => {
         throw new Error('Network response was not ok')
       }
       const data = await response.json()
-      //console.log('Fetched data:', data) 
       
-      if (data && data.value && Array.isArray(data.value.Value)) {
-        allNews.value = data.value.Value
+      if (data && (data.value || data.Value) && Array.isArray(data.value || data.Value)) {
+        allNews.value = data.value || data.Value
       } else {
         console.error('Fetched data does not contain the expected array structure:', data)
         toast.error('Failed to fetch stories. Unexpected data structure.')

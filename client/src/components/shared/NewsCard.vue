@@ -71,7 +71,6 @@ import { useRouter } from 'vue-router'
 import { useBookmarkStore } from '@/store/bookmark'
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue'
 
-console.log(this.articles);
 const props = defineProps({
   articles: {
     type: Array,

@@ -15,7 +15,7 @@ export const useCategoryStore = defineStore('category', () => {
     const lastFetched = new Date(localStorage.getItem('lastFetchedCategories'));
     const cachedCategories = localStorage.getItem('categories');
 
-    if (cachedCategories && now - lastFetched < 24 * 60 * 60 * 1000) {
+    if (cachedCategories && now - lastFetched < 60 * 60 * 1000) {
       categories.value = JSON.parse(cachedCategories);
       console.log('Using cached categories:', categories.value);
     } else {

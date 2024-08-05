@@ -20,7 +20,7 @@ export const useBookmarkStore = defineStore('bookmark', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      const data = await fetchApi('https://89xx7tdx-5095.euw.devtunnels.ms/bookmark/all', {
+      const data = await fetchApi('/user/saved-articles', {
         headers: {
           Authorization: `Bearer ${userStore.token}`,
         },
@@ -43,7 +43,7 @@ export const useBookmarkStore = defineStore('bookmark', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      const newBookmark = await fetchApi('https://89xx7tdx-5095.euw.devtunnels.ms/bookmark/create', {
+      const newBookmark = await fetchApi('/bookmark/create', {
         method: 'POST',
         body: JSON.stringify({ articleId }),
         headers: {
@@ -70,7 +70,7 @@ export const useBookmarkStore = defineStore('bookmark', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      await fetchApi(`https://89xx7tdx-5095.euw.devtunnels.ms/bookmark/${bookmarkId}`, {
+      await fetchApi(`/bookmark/${bookmarkId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${userStore.token}`,

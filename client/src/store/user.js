@@ -18,7 +18,6 @@ export const useUserStore = defineStore('auth', () => {
       const response = await authService.fetchUserInfo(token.value);
       if (response?.code !== 40 && response?.code !== 41) {
         user.value = response;
-        console.log('user',user.value.id)
         localStorage.setItem('user', JSON.stringify(response));
       } else {
         user.value = null;
@@ -31,13 +30,13 @@ export const useUserStore = defineStore('auth', () => {
 
   const refreshAuthToken = async () => {
     if (!refreshToken.value) return;
-  
+
     try {
-      const response = await authService.refreshAuthToken(refreshToken.value);
-      if (response?.accessToken) {
-        token.value = response.accessToken;
-        localStorage.setItem('token', response.accessToken);
-        decodedToken.value = VueJwtDecode.decode(response.accessToken);
+      const { accessToken } = await authService.refreshAuthToken(refreshToken.value);
+      if (accessToken) {
+        token.value = accessToken;
+        localStorage.setItem('token', accessToken);
+        decodedToken.value = VueJwtDecode.decode(accessToken);
         await fetchUser(); // Fetch user info after refreshing token
       } else {
         throw new Error('Failed to refresh token');
@@ -48,38 +47,15 @@ export const useUserStore = defineStore('auth', () => {
       logout(); // Log out user if token refresh fails
     }
   };
-  
-
-  const updateUser = async (userUpdateData) => {
-    if (!user.value?.Id || !token.value) return;
-
-    try {
-      await authService.updateUser(user.value.Id, userUpdateData, token.value);
-      await fetchUser(); // Fetch updated user info
-    } catch (error) {
-      console.error('Failed to update user info:', error);
-    }
-  };
-
-  const updateUserPart = async (endpoint, data) => {
-    if (!user.value?.Id || !token.value) return;
-
-    try {
-      await authService.updateUserPart(user.value.Id, endpoint, data, token.value);
-      await fetchUser(); // Fetch updated user info
-    } catch (error) {
-      console.error(`Failed to update ${endpoint}:`, error);
-    }
-  };
 
   const login = async (credentials) => {
     try {
-      const response = await authService.login(credentials);
-      token.value = response.accessToken;
-      refreshToken.value = response.refreshToken;
-      localStorage.setItem('token', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
-      decodedToken.value = VueJwtDecode.decode(response.accessToken);
+      const { accessToken, refreshToken: newRefreshToken } = await authService.login(credentials);
+      token.value = accessToken;
+      refreshToken.value = newRefreshToken;
+      localStorage.setItem('token', accessToken);
+      localStorage.setItem('refreshToken', newRefreshToken);
+      decodedToken.value = VueJwtDecode.decode(accessToken);
       await fetchUser();
     } catch (error) {
       console.error('Login error:', error.message);
@@ -89,12 +65,12 @@ export const useUserStore = defineStore('auth', () => {
 
   const register = async (userInfo) => {
     try {
-      const response = await authService.register(userInfo);
-      token.value = response.accessToken;
-      refreshToken.value = response.refreshToken;
-      localStorage.setItem('token', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
-      decodedToken.value = VueJwtDecode.decode(response.accessToken);
+      const { accessToken, refreshToken: newRefreshToken } = await authService.register(userInfo);
+      token.value = accessToken;
+      refreshToken.value = newRefreshToken;
+      localStorage.setItem('token', accessToken);
+      localStorage.setItem('refreshToken', newRefreshToken);
+      decodedToken.value = VueJwtDecode.decode(accessToken);
       await fetchUser(); // Fetch user info after registration
     } catch (error) {
       console.error('Registration error:', error.message);
@@ -111,12 +87,12 @@ export const useUserStore = defineStore('auth', () => {
 
   const handleProviderCallback = async () => {
     try {
-      const { accessToken, refreshToken } = await authService.handleProviderCallback();
-      token.value = accessToken;
-      refreshToken.value = refreshToken;
-      localStorage.setItem('token', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      decodedToken.value = VueJwtDecode.decode(accessToken);
+      const { accessToken: newAccessToken, refreshToken: newRefreshToken } = await authService.handleProviderCallback();
+      token.value = newAccessToken;
+      refreshToken.value = newRefreshToken;
+      localStorage.setItem('token', newAccessToken);
+      localStorage.setItem('refreshToken', newRefreshToken);
+      decodedToken.value = VueJwtDecode.decode(newAccessToken);
       await fetchUser();
     } catch (error) {
       console.error('Provider callback error:', error.message);
@@ -142,6 +118,50 @@ export const useUserStore = defineStore('auth', () => {
     return userRole === requiredRole;
   };
 
+  const updateUserBirthdate = async (newBirthDay) => {
+    try {
+      await authService.updateUserBirthdate(newBirthDay);
+      await fetchUser(); // Refresh user data after update
+      toast.success('Birthdate updated successfully');
+    } catch (error) {
+      console.error('Error updating birthdate:', error.message);
+      toast.error('Failed to update birthdate');
+    }
+  };
+
+  const updateUserUsername = async (newUsername) => {
+    try {
+      await authService.updateUserUsername(newUsername);
+      await fetchUser(); // Refresh user data after update
+      toast.success('Username updated successfully');
+    } catch (error) {
+      console.error('Error updating username:', error.message);
+      toast.error('Failed to update username');
+    }
+  };
+
+  const updateUserFullName = async (newName) => {
+    try {
+      await authService.updateUserFullName(newName);
+      await fetchUser(); // Refresh user data after update
+      toast.success('Full name updated successfully');
+    } catch (error) {
+      console.error('Error updating full name:', error.message);
+      toast.error('Failed to update full name');
+    }
+  };
+
+  const updateProfileImage = async (imageUrl) => {
+    try {
+      await authService.updateProfileImage(imageUrl);
+      await fetchUser(); // Refresh user data after update
+      toast.success('Profile image updated successfully');
+    } catch (error) {
+      console.error('Error updating profile image:', error.message);
+      toast.error('Failed to update profile image');
+    }
+  };
+
   return {
     token,
     refreshToken,
@@ -149,11 +169,6 @@ export const useUserStore = defineStore('auth', () => {
     user,
     fetchUser,
     refreshAuthToken,
-    updateUser,
-    updateUserBirthdate: (newBirthdate) => updateUserPart('/user/update/birthdate', newBirthdate),
-    updateUserUsername: (newUsername) => updateUserPart('/user/update/username', newUsername),
-    updateUserFullName: (newFullName) => updateUserPart('/user/update/fullname', newFullName),
-    updateProfileImage: (imageUrl) => updateUserPart('/user/update/profile-image', imageUrl),
     login,
     register,
     loginWithProvider,
@@ -161,5 +176,9 @@ export const useUserStore = defineStore('auth', () => {
     logout,
     getUserRole,
     hasRole,
+    updateUserBirthdate,
+    updateUserUsername,
+    updateUserFullName,
+    updateProfileImage,
   };
 });
