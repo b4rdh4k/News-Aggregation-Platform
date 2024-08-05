@@ -2,11 +2,13 @@
 import { ref, onMounted, nextTick } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useNewsStore } from '@/store/newsStore.js'
+import { useBookmarkStore } from '@/store/bookmark'
 import { useRouter } from 'vue-router'
 import NewsCard from '@/components/shared/NewsCard.vue'
 
 const toast = useToast()
 const newsStore = useNewsStore()
+const bookmarkStore = useBookmarkStore()
 const isLoading = ref(true)
 const router = useRouter()
 
@@ -38,6 +40,22 @@ const handlePageChange = async (page) => {
   }
 }
 
+const toggleBookmark = async (articleId) => {
+  try {
+    const isBookmarked = bookmarkStore.bookmarks.some(b => b.id === articleId)
+    if (isBookmarked) {
+      await bookmarkStore.deleteBookmark(articleId)
+    } else {
+      await bookmarkStore.createBookmark(articleId)
+    }
+    await newsStore.fetchAllStories() // Refresh the news after bookmarking
+    toast.success(isBookmarked ? 'Bookmark removed.' : 'Article bookmarked.')
+  } catch (error) {
+    console.error('Failed to toggle bookmark:', error)
+    toast.error('Failed to toggle bookmark.')
+  }
+}
+
 onMounted(async () => {
   await nextTick()
   loadNews()
@@ -58,6 +76,7 @@ onMounted(async () => {
       :articles="newsStore.visibleNews"
       :isLoading="isLoading"
       :hasNews="newsStore.visibleNews.length > 0"
+      @toggleBookmark="toggleBookmark"
     />
 
     <div v-if="newsStore.totalPages > 1" class="pagination-controls mt-4">

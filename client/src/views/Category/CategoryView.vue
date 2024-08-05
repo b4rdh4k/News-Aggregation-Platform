@@ -2,11 +2,13 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCategoryStore } from '@/store/categoryStore';
+import { useBookmarkStore } from '@/store/bookmark';
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue';
 import { useToast } from 'vue-toastification';
 
 const route = useRoute();
 const categoryStore = useCategoryStore();
+const bookmarkStore = useBookmarkStore();
 const toast = useToast();
 const loading = ref(true);
 const categoryId = route.params.id;
@@ -30,10 +32,27 @@ const getImageUrl = (imageUrl) => {
   return imageUrl || '@/assets/media/placeholderImage.png';
 };
 
+const toggleBookmark = async (articleId) => {
+  try {
+    const isBookmarked = bookmarkStore.bookmarks.some(b => b.id === articleId);
+    if (isBookmarked) {
+      await bookmarkStore.deleteBookmark(articleId);
+    } else {
+      await bookmarkStore.createBookmark(articleId);
+    }
+    await categoryStore.fetchArticlesByCategory(categoryId); // Refresh the articles after bookmarking
+    toast.success(isBookmarked ? 'Bookmark removed.' : 'Article bookmarked.');
+  } catch (error) {
+    console.error('Failed to toggle bookmark:', error);
+    toast.error('Failed to toggle bookmark.');
+  }
+};
+
 onMounted(async () => {
   if (categoryId) {
     try {
       await categoryStore.fetchArticlesByCategory(categoryId);
+      await bookmarkStore.fetchSavedArticles();
     } catch (error) {
       console.error(`Failed to fetch articles for category ${categoryId}:`, error);
       toast.error(`Failed to fetch articles for category ${categoryId}.`);
@@ -71,8 +90,11 @@ onMounted(async () => {
           <router-link :to="`/news/${article.id}`" class="block hover:underline">
             <div class="flex flex-col items-start">
               <img :src="getImageUrl(article.image)" alt="Article image" class="w-full h-48 object-cover rounded" />
-              <div class="absolute top-2 right-2 z-10 text-white">
-                <i class="fa fa-bookmark" aria-hidden="true"></i>
+              <div
+                class="absolute top-2 right-2 z-10 text-white cursor-pointer"
+                @click.stop="toggleBookmark(article.id)"
+              >
+                <i :class="['fa', bookmarkStore.bookmarks.some(b => b.id === article.id) ? 'fa-bookmark' : 'fa-bookmark-o']" aria-hidden="true"></i>
               </div>
               <div class="mt-2">
                 <h3 class="text-lg font-semibold truncate-multiline">{{ article.title }}</h3>
@@ -125,5 +147,10 @@ onMounted(async () => {
 .fa-bookmark {
   font-size: 1.5rem; 
   color: var(--accent);
+}
+
+.fa-bookmark-o {
+  font-size: 1.5rem;
+  color: var(--text);
 }
 </style>
