@@ -21,3 +21,9 @@ export function startConnection() {
     .then(() => console.log('SignalR connected'))
     .catch(err => console.error('SignalR connection error:', err));
 }
+
+export function stopConnection() {
+  return connection.stop()
+    .then(() => console.log('SignalR disconnected'))
+    .catch(err => console.error('SignalR disconnection error:', err));
+}
