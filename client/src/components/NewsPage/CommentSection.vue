@@ -4,22 +4,22 @@
     <div v-if="comments.length" class="mt-4 space-y-2 max-h-96 overflow-y-auto">
       <div
         v-for="comment in comments"
-        :key="comment.id"
+        :key="comment.Id"
         class="flex p-4 border border-accent dark:border-dark-accent rounded-md shadow-sm items-start"
       >
-        <img
-          :src="comment.userProfilePhoto"
+      <img
+          :src="comment.UserProfilePhoto || 'https://via.placeholder.com/50'"
           alt="User Profile"
           class="w-12 h-12 rounded-full mr-4"
         />
         <div class="flex-1">
-          <p class="font-semibold">{{ comment.username }}</p>
-          <p class="text-text dark:text-dark-text">{{ comment.content }}</p>
-          <p class="text-xs text-gray-500">{{ new Date(comment.createdAt).toLocaleString() }}</p>
+          <p class="font-semibold">{{ comment.Username }}</p>
+          <p class="text-text dark:text-dark-text">{{ comment.Content }}</p>
+          <p class="text-xs text-gray-500">{{ new Date(comment.CreatedAt).toLocaleString() }}</p>
         </div>
         <button
           class="ml-4 text-red-600 hover:text-red-800"
-          @click="openReportModal(comment.id)"
+          @click="openReportModal(comment.Id)"
         >
           <i class="fa fa-flag-o"></i>
         </button>
@@ -71,7 +71,6 @@ import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/store/user'
 import { useCommentsStore } from '@/store/comments'
-import { fetchComments, postComment } from '@/services/comments'
 import ReportModal from '@/components/NewsPage/ReportModal.vue'
 import { useToast } from 'vue-toastification'
 
@@ -79,6 +78,7 @@ const route = useRoute()
 const { fetchUser, user } = useUserStore()
 const commentsStore = useCommentsStore()
 const toast = useToast()
+console.log('useriiiiiiiiiiiiii',user)
 
 const newsId = ref(route.params.id)
 const commentContent = ref('')
@@ -91,14 +91,24 @@ watch(() => route.params.id, (newId) => {
   fetchAndSetComments(newsId.value)
 }, { immediate: true })
 
-async function fetchAndSetComments(id) {
-  comments.value = await fetchComments(id)
-}
+onMounted(() => {
+  fetchAndSetComments(newsId.value)
+})
 
-function formattedDate(date) {
-  if (!date) return 'Unknown date'
-  const parsedDate = new Date(date)
-  return isNaN(parsedDate) ? 'Invalid Date' : parsedDate.toLocaleDateString()
+async function fetchAndSetComments(id) {
+  try {
+    const fetchedComments = await commentsStore.loadComments(id);
+    console.log(fetchedComments.Value)
+    if (Array.isArray(fetchedComments.Value)) {
+      comments.value = fetchedComments.Value;
+
+    } else {
+      comments.value = [];
+    }
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+    comments.value = [];
+  }
 }
 
 function clearComment() {
@@ -126,14 +136,14 @@ async function submitComment() {
       updatedAt: new Date().toISOString(),
     };
 
-    // const result = await commentsStore.addComment(commentData);
-    // if (result) {
-    //   comments.value.push(result); // Use the result from the server or the provided data
-    //   toast.success('Comment added successfully!');
-    //   commentContent.value = '';
-    // } else {
-    //   toast.error('Failed to add comment.');
-    // }
+    const result = await commentsStore.addComment(commentData);
+    if (result) {
+      comments.value.push(result); // Use the result from the server or the provided data
+      toast.success('Comment added successfully!');
+      commentContent.value = '';
+    } else {
+      toast.error('Failed to add comment.');
+    }
   } catch (error) {
     console.error('Failed to add comment:', error);
     toast.error('Failed to add comment.');
