@@ -1,30 +1,18 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import PreferencesModal from '@/components/Personalized/PreferencesModal.vue';
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue';
 import ArticleModal from '@/components/Personalized/ArticleModal.vue';
-import { useCategoryStore } from '@/store/categoryStore';
 import { useGuardianNewsStore } from '@/store/guardian-newsStore';
 
-const categoryStore = useCategoryStore();
 const newsStore = useGuardianNewsStore();
 
 const loading = ref(true);
-const showModal = ref(false);
 const modalVisible = ref(false);
 const selectedArticle = ref(null);
-const selectedCategories = computed(() => categoryStore.selectedCategories);
 
 const currentPage = ref(1);
 const totalPages = computed(() => newsStore.totalPages);
 
-const openModal = () => {
-  showModal.value = true;
-};
-
-const closeModal = () => {
-  showModal.value = false;
-};
 
 const openArticleModal = (article) => {
   selectedArticle.value = article;
@@ -42,7 +30,6 @@ const changePage = async (page) => {
 };
 
 onMounted(async () => {
-  await categoryStore.initializeFromServer();
   await newsStore.fetchNews(currentPage.value);
   loading.value = false;
 });
@@ -55,38 +42,6 @@ onMounted(async () => {
     </div>
 
     <div v-else>
-      <div class="mb-16 bg-primary bg-opacity-20 dark:bg-dark-primary dark:bg-opacity-20 p-2 rounded-lg">
-        <div
-          class="flex justify-between items-center mb-4 pb-2 border-b-[1px] border-accent dark:border-dark-accent"
-        >
-          <h1 class="text-3xl text-accent dark:text-dark-accent font-bold">Your topics</h1>
-          <div class="relative">
-            <button
-              @click="openModal"
-              class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent text-text dark:text-dark-text p-3 rounded-xl"
-            >
-              Preferences
-            </button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div
-            v-for="category in selectedCategories"
-            :key="category.id"
-            class="p-4 rounded-lg shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20"
-          >
-            <router-link :to="`/category/${category.name}`" class="mb-2" @click.stop>
-              <button
-                class="bg-primary dark:bg-dark-primary hover:bg-accent dark:hover:bg-dark-accent px-2 rounded-xl -m-1"
-              >
-                <p class="text-text dark:text-dark-text">{{ category.name }}</p>
-              </button>
-            </router-link>
-          </div>
-        </div>
-      </div>
-
       <div
         class="flex justify-between items-center mb-4 pb-2 border-b-2 border-dashed border-accent dark:border-dark-accent"
       >
@@ -130,7 +85,6 @@ onMounted(async () => {
       </div>
 
       <ArticleModal :show="modalVisible" :article="selectedArticle" @close="closeArticleModal" />
-      <PreferencesModal :show="showModal" @close="closeModal" />
     </div>
   </div>
 </template>
