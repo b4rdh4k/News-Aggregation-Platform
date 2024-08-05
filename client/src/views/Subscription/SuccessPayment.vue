@@ -1,6 +1,6 @@
 <script setup>
 import { DotLottieVue } from '@lottiefiles/dotlottie-vue';
-import { useSubscriptionStore } from '@/stores/useSubscriptionStore';
+import { useSubscriptionStore } from '@/store/subscription';
 import { useUserStore } from '@/store/user';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
