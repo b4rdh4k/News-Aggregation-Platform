@@ -9,12 +9,12 @@ export const useNewsStore = defineStore('news', () => {
 
   const fetchAllStories = async () => {
     try {
-      const response = await fetch('https://89xx7tdx-5095.euw.devtunnels.ms/article/all')
+      const response = await fetch('https://api.sapientia.life/article/all')
       if (!response.ok) {
         throw new Error('Network response was not ok')
       }
       const data = await response.json()
-      
+
       if (data && (data.value || data.Value) && Array.isArray(data.value || data.Value)) {
         allNews.value = data.value || data.Value
       } else {
@@ -27,7 +27,7 @@ export const useNewsStore = defineStore('news', () => {
       toast.error('Failed to fetch stories.')
     }
   }
-  
+
   const visibleNews = computed(() => allNews.value.slice(0, perPage))
   const hasNews = computed(() => visibleNews.value.length > 0)
 

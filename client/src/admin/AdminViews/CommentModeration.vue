@@ -33,7 +33,7 @@ const deleteComment = (commentId) => {
 
 const fetchReportedComments = async () => {
   try {
-    const url = 'https://89xx7tdx-5095.euw.devtunnels.ms/comment/getReported'
+    const url = 'https://api.sapientia.life/comment/getReported'
 
     const response = await fetch(url, {
       method: 'GET',

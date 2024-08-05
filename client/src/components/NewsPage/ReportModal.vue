@@ -28,7 +28,7 @@ function clearReport() {
 }
 
 const reportCommentForm = (commentId) => {
-  fetch('https://89xx7tdx-5095.euw.devtunnels.ms/comment/report', {
+  fetch('https://api.sapientia.life/comment/report', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json-patch+json',

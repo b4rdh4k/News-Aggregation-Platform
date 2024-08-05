@@ -11,7 +11,7 @@ const router = useRouter();
 
 const fetchBookmarkedArticles = async () => {
   try {
-    await bookmarkStore.fetchBookmarks();
+    await bookmarkStore.fetchSavedArticles();
   } catch (error) {
     console.error('Failed to fetch bookmarks:', error);
     toast.error('Failed to fetch bookmarks.');
@@ -20,7 +20,8 @@ const fetchBookmarkedArticles = async () => {
 
 const removeBookmark = async (bookmarkId) => {
   try {
-    await bookmarkStore.removeBookmark(bookmarkId);
+    await bookmarkStore.deleteBookmark(bookmarkId);
+    bookmarkStore.bookmarks = bookmarkStore.bookmarks.filter(b => b.id !== bookmarkId);
     toast.success('Article removed from bookmarks.');
   } catch (error) {
     console.error('Failed to remove bookmark:', error);
@@ -40,7 +41,7 @@ onMounted(fetchBookmarkedArticles);
         <span class="ml-2">Go Back</span>
       </button>
     </div>
-    <div v-if="bookmarkStore.bookmarks.length > 0" class="news-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <div v-if="!bookmarkStore.loading && bookmarkStore.bookmarks.length > 0" class="news-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <div v-for="(article, index) in bookmarkStore.bookmarks" :key="index" class="card rounded-lg p-2 shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20">
         <div class="img rounded-lg">
           <img :src="article.image" alt="Article image" class="w-full h-full object-cover rounded-lg hover:animate-pulse" />
@@ -67,11 +68,11 @@ onMounted(fetchBookmarkedArticles);
       </div>
     </div>
 
-    <div v-if="bookmarkStore.isLoading" class="flex justify-center p-4">
+    <div v-if="bookmarkStore.loading" class="flex justify-center p-4">
       <LoadingAnimation />
     </div>
 
-    <div v-if="!bookmarkStore.isLoading && bookmarkStore.bookmarks.length === 0" class="flex justify-center p-4">
+    <div v-if="!bookmarkStore.loading && bookmarkStore.bookmarks.length === 0" class="flex justify-center p-4">
       <p>No bookmarked articles available.</p>
     </div>
   </div>
@@ -179,4 +180,3 @@ onMounted(fetchBookmarkedArticles);
   }
 }
 </style>
-

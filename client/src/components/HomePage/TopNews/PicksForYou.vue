@@ -1,32 +1,48 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useRecommendedStore } from '@/store/recommended'
 
-const router = useRouter();
+const route = useRoute()
 const recommendedStore = useRecommendedStore()
-const picksForYou = ref([]);
+const picksForYou = ref([])
 
-// Dummy data
+// Dummy data with absolute dates for testing
 const dummyData = [
-  { id: '1', title: 'Exciting News in Tech', source: 'TechDaily', createdAt: '2 hours ago' },
-  { id: '2', title: 'Latest Trends in AI', source: 'AI Times', createdAt: '5 hours ago' },
-  { id: '3', title: 'Sports Update: Major League Highlights', source: 'SportsNet', createdAt: '1 day ago' },
-  { id: '4', title: 'Finance Tips for the Modern Investor', source: 'Finance World', createdAt: '3 days ago' }
-];
+  { id: '1', title: 'Exciting News in Tech', source: 'TechDaily', createdAt: new Date(new Date().getTime() - 2 * 60 * 60 * 1000).toISOString() },
+  { id: '2', title: 'Latest Trends in AI', source: 'AI Times', createdAt: new Date(new Date().getTime() - 5 * 60 * 60 * 1000).toISOString() },
+  { id: '3', title: 'Sports Update: Major League Highlights', source: 'SportsNet', createdAt: new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toISOString() },
+  { id: '4', title: 'Finance Tips for the Modern Investor', source: 'Finance World', createdAt: new Date(new Date().getTime() - 3 * 24 * 60 * 60 * 1000).toISOString() }
+]
 
-const goToNewsView = (id) => {
-  router.push(`/news/${id}`);
-};
+const formatDate = (date) => {
+  if (!date) return 'Unknown date'
+  const parsedDate = new Date(date)
+  const now = new Date()
+  const diffInSeconds = Math.floor((now - parsedDate) / 1000)
+  
+  if (diffInSeconds < 60) return 'Just now'
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`
+  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`
+  
+  return parsedDate.toLocaleDateString()
+}
 
 onMounted(async () => {
   try {
     await recommendedStore.fetchRecommendedNews()
 
     if (recommendedStore.recommendedNews.length === 0) {
-      picksForYou.value = dummyData;
+      picksForYou.value = dummyData.map(item => ({
+        ...item,
+        createdAt: formatDate(item.createdAt) // Format date
+      }));
     } else {
-      picksForYou.value = recommendedStore.recommendedNews.slice(0, 5)
+      picksForYou.value = recommendedStore.recommendedNews.slice(0, 5).map(pick => ({
+        ...pick,
+        createdAt: formatDate(pick.createdAt) // Format date
+      }));
       console.log('Recommended News:', recommendedStore.recommendedNews)
     }
   } catch (error) {

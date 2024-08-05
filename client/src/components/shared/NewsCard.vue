@@ -50,9 +50,9 @@ const toggleBookmark = async (articleId) => {
     (bookmark) => bookmark.articleId === articleId
   )
   if (existingBookmark) {
-    await bookmarkStore.removeBookmark(existingBookmark.id)
+    await bookmarkStore.deleteBookmark(existingBookmark.id)
   } else {
-    await bookmarkStore.addBookmark(articleId)
+    await bookmarkStore.createBookmark(articleId)
   }
 }
 
