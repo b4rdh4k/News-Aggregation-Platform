@@ -45,8 +45,8 @@
 </template>
 
 <script>
-import { useSubscriptionStore } from '@/stores/useSubscriptionStore';
-import { useUserStore } from '@/stores/useUserStore';
+import { useSubscriptionStore } from '@/stores/subscription';
+import { useUserStore } from '@/stores/user';
 
 export default {
   name: 'SubscribeView',
