@@ -91,5 +91,5 @@ https://sapientia.life/
 
 ## Documentation
 
-[Documentation](https://linktodocumentation)
+[Documentation](https://docs.google.com/document/d/1tD1pqgPXyAqzOfKuUKfsiOCngfxwffq-CSGJTV2hsmI/edit)
 
