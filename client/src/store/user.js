@@ -110,7 +110,7 @@ export const useUserStore = defineStore('auth', () => {
   };
 
   const getUserRole = () => {
-    return decodedToken.value?.role || 'guest'; // Adjust based on your JWT structure
+    return decodedToken.value?.role || 'guest'; 
   };
 
   const hasRole = (requiredRole) => {

@@ -1,20 +1,40 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
 import { fetchApi } from '@/utils/fetchApi'; 
 
-export const useSubscriptionStore = defineStore('subscription', () => {
-  const activePlan = ref(null);
-
-  const fetchActivePlan = async () => {
-    try {
-      const response = await fetchApi('/plan/allActive?range=1');
-      if (response.value.statusCode === 200) {
-        activePlan.value = response.value.value.plans[0];
+export const useSubscriptionStore = defineStore('subscription', {
+  state: () => ({
+    plans: [],
+    subscription: null,
+    paymentUrl: null,
+  }),
+  actions: {
+    async fetchPlans() {
+      try {
+        const response = await fetchApi('GET', '/plans/getPlans');
+        this.plans = response.data;
+      } catch (error) {
+        console.error('Failed to fetch plans:', error);
       }
-    } catch (error) {
-      console.error('Error fetching active plan:', error);
-    }
-  };
-
-  return { activePlan, fetchActivePlan };
+    },
+    async fetchSubscription(id) {
+      try {
+        const response = await fetchApi('GET', `/subscription/GetSubscriptionById/${id}`);
+        this.subscription = response.data;
+      } catch (error) {
+        console.error('Failed to fetch subscription:', error);
+      }
+    },
+    async createPayment(planId, stripeCustomerId) {
+      try {
+        const response = await fetchApi('POST', '/payment/CreatePayment', {
+          PlanId: planId,
+          StripeCustomerId: stripeCustomerId,
+        });
+        this.paymentUrl = response.data.url;
+        window.location.href = this.paymentUrl; 
+      } catch (error) {
+        console.error('Failed to create payment:', error);
+      }
+    },
+  },
 });
