@@ -10,16 +10,24 @@ const categoryStore = useCategoryStore();
 const toast = useToast();
 const loading = ref(true);
 const categoryId = route.params.id;
+const currentPage = ref(1);
+const itemsPerPage = 12;
 
 const articles = computed(() => categoryStore.articles[categoryId] || []);
-const pages = computed(() => {
-  const totalArticles = articles.value.length;
-  const totalPages = Math.ceil(totalArticles / categoryStore.itemsPerPage.value);
-  return Array.from({ length: totalPages }, (_, i) => i + 1);
+const paginatedArticles = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  return articles.value.slice(start, start + itemsPerPage);
 });
+const totalPages = computed(() => Math.ceil(articles.value.length / itemsPerPage));
 
 const goToPage = (page) => {
-  categoryStore.setPage(categoryId, page);
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page;
+  }
+};
+
+const getImageUrl = (imageUrl) => {
+  return imageUrl || '@/assets/media/placeholderImage.png';
 };
 
 onMounted(async () => {
@@ -54,15 +62,18 @@ onMounted(async () => {
     </div>
 
     <div v-else>
-      <div v-if="articles.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+      <div v-if="paginatedArticles.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
         <div
-          v-for="(article, idx) in articles"
+          v-for="(article, idx) in paginatedArticles"
           :key="idx"
-          class="shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20 p-4 rounded-lg flex flex-col"
+          class="shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20 p-4 rounded-lg flex flex-col relative"
         >
           <router-link :to="`/news/${article.id}`" class="block hover:underline">
             <div class="flex flex-col items-start">
-              <img :src="article.image" alt="Article image" class="w-full h-48 object-cover rounded" />
+              <img :src="getImageUrl(article.image)" alt="Article image" class="w-full h-48 object-cover rounded" />
+              <div class="absolute top-2 right-2 z-10 text-white">
+                <i class="fa fa-bookmark" aria-hidden="true"></i>
+              </div>
               <div class="mt-2">
                 <h3 class="text-lg font-semibold truncate-multiline">{{ article.title }}</h3>
                 <router-link :to="`/source/${article.source}`" class="mb-2" @click.stop>
@@ -82,13 +93,37 @@ onMounted(async () => {
         <p class="text-center text-gray-500 dark:text-gray-400">No Articles Found</p>
       </div>
 
-      <div v-if="!loading && articles.length">
-        <div class="pagination">
-          <button v-for="page in pages" :key="page" @click="goToPage(page)">
-            {{ page }}
-          </button>
-        </div>
+      <div v-if="!loading && totalPages > 1" class="pagination mt-4 flex justify-center">
+        <button
+          v-for="page in totalPages"
+          :key="page"
+          @click="goToPage(page)"
+          :class="['page-btn', { 'active': page === currentPage }]"
+          class="mx-1 px-3 py-1 border rounded"
+        >
+          {{ page }}
+        </button>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.page-btn {
+  background-color: var(--primary);
+  color: var(--text);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.page-btn.active,
+.page-btn:hover {
+  background-color: var(--accent);
+}
+
+.fa-bookmark {
+  font-size: 1.5rem; 
+  color: var(--accent);
+}
+</style>

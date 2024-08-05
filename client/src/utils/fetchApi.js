@@ -12,9 +12,6 @@ export const fetchApi = async (url, options = {redirect: "follow", credentials: 
     "Authorization": `Bearer ${token}`
   };
 
-  console.log('API URL:', `${baseUrl}${url}`); // Debug line to check the full URL
-
-
   try {
     const response = await fetch(`${baseUrl}${url}`, {
       ...options,

@@ -57,42 +57,48 @@ function formattedDate(date) {
   return isNaN(parsedDate) ? 'Invalid Date' : parsedDate.toLocaleDateString()
 }
 
+function goBack() {
+  window.history.back()
+}
+
+function toggleBookmark() {
+  // Implement the logic to add/remove the bookmark here.
+  toast.success('Bookmark toggled!')
+}
+
 onMounted(() => {
   fetchUser()
   fetchNewsDetails(newsId.value)
 })
 </script>
-
 <template>
   <div>
-    <!-- News Title -->
-    <h1 class="text-3xl font-bold">{{ news.Title || 'Title not available' }}</h1>
+    <div class="flex justify-between items-center mb-2">
+      <h1 class="text-3xl font-bold">{{ news.Title || 'Oopsie! The title couldnt be fetched correctly.' }}</h1>
+      <button @click="toggleBookmark" class="text-xl text-accent dark:text-dark-accent">
+        <i class="fa fa-bookmark" aria-hidden="true"></i>
+      </button>
+    </div>
 
-    <!-- Meta Information -->
     <p class="text-sm my-2 text-text dark:text-dark-text">
       Published on {{ formattedDate(news.PublishedAt) }} • Author: {{ news.Author || 'Filan Fisteku' }}
     </p>
 
     <!-- News Image -->
     <img
-      :src="news.ImageUrl"
+      :src="news.ImageUrl || require('@/assets/media/placeholderImage.png')"
       alt="News Image"
       class="w-full h-48 object-cover mb-4 rounded-lg shadow-md"
-      v-if="news.ImageUrl"
     />
-    <p v-else class="text-base text-text dark:text-dark-text mb-4">No image available</p>
     
-    <!-- Main News Content -->
     <p v-if="news.content" class="text-base text-text dark:text-dark-text mb-4 text-justify">
-      {{ news.content || 'Content not available' }} 
+      {{ news.content || 'Apologies, we could not fetch the content of this article. We hope you will find another article that satisfies your needs ' }} 
     </p>
 
-    <!-- Additional Description -->
     <div v-if="news.description" class="mt-4">
       <div v-html="news.description" class="text-text dark:text-dark-text"></div>
     </div>
 
-    <!-- Social Sharing Buttons -->
     <div class="p-2 mt-2">
       <ShareNetwork
         network="telegram"
@@ -128,7 +134,13 @@ onMounted(() => {
       </ShareNetwork>
     </div>
 
-    <!-- Comment Section -->
     <CommentSection />
+
+    <div class="mt-4">
+      <button @click="goBack" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary">
+        Go Back
+      </button>
+    </div>
   </div>
 </template>
+

@@ -60,7 +60,8 @@ const login = async () => {
     toast.success('Login successful!');
     router.push('/');
   } catch (error) {
-    // Error handling is done in the userStore.login method
+    console.error('Login error:', error.message);
+    toast.error('Login failed. Please try again.');
   } finally {
     loading.value = false;
   }
@@ -75,6 +76,11 @@ const loginWithProvider = async (provider) => {
   }
 };
 
+const handleKeydown = (event) => {
+  if (event.key === 'Enter') {
+    login();
+  }
+};
 </script>
 
 <template>
@@ -88,51 +94,56 @@ const loginWithProvider = async (provider) => {
         class="container max-w-lg mx-auto px-6 bg-background dark:bg-dark-background text-text dark:text-dark-text rounded-lg"
       >
         <h1 class="text-4xl font-bold mb-4 text-center">Nice to not see you again!</h1>
+
+        <!-- Provider Buttons -->
+        <section class="flex justify-center m-8 items-center gap-4">
+          <div class="relative group">
+            <button
+              @click="() => loginWithProvider('Google')"
+              class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
+            >
+              <i class="fab fa-google text-2xl"></i>
+              <span
+                class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-2 transition-all duration-300"
+              >
+                Google
+              </span>
+            </button>
+          </div>
+
+          <div class="relative group">
+            <button
+              @click="() => loginWithProvider('Discord')"
+              class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
+            >
+              <i class="fab fa-discord text-2xl"></i>
+              <span
+                class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-2 transition-all duration-300"
+              >
+                Discord
+              </span>
+            </button>
+          </div>
+
+          <div class="relative group">
+            <button
+              @click="() => loginWithProvider('GitHub')"
+              class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
+            >
+              <i class="fab fa-github text-2xl"></i>
+              <span
+                class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-4 transition-all duration-300"
+              >
+                GitHub
+              </span>
+            </button>
+          </div>
+        </section>
+
+        <p class="mb-4 text-center">or through</p>
+
+        <!-- Login Form -->
         <form @submit.prevent="login" autocomplete="on" novalidate>
-          <section class="flex justify-center m-8 items-center gap-4">
-            <div class="relative group">
-              <button
-                @click="() => loginWithProvider('Google')"
-                class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
-              >
-                <i class="fab fa-google text-2xl"></i>
-                <span
-                  class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-2 transition-all duration-300"
-                >
-                  Google
-                </span>
-              </button>
-            </div>
-
-            <div class="relative group">
-              <button
-                @click="() => loginWithProvider('Discord')"
-                class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
-              >
-                <i class="fab fa-discord text-2xl"></i>
-                <span
-                  class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-2 transition-all duration-300"
-                >
-                  Discord
-                </span>
-              </button>
-            </div>
-
-            <div class="relative group">
-              <button
-                @click="() => loginWithProvider('GitHub')"
-                class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
-              >
-                <i class="fab fa-github text-2xl"></i>
-                <span
-                  class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-4 transition-all duration-300"
-                >
-                  GitHub
-                </span>
-              </button>
-            </div>
-          </section>
-          <p class="mb-4 text-center">or through</p>
           <div class="mb-4">
             <label for="email" class="block mb-2">E-mail</label>
             <input
@@ -145,6 +156,7 @@ const loginWithProvider = async (provider) => {
             />
             <p v-if="emailError" class="text-red-500 text-sm">{{ emailError }}</p>
           </div>
+
           <div class="mb-4">
             <label for="password" class="block mb-2">Password</label>
             <input
@@ -153,6 +165,7 @@ const loginWithProvider = async (provider) => {
               v-model="password"
               class="w-full p-2 border rounded"
               :class="{ 'border-red-500': passwordError }"
+              @keydown="handleKeydown"
               autocomplete="new-password"
             />
             <p v-if="passwordError" class="text-red-500 text-sm">{{ passwordError }}</p>
@@ -169,8 +182,8 @@ const loginWithProvider = async (provider) => {
             </span>
           </button>
         </form>
+
         <div class="mt-4 text-center text-lg">
-          <p class="text-secondary dark:text-dark-secondary">Forgot password?</p>
           <p class="text-secondary dark:text-dark-secondary">
             Don't have an account?
             <router-link to="/register" class="text-accent dark:text-dark-accent"

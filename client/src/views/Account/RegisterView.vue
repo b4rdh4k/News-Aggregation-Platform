@@ -131,18 +131,6 @@ const register = async () => {
     loading.value = false
   }
 }
-
-const loginWithGoogle = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`
-}
-
-const loginWithDiscord = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL}/auth/discord`
-}
-
-const loginWithGitHub = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL}/auth/github`
-}
 </script>
 
 
@@ -161,50 +149,6 @@ const loginWithGitHub = () => {
       >
         <h3 class="text-text dark:text-dark-text font-bold mb-4 text-center">Join the community</h3>
         <form @submit.prevent="register" class="w-full" autocomplete="on" novalidate>
-          <section class="flex justify-center m-8 items-center gap-4">
-            <div class="relative group">
-              <button
-                @click="loginWithGoogle"
-                class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
-              >
-                <i class="fab fa-google text-2xl"></i>
-                <span
-                  class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-2 transition-all duration-300"
-                >
-                  Google
-                </span>
-              </button>
-            </div>
-
-            <div class="relative group">
-              <button
-                @click="loginWithDiscord"
-                class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
-              >
-                <i class="fab fa-discord text-2xl"></i>
-                <span
-                  class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-2 transition-all duration-300"
-                >
-                  Discord
-                </span>
-              </button>
-            </div>
-
-            <div class="relative group">
-              <button
-                @click="loginWithGitHub"
-                class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
-              >
-                <i class="fab fa-github text-2xl"></i>
-                <span
-                  class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-4 transition-all duration-300"
-                >
-                  GitHub
-                </span>
-              </button>
-            </div>
-          </section>
-          <p class="mb-4 text-center">or through</p>
           <div class="mb-4">
             <label for="username" class="block mb-2">Username</label>
             <input

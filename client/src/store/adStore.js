@@ -1,52 +1,31 @@
-// store/adsStore.js
 import { defineStore } from 'pinia';
-import { fetchApi } from '@/utils/fetchApi'; 
+import { fetchApi } from '@/utils/fetchApi';
 
-export const useAdsStore = defineStore('ads', {
+export const usePersonalizedAdsStore = defineStore('personalizedAds', {
   state: () => ({
-    ads: [], 
+    ads: [],
+    loading: false,
     error: null,
+    totalAds: 0,
   }),
+
   actions: {
-    async fetchAllAds(range = null) {
-      try {
-        this.error = null;
-        const response = await fetchApi('/ads/all', {
-          method: 'GET',
-          query: { range }, 
-        });
-        this.ads = response;
-      } catch (error) {
-        this.error = error.message;
-      }
-    },
+    async fetchPersonalizedAds(range = null) {
+      this.loading = true;
+      this.error = null;
 
-    async fetchAllActiveAds(range = null) {
       try {
-        this.error = null;
-        const response = await fetchApi('/ads/allActive', {
-          method: 'GET',
-          query: { range },
-        });
-        console.log('Fetched ads:', response);
-        this.ads = response;
+        const url = `/ads/personalized${range ? `?range=${range}` : ''}`;
+        const response = await fetchApi(url);
+        
+        this.ads = response.ads;
+        this.totalAds = response.totalAds;
       } catch (error) {
         this.error = error.message;
+        console.error('Error fetching personalized ads:', error);
+      } finally {
+        this.loading = false;
       }
-    },
-    
-
-    async fetchAd(id) {
-      try {
-        this.error = null;
-        const response = await fetchApi(`/ads/${id}`, {
-          method: 'GET',
-        });
-        return response;
-      } catch (error) {
-        this.error = error.message;
-        throw error;
-      }
-    },
-  },
+    }
+  }
 });

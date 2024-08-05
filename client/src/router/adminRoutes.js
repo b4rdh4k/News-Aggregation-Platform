@@ -9,10 +9,10 @@ const checkAdminOrPremium = (to, from, next) => {
   console.log('Decoded Token:', userStore.decodedToken); 
   console.log('User Role:', userRole); 
 
-  const isAdminOrPremium = userRole === 'admin' || userRole === 'premium';
-  console.log('Is Admin or Premium:', isAdminOrPremium); 
+  const isAdminOrSuperAdmin = userRole === 'admin' || userRole === 'superadmin';
+  console.log('Is Admin or Premium:', isAdminOrSuperAdmin); 
 
-  if (isAdminOrPremium) {
+  if (isAdminOrSuperAdmin) {
     next();
   } else {
     console.log('Redirecting to Home'); 

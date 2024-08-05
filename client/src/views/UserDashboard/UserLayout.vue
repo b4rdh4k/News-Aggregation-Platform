@@ -36,9 +36,6 @@ const handleLogout = async () => {
       <nav class="flex mt-4 flex-col">
         <router-link to="/profile" class="nav-item" @click="closeSidebar">Home</router-link>
         <router-link to="/bookmarks" class="nav-item" @click="closeSidebar">Bookmarks</router-link>
-        <router-link to="/mfa" class="nav-item" @click="closeSidebar"
-          >Multi-factor Auth</router-link
-        >
       </nav>
       <footer class="sidebar-footer">
         <router-link to="/">

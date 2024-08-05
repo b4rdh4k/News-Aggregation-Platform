@@ -26,8 +26,16 @@ const loadNews = async () => {
   }
 }
 
-const handlePageChange = (page) => {
-  newsStore.fetchPage(page)
+const handlePageChange = async (page) => {
+  try {
+    isLoading.value = true
+    await newsStore.fetchPage(page)
+  } catch (error) {
+    console.error('Failed to fetch news for page:', error)
+    toast.error('Failed to fetch news for the selected page.')
+  } finally {
+    isLoading.value = false
+  }
 }
 
 onMounted(async () => {
@@ -49,16 +57,23 @@ onMounted(async () => {
     <NewsCard
       :articles="newsStore.visibleNews"
       :isLoading="isLoading"
-      :totalPages="newsStore.totalPages"
-      :currentPage="newsStore.currentPage"
       :hasNews="newsStore.visibleNews.length > 0"
-      @page-change="handlePageChange"
     />
+
+    <div v-if="newsStore.totalPages > 1" class="pagination-controls mt-4">
+      <button
+        v-for="page in newsStore.totalPages"
+        :key="page"
+        @click="handlePageChange(page)"
+        :class="['page-btn', { 'active': page === newsStore.currentPage }]"
+      >
+        {{ page }}
+      </button>
+    </div>
   </div>
 </template>
 
 <style scoped>
-/* Additional styles for the parent component */
 .btn-go-back {
   background-color: var(--primary);
   color: var(--text);
@@ -79,4 +94,27 @@ onMounted(async () => {
 .btn-go-back i {
   font-size: 1.2em;
 }
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-btn {
+  background-color: var(--primary);
+  color: var(--text);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.page-btn.active,
+.page-btn:hover {
+  background-color: var(--accent);
+}
 </style>
+

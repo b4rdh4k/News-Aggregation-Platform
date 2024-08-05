@@ -1,20 +1,19 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useAdsStore } from '@/store/adStore';
+import { usePersonalizedAdsStore } from '@/store/adStore';
 
-const adsStore = useAdsStore();
+const personalizedAdsStore = usePersonalizedAdsStore();
 const ads = ref([]);
 
 onMounted(async () => {
   try {
-    await adsStore.fetchAllActiveAds();
-    ads.value = adsStore.ads.slice(0, 5);
+    await personalizedAdsStore.fetchPersonalizedAds();
+    ads.value = personalizedAdsStore.ads.slice(0, 5);
   } catch (error) {
-    console.error('Error fetching ads:', error);
+    console.error('Error fetching personalized ads:', error);
   }
 });
 </script>
-
 
 <template>
   <aside class="container mx-auto pl-4 pt-4">

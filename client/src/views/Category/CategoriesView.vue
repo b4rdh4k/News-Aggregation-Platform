@@ -8,7 +8,7 @@ const toast = useToast();
 const categoryStore = useCategoryStore();
 const loading = ref(true);
 const currentPage = ref(1);
-const itemsPerPage = 3;
+const itemsPerPage = 12;
 const error = ref(false);
 
 onMounted(async () => {
@@ -25,7 +25,7 @@ onMounted(async () => {
 
 
 const paginatedCategories = computed(() => {
-  console.log('Paginated categories:', categoryStore.categories); // Debugging
+  console.log('Paginated categories:', categoryStore.categories);
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
   return categoryStore.categories.slice(start, end);

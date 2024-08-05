@@ -1,8 +1,6 @@
 import { fetchApi } from '@/utils/fetchApi';
 
 export const authService = {
-  // Existing methods
-
   async login(credentials) {
     try {
       const response = await fetchApi('/auth/login', {
@@ -92,70 +90,6 @@ export const authService = {
       await fetchApi('/auth/logout', {
         method: 'POST',
       });
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  },
-
-  // New methods for updating user information
-
-
-  async updateUserBirthdate(newBirthDay) {
-    try {
-      const response = await fetchApi('/user/update/birthdate', {
-        method: 'PATCH',
-        body: JSON.stringify({ newBirthDay }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      return response;
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  },
-
-  async updateUserUsername(newUsername) {
-    try {
-      const response = await fetchApi('/user/update/username', {
-        method: 'PATCH',
-        body: JSON.stringify({ newUsername }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      return response;
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  },
-  async updateUserFullName(newName) {
-    try {
-      const response = await fetchApi('/user/update/fullname', {
-        method: 'PATCH',
-        body: JSON.stringify({ newName }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      return response;
-    } catch (error) {
-      console.error('Error updating full name:', error);
-      throw error;
-    }
-  },
-  
-
-  async updateProfileImage(imageUrl) {
-    try {
-      const response = await fetchApi('/user/update/profile-image', {
-        method: 'PATCH',
-        body: JSON.stringify({ imageUrl }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      return response;
     } catch (error) {
       throw new Error(error.message);
     }
