@@ -7,7 +7,7 @@ export async function fetchComments(articleId) {
       throw new Error('Network response was not ok');
     }
     const data = await response.json();
-    return data.value || [];
+    return data.value || data.Value || [];
   } catch (error) {
     console.error('Error fetching comments:', error);
     return [];
@@ -32,30 +32,10 @@ export async function postComment(commentData) {
 
     if (!response.ok) {
       throw new Error('Network response was not ok');
+    }else{
+      console.log('response ok')
     }
 
-    // Log the response status and headers for debugging
-    console.log('Response status:', response.status);
-    console.log('Response headers:', [...response.headers]);
-
-    const text = await response.text();
-    
-    // Check if response is empty
-    // if (!text) {
-    //   console.warn('Empty response received');
-    //   return {
-    //     ...commentData,
-    //     id: Date.now().toString(), // Generate a temporary ID for the new comment
-    //   }; // Return the comment data as the new comment
-    // }
-
-    try {
-      const data = JSON.parse(text);
-      return data;
-    } catch (parseError) {
-      console.error('Error parsing response JSON:', parseError);
-      return null;
-    }
   } catch (error) {
     console.error('Error submitting comment:', error);
     return null;

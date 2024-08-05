@@ -98,10 +98,9 @@ onMounted(() => {
 async function fetchAndSetComments(id) {
   try {
     const fetchedComments = await commentsStore.loadComments(id);
-    console.log(fetchedComments.Value)
-    if (Array.isArray(fetchedComments.Value)) {
-      comments.value = fetchedComments.Value;
-
+    console.log("Fetched comments:", fetchedComments);
+    if (Array.isArray(fetchedComments.Value || fetchedComments.value)) {
+      comments.value = fetchedComments.Value || fetchedComments.value;
     } else {
       comments.value = [];
     }
@@ -136,14 +135,10 @@ async function submitComment() {
       updatedAt: new Date().toISOString(),
     };
 
-    const result = await commentsStore.addComment(commentData);
-    if (result) {
-      comments.value.push(result); // Use the result from the server or the provided data
-      toast.success('Comment added successfully!');
-      commentContent.value = '';
-    } else {
-      toast.error('Failed to add comment.');
-    }
+    await commentsStore.addComment(commentData);
+    toast.success('Comment added successfully, it will be updated soon!');
+    commentContent.value = '';
+
   } catch (error) {
     console.error('Failed to add comment:', error);
     toast.error('Failed to add comment.');
