@@ -5,13 +5,13 @@ let connection = null;
 
 export const startConnection = async () => {
   connection = new HubConnectionBuilder()
-    .withUrl('https://your-api-endpoint/notificationsHub') // Replace with your SignalR hub URL
+    .withUrl('https://your-api-endpoint/notifications')
     .configureLogging(LogLevel.Information)
     .build();
 
   connection.on('ReceiveNotification', (notification) => {
     const notificationsStore = useNotificationsStore();
-    notificationsStore.addNotification(notification); // Make sure you have a method to add notifications in your store
+    notificationsStore.addNotification(notification);
   });
 
   try {
