@@ -1,7 +1,6 @@
-// guardian-newsStore.js
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { fetchApi } from '@/utils/fetchApi';
+import { fetchGuardianNews } from '@/utils/fetchGuardianNews';
 
 export const useGuardianNewsStore = defineStore('news', () => {
   const news = ref([]);
@@ -21,7 +20,7 @@ export const useGuardianNewsStore = defineStore('news', () => {
         'page': page,
       }).toString();
 
-      const response = await fetchApi(`/search?${queryParams}`, {}, true);
+      const response = await fetchGuardianNews(`/search?${queryParams}`);
 
       if (response && response.response) {
         news.value = response.response.results;

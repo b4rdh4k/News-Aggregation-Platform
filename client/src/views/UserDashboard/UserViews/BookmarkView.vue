@@ -1,32 +1,32 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useBookmarkStore } from '@/store/bookmark';
 import LoadingAnimation from '@/components/shared/Interactions/LoadingAnimation.vue';
 import { useToast } from 'vue-toastification';
 import { useRouter } from 'vue-router';
 
 const toast = useToast();
-const bookmarkedNews = ref([]);
-const isLoading = ref(false);
+const bookmarkStore = useBookmarkStore();
 const router = useRouter();
 
 const fetchBookmarkedArticles = async () => {
-  isLoading.value = true;
   try {
-    const response = await fetch('/bookmarked.json');
-    if (!response.ok) throw new Error('Network response was not ok');
-    const data = await response.json();
-    bookmarkedNews.value = data;
+    await bookmarkStore.fetchSavedArticles();
   } catch (error) {
-    console.error('Failed to fetch bookmarked articles:', error);
-    toast.error('Failed to fetch bookmarked articles.');
-  } finally {
-    isLoading.value = false;
+    console.error('Failed to fetch bookmarks:', error);
+    toast.error('Failed to fetch bookmarks.');
   }
 };
 
-const removeBookmark = (index) => {
-  bookmarkedNews.value.splice(index, 1);
-  toast.success('Article removed from bookmarks.');
+const removeBookmark = async (bookmarkId) => {
+  try {
+    await bookmarkStore.deleteBookmark(bookmarkId);
+    bookmarkStore.bookmarks = bookmarkStore.bookmarks.filter(b => b.id !== bookmarkId);
+    toast.success('Article removed from bookmarks.');
+  } catch (error) {
+    console.error('Failed to remove bookmark:', error);
+    toast.error('Failed to remove bookmark.');
+  }
 };
 
 onMounted(fetchBookmarkedArticles);
@@ -34,44 +34,20 @@ onMounted(fetchBookmarkedArticles);
 
 <template>
   <div class="container mx-auto p-4">
-    <div
-      class="flex justify-between items-center mb-4 pb-4 border-b-2 border-dashed border-accent dark:border-dark-accent"
-    >
+    <div class="flex justify-between items-center mb-4 pb-4 border-b-2 border-dashed border-accent dark:border-dark-accent">
       <h2 class="text-3xl text-accent dark:text-dark-accent font-bold">Bookmarked News</h2>
       <button @click="router.go(-1)" class="btn-go-back">
         <i class="fa fa-arrow-left" aria-hidden="true"></i>
         <span class="ml-2">Go Back</span>
       </button>
     </div>
-    <div
-      v-if="bookmarkedNews.length > 0"
-      class="news-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-    >
-      <div
-        v-for="(article, index) in bookmarkedNews"
-        :key="index"
-        class="card rounded-lg p-2 shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20"
-      >
+    <div v-if="!bookmarkStore.loading && bookmarkStore.bookmarks.length > 0" class="news-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div v-for="(article, index) in bookmarkStore.bookmarks" :key="index" class="card rounded-lg p-2 shadow-inner shadow-secondary dark:shadow-dark-secondary bg-secondary dark:bg-dark-secondary bg-opacity-20 dark:bg-opacity-20">
         <div class="img rounded-lg">
-          <img
-            :src="article.image"
-            alt="Article image"
-            class="w-full h-full object-cover rounded-lg hover:animate-pulse"
-          />
-          <div class="remove" @click="removeBookmark(index)">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              class="w-6 h-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
+          <img :src="article.image" alt="Article image" class="w-full h-full object-cover rounded-lg hover:animate-pulse" />
+          <div class="remove" @click="removeBookmark(article.id)">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </div>
         </div>
@@ -85,22 +61,18 @@ onMounted(fetchBookmarkedArticles);
           <div class="flex justify-end p-4 border-t-2 border-accent dark:border-dark-accent">
             <router-link :to="article.link" class="flex items-center space-x-2">
               <p class="m-0">Read More</p>
-              <i
-                class="fa fa-arrow-circle-right"
-                aria-hidden="true"
-                style="font-size: 1.5em; color: var(--accent)"
-              ></i>
+              <i class="fa fa-arrow-circle-right" aria-hidden="true" style="font-size: 1.5em; color: var(--accent)"></i>
             </router-link>
           </div>
         </div>
       </div>
     </div>
 
-    <div v-if="isLoading" class="flex justify-center p-4">
+    <div v-if="bookmarkStore.loading" class="flex justify-center p-4">
       <LoadingAnimation />
     </div>
 
-    <div v-if="!isLoading && bookmarkedNews.length === 0" class="flex justify-center p-4">
+    <div v-if="!bookmarkStore.loading && bookmarkStore.bookmarks.length === 0" class="flex justify-center p-4">
       <p>No bookmarked articles available.</p>
     </div>
   </div>
@@ -203,9 +175,8 @@ onMounted(fetchBookmarkedArticles);
     background-color: var(--accent);
   }
 
-  i {
-    font-size: 1.2em;
+  .fa-arrow-left {
+    margin-right: 8px;
   }
 }
 </style>
-

@@ -1,20 +1,15 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useUserStore } from '@/store/user'; // Ensure this path is correct
+import { useUserStore } from '@/store/user';
 
 const userStore = useUserStore();
 
 const username = ref('');
 const fullName = ref('');
 const email = ref('');
-const birthdate = ref('');
 const profilePicture = ref(null);
 const profilePicturePreview = ref(null);
-const newPassword = ref('');
-const confirmNewPassword = ref('');
-const currentPassword = ref('');
 
-// Constants for file validation
 const MAX_WIDTH = 2048;
 const MAX_HEIGHT = 2048;
 const MIN_WIDTH = 400;
@@ -25,15 +20,14 @@ const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
 onMounted(async () => {
   try {
     if (userStore.token) {
-      await userStore.fetchUser();
+      await userStore.refreshAuthToken(); // Attempt to refresh token
+      await userStore.fetchUser(); // Fetch user details after refreshing
       const user = userStore.user;
 
       if (user) {
         username.value = user.username || '';
         fullName.value = user.fullName || '';
         email.value = user.email || '';
-        birthdate.value = user.birthdate || '';
-        // If user has a profile picture URL, set it for preview
         if (user.profileImage) {
           profilePicturePreview.value = user.profileImage;
         }
@@ -41,6 +35,7 @@ onMounted(async () => {
     }
   } catch (error) {
     console.error('Error loading user data:', error);
+    // Optional: Handle specific cases like logging out the user if needed
   }
 });
 
@@ -98,44 +93,8 @@ const removeProfilePicture = () => {
   profilePicture.value = null;
   profilePicturePreview.value = null;
 };
-
-const updateProfile = async () => {
-  if (newPassword.value && newPassword.value !== confirmNewPassword.value) {
-    alert('New passwords do not match');
-    return;
-  }
-
-  try {
-    // Update user profile
-    await userStore.updateUser({
-      username: username.value,
-      fullName: fullName.value,
-      email: email.value,
-      birthdate: birthdate.value,
-    });
-
-    // Update profile image
-    if (profilePicture.value) {
-      const formData = new FormData();
-      formData.append('profileImage', profilePicture.value);
-      await userStore.updateProfileImage(formData);
-    }
-
-    // Change password if provided
-    if (newPassword.value) {
-      await userStore.changePassword({
-        currentPassword: currentPassword.value,
-        newPassword: newPassword.value,
-      });
-    }
-
-    alert('Profile updated successfully');
-  } catch (error) {
-    console.error('Error updating profile:', error.message);
-    alert('Failed to update profile');
-  }
-};
 </script>
+
 
 <template>
   <div class="profile-dashboard">
@@ -166,35 +125,15 @@ const updateProfile = async () => {
         </div>
         <div class="form-group">
           <label for="email">Email</label>
-          <input id="email" v-model="email" type="email" required />
-        </div>
-        <div class="form-group">
-          <label for="birthdate">Birthdate</label>
-          <input id="birthdate" v-model="birthdate" type="date" required />
+          <input id="email" v-model="email" type="email" required disabled />
         </div>
         <button type="submit" class="update-button">Update Profile</button>
       </form>
     </div>
-    <div class="form bg-primary bg-opacity-30 p-4 rounded-lg">
-      <h4 class="border-b-2 p-2 mb-4 border-primary dark:border-dark-primary">Change your password</h4>
-      <form @submit.prevent="updateProfile">
-        <div class="form-group">
-          <label for="currentPassword">Current Password</label>
-          <input id="currentPassword" v-model="currentPassword" type="password" required />
-        </div>
-        <div class="form-group">
-          <label for="newPassword">New Password</label>
-          <input id="newPassword" v-model="newPassword" type="password" />
-        </div>
-        <div class="form-group">
-          <label for="confirmNewPassword">Confirm New Password</label>
-          <input id="confirmNewPassword" v-model="confirmNewPassword" type="password" />
-        </div>
-        <button type="submit" class="update-button">Update Password</button>
-      </form>
-    </div>
+
   </div>
 </template>
+
 
 <style lang="scss" scoped>
 @import '@/views/UserDashboard/styles/base.scss';

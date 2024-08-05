@@ -14,20 +14,20 @@ export const useNewsStore = defineStore('news', () => {
         throw new Error('Network response was not ok')
       }
       const data = await response.json()
-      console.log('Fetched data:', data) 
-      
-      if (data && data.Value && Array.isArray(data.Value.Articles)) {
-        allNews.value = data.Value.Articles
+
+      if (data && (data.value || data.Value) && Array.isArray(data.value || data.Value)) {
+        allNews.value = data.value || data.Value
       } else {
         console.error('Fetched data does not contain the expected array structure:', data)
         toast.error('Failed to fetch stories. Unexpected data structure.')
+        //return
       }
     } catch (error) {
       console.error('Error fetching all stories:', error)
       toast.error('Failed to fetch stories.')
     }
   }
-  
+
   const visibleNews = computed(() => allNews.value.slice(0, perPage))
   const hasNews = computed(() => visibleNews.value.length > 0)
 

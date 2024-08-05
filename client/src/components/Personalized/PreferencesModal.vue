@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
-import { useCategoryStore } from '@/store/categoryStore';
+import { usePreferencesStore } from '@/store/preferences';
 import draggable from 'vuedraggable';
 import ModalFormat from '@/components/shared/Interactions/ModalFormat.vue';
 
@@ -10,16 +10,9 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
-const categoryStore = useCategoryStore();
-const categories = computed(() => categoryStore.categories);
+const preferencesStore = usePreferencesStore();
+const categories = computed(() => preferencesStore.categories);
 const selectedCategories = ref([]);
-
-watch(() => props.show, async (newValue) => {
-  if (newValue) {
-    await categoryStore.fetchCategories();
-    selectedCategories.value = [...categoryStore.selectedCategories];
-  }
-});
 
 const availableCategories = computed(() => {
   return categories.value.filter(
@@ -34,24 +27,31 @@ const closeModal = () => {
 const addCategory = async (category) => {
   if (!selectedCategories.value.some((c) => c.id === category.id) && selectedCategories.value.length < 9) {
     selectedCategories.value.push(category);
-    await categoryStore.addCategory(category); // Add the category to the server preferences
+    await preferencesStore.addPreference(category.id); 
   }
 };
 
 const removeCategory = async (category) => {
   selectedCategories.value = selectedCategories.value.filter((cat) => cat.id !== category.id);
-  await categoryStore.removeCategory(category); // Remove the category from the server preferences
+  await preferencesStore.removePreference(category.id); 
 };
 
 const savePreferences = async () => {
-  await categoryStore.setSelectedCategories(selectedCategories.value);
+  await preferencesStore.fetchPreferences(); 
   closeModal();
 };
 
 const onDragEnd = () => {
-  // Optionally, save preferences on drag end if needed
-  categoryStore.setSelectedCategories(selectedCategories.value);
+  preferencesStore.fetchPreferences(); 
 };
+
+watch(() => props.show, async (newValue) => {
+  if (newValue) {
+    await preferencesStore.fetchAllCategories();
+    await preferencesStore.fetchPreferences();
+    selectedCategories.value = [...preferencesStore.selectedCategories];
+  }
+});
 </script>
 
 <template>

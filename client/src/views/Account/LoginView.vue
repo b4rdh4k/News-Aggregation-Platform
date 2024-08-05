@@ -1,20 +1,20 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useUserStore } from '../../store/user'
-import { useRouter } from 'vue-router'
-import { useToast } from 'vue-toastification'
-import lottie from 'lottie-web'
-import animationData from '@/assets/media/LoginAnimation.json'
+import { ref, onMounted } from 'vue';
+import { useUserStore } from '../../store/user';
+import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
+import lottie from 'lottie-web';
+import animationData from '@/assets/media/LoginAnimation.json';
 
-const email = ref('')
-const password = ref('')
-const emailError = ref('')
-const passwordError = ref('')
-const userStore = useUserStore()
-const router = useRouter()
-const toast = useToast()
-const lottieContainer = ref(null)
-const loading = ref(false)
+const email = ref('');
+const password = ref('');
+const emailError = ref('');
+const passwordError = ref('');
+const userStore = useUserStore();
+const router = useRouter();
+const toast = useToast();
+const lottieContainer = ref(null);
+const loading = ref(false);
 
 onMounted(() => {
   lottie.loadAnimation({
@@ -22,112 +22,69 @@ onMounted(() => {
     renderer: 'svg',
     loop: true,
     autoplay: true,
-    animationData
-  })
-})
+    animationData,
+  });
+});
 
 const validateForm = () => {
-  emailError.value = ''
-  passwordError.value = ''
+  emailError.value = '';
+  passwordError.value = '';
 
   if (!email.value) {
-    emailError.value = 'Email is required'
+    emailError.value = 'Email is required';
   } else if (!/\S+@\S+\.\S+/i.test(email.value)) {
-    emailError.value = 'Email is invalid'
+    emailError.value = 'Email is invalid';
   }
 
   if (!password.value) {
-    passwordError.value = 'Password is required'
+    passwordError.value = 'Password is required';
   } else if (password.value.length < 6) {
-    passwordError.value = 'Password is incorrect'
+    passwordError.value = 'Password is incorrect';
   } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)/.test(password.value)) {
-    passwordError.value = 'Password is incorrect'
+    passwordError.value = 'Password is incorrect';
   }
 
-  return !emailError.value && !passwordError.value
-}
+  return !emailError.value && !passwordError.value;
+};
 
 const login = async () => {
   if (!validateForm()) {
-    toast.error('Please fill out all required fields correctly.')
-    return
+    toast.error('Please fill out all required fields correctly.');
+    return;
   }
 
-  const normalizedEmail = email.value.toLowerCase()
-
-  loading.value = true
+  loading.value = true;
 
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: normalizedEmail,
-        password: password.value
-      })
-    })
-
-    const data = await response.json()
-    console.log('Login response:', data)
-
-    if (response.ok) {
-      userStore.$patch({
-        token: data.accessToken,
-        user: data.user
-      })
-      localStorage.setItem('token', data.accessToken)
-      toast.success('Login successful!')
-      router.push('/')
-    } else {
-      console.error('Login failed:', data)
-      switch (data.code) {
-        case 36:
-          toast.error('User not found.')
-          break
-        case 37:
-          toast.error('Invalid password.')
-          break
-        case 38:
-          toast.error('Error creating acess token.')
-          break
-        case 44:
-          toast.error(
-            'Our system has detected multiple login attempts from your IP address     which is a violation of our Terms of Service. As a result     access from your IP has been temporarily blocked for 10 minutes. This measure helps protect our platform from unauthorized access and ensures a secure environment for all users.'
-          )
-          break
-        default:
-          toast.error('Failed to register user.')
-      }
-    }
+    await userStore.login({ email: email.value.toLowerCase(), password: password.value });
+    toast.success('Login successful!');
+    router.push('/');
   } catch (error) {
-    console.error('Error logging in user:', error)
-    if (error.message === 'Failed to fetch') {
-      emailError.value = 'Failed to connect to server'
-    }
-    toast.error('Failed to connect to server.')
+    console.error('Login error:', error.message);
+    toast.error('Login failed. Please try again.');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
-const loginWithGoogle = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`
-}
+};
 
-const loginWithDiscord = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL}/auth/discord`
-}
+const loginWithProvider = async (provider) => {
+  try {
+    await userStore.loginWithProvider(provider);
+  } catch (error) {
+    console.error(`Login with ${provider} error:`, error.message);
+    toast.error(`Login with ${provider} failed.`);
+  }
+};
 
-const loginWithGitHub = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL}/auth/github`
-}
+const handleKeydown = (event) => {
+  if (event.key === 'Enter') {
+    login();
+  }
+};
 </script>
 
 <template>
-  <div
-    class="flex flex-col md:flex-row min-h-screen bg-background dark:bg-dark-background text-text dark:text-dark-text"
-  >
+  <div class="flex flex-col md:flex-row min-h-screen bg-background dark:bg-dark-background text-text dark:text-dark-text">
     <div class="hidden md:flex flex-1 pl-4">
       <div ref="lottieContainer" class="h-full"></div>
     </div>
@@ -136,52 +93,57 @@ const loginWithGitHub = () => {
       <div
         class="container max-w-lg mx-auto px-6 bg-background dark:bg-dark-background text-text dark:text-dark-text rounded-lg"
       >
-        <h1 class="text-4xl font-bold mb-4 text-center">Nice to see you again!</h1>
+        <h1 class="text-4xl font-bold mb-4 text-center">Nice to not see you again!</h1>
+
+        <!-- Provider Buttons -->
+        <section class="flex justify-center m-8 items-center gap-4">
+          <div class="relative group">
+            <button
+              @click="() => loginWithProvider('Google')"
+              class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
+            >
+              <i class="fab fa-google text-2xl"></i>
+              <span
+                class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-2 transition-all duration-300"
+              >
+                Google
+              </span>
+            </button>
+          </div>
+
+          <div class="relative group">
+            <button
+              @click="() => loginWithProvider('Discord')"
+              class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
+            >
+              <i class="fab fa-discord text-2xl"></i>
+              <span
+                class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-2 transition-all duration-300"
+              >
+                Discord
+              </span>
+            </button>
+          </div>
+
+          <div class="relative group">
+            <button
+              @click="() => loginWithProvider('GitHub')"
+              class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
+            >
+              <i class="fab fa-github text-2xl"></i>
+              <span
+                class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-4 transition-all duration-300"
+              >
+                GitHub
+              </span>
+            </button>
+          </div>
+        </section>
+
+        <p class="mb-4 text-center">or through</p>
+
+        <!-- Login Form -->
         <form @submit.prevent="login" autocomplete="on" novalidate>
-          <section class="flex justify-center m-8 items-center gap-4">
-            <div class="relative group">
-              <button
-                @click="loginWithGoogle"
-                class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
-              >
-                <i class="fab fa-google text-2xl"></i>
-                <span
-                  class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-2 transition-all duration-300"
-                >
-                  Google
-                </span>
-              </button>
-            </div>
-
-            <div class="relative group">
-              <button
-                @click="loginWithDiscord"
-                class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
-              >
-                <i class="fab fa-discord text-2xl"></i>
-                <span
-                  class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-2 transition-all duration-300"
-                >
-                  Discord
-                </span>
-              </button>
-            </div>
-
-            <div class="relative group">
-              <button
-                @click="loginWithGitHub"
-                class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
-              >
-                <i class="fab fa-github text-2xl"></i>
-                <span
-                  class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-4 transition-all duration-300"
-                >
-                  GitHub
-                </span>
-              </button>
-            </div>
-          </section>
-          <p class="mb-4 text-center">or through</p>
           <div class="mb-4">
             <label for="email" class="block mb-2">E-mail</label>
             <input
@@ -194,6 +156,7 @@ const loginWithGitHub = () => {
             />
             <p v-if="emailError" class="text-red-500 text-sm">{{ emailError }}</p>
           </div>
+
           <div class="mb-4">
             <label for="password" class="block mb-2">Password</label>
             <input
@@ -202,6 +165,7 @@ const loginWithGitHub = () => {
               v-model="password"
               class="w-full p-2 border rounded"
               :class="{ 'border-red-500': passwordError }"
+              @keydown="handleKeydown"
               autocomplete="new-password"
             />
             <p v-if="passwordError" class="text-red-500 text-sm">{{ passwordError }}</p>
@@ -218,8 +182,8 @@ const loginWithGitHub = () => {
             </span>
           </button>
         </form>
+
         <div class="mt-4 text-center text-lg">
-          <p class="text-secondary dark:text-dark-secondary">Forgot password?</p>
           <p class="text-secondary dark:text-dark-secondary">
             Don't have an account?
             <router-link to="/register" class="text-accent dark:text-dark-accent"

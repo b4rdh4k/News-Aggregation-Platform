@@ -1,8 +1,14 @@
 <script setup>
 import { ref } from 'vue'
 import ThemeToggle from '@/components/shared/Interactions/ThemeToggle.vue'
+import { useUserStore } from '@/store/user'
+import { useToast } from 'vue-toastification'
+import { useRouter } from 'vue-router'
 
 const isSidebarOpen = ref(false)
+const userStore = useUserStore()
+const toast = useToast()
+const router = useRouter()
 
 function toggleSidebar() {
   isSidebarOpen.value = !isSidebarOpen.value
@@ -10,6 +16,11 @@ function toggleSidebar() {
 
 function closeSidebar() {
   isSidebarOpen.value = false
+}
+const handleLogout = async () => {
+  await userStore.logout()
+  toast.success('Logout successful!')
+  router.push('/')
 }
 </script>
 
@@ -25,13 +36,15 @@ function closeSidebar() {
       <nav class="flex mt-4 flex-col">
         <router-link to="/profile" class="nav-item" @click="closeSidebar">Home</router-link>
         <router-link to="/bookmarks" class="nav-item" @click="closeSidebar">Bookmarks</router-link>
-        <router-link to="/mfa" class="nav-item" @click="closeSidebar"
-          >Multi-factor Auth</router-link
-        >
       </nav>
       <footer class="sidebar-footer">
         <router-link to="/">
-          <button class="button py-2 px-4 rounded">Logout</button>
+          <button
+            @click="handleLogout"
+            class="block w-full border-b-[1px] border-accent dark:border-dark-accent px-4 py-2 text-left hover:bg-primary hover:rounded-t-md dark:hover:bg-dark-primary"
+          >
+            Log out
+          </button>
         </router-link>
       </footer>
     </aside>

@@ -14,6 +14,11 @@ export const basicsRoutes = [
         component: () => import('@/views/Account/RegisterView.vue')
       },
       {
+        path: '/auth/',
+        name: 'AuthCallback',
+        component: () => import('@/components/Account/AuthCallback.vue')
+      },
+      {
         path: 'setup-mfa',
         name: 'SetupMFA',
         component: () => import('@/components/Account/setup-mfa.vue')
@@ -32,7 +37,27 @@ export const basicsRoutes = [
         path: 'cancel',
         name: 'Cancel',
         component: () => import('@/views/Subscription/CancelPayment.vue')
-      }
+      },
+      {
+        path: 'gdpr',
+        name: 'GDPR',
+        component: () => import('@/views/general/Security/GDPRView.vue')
+      },
+      {
+        path: 'privacy-policy',
+        name: 'PrivacyPolicy',
+        component: () => import('@/views/general/Security/PrivacyPolicy.vue')
+      },
+      {
+        path: 'terms-of-service',
+        name: 'TermsOfService',
+        component: () => import('@/views/general/Security/ToSView.vue')
+      },
+      {
+        path: 'cookie-policy',
+        name: 'CookiePolicy',
+        component: () => import('@/views/general/Security/CookiePolicy.vue')
+      },
     ]
   }
 ]

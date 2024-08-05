@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { forgotPassword } from '@/utils/Authorization/auth'
+import { forgotPassword } from '@/store/user'
 
 const show = ref(false)
 const email = ref('')

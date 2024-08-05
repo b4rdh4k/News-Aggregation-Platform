@@ -20,11 +20,6 @@ export const userRoutes = [
         name: 'BookmarkView',
         component: () => import('@/views/UserDashboard/UserViews/BookmarkView.vue')
       },
-      {
-        path: 'mfa',
-        name: 'MfaAuth',
-        component: () => import('@/views/UserDashboard/UserViews/MfaAuth.vue')
-      }
     ]
   }
 ];

@@ -8,14 +8,13 @@ export const useCategoryStore = defineStore('category', () => {
   const articles = ref({});
   const currentPage = ref({});
   const itemsPerPage = ref(10);
-  const preferencesLoaded = ref(false); // Flag to indicate if preferences are loaded
 
   const fetchCategories = async () => {
     const now = new Date();
     const lastFetched = new Date(localStorage.getItem('lastFetchedCategories'));
     const cachedCategories = localStorage.getItem('categories');
 
-    if (cachedCategories && now - lastFetched < 24 * 60 * 60 * 1000) {
+    if (cachedCategories && now - lastFetched < 60 * 60 * 1000) {
       categories.value = JSON.parse(cachedCategories);
       console.log('Using cached categories:', categories.value);
     } else {
@@ -77,22 +76,7 @@ export const useCategoryStore = defineStore('category', () => {
     await savePreferencesToServer(newCategories);
   };
 
-  const initializeFromServer = async () => {
-    try {
-      if (!preferencesLoaded.value) {
-        const data = await fetchApi('/user/view-preferences');
-        if (data && Array.isArray(data)) {
-          selectedCategories.value = data;
-          preferencesLoaded.value = true; // Set flag after loading preferences
-        } else {
-          console.error('Unexpected data format for preferences:', data);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to fetch user preferences', error);
-    }
-  };
-
+ 
   const addCategory = async (category) => {
     if (!selectedCategories.value.some((c) => c.id === category.id) && selectedCategories.value.length < 9) {
       selectedCategories.value.push(category);
@@ -100,27 +84,6 @@ export const useCategoryStore = defineStore('category', () => {
     }
   };
 
-  const removeCategory = async (category) => {
-    try {
-      // Remove category from local state first
-      selectedCategories.value = selectedCategories.value.filter((cat) => cat.id !== category.id);
-  
-      // Attempt to remove category from server
-      const response = await fetchApi(`/preferences/remove/${category.id}`, {
-        method: 'DELETE',
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Failed to remove category, status: ${response.status}`);
-      }
-  
-      // Update preferences on server
-      await setSelectedCategories(selectedCategories.value);
-    } catch (error) {
-      console.error('Failed to remove category from preferences', error);
-    }
-  };
-  
 
   const setPage = (categoryId, page) => {
     currentPage.value[categoryId] = page;
@@ -136,9 +99,7 @@ export const useCategoryStore = defineStore('category', () => {
     fetchCategories,
     fetchArticlesByCategory,
     setSelectedCategories,
-    initializeFromServer,
     addCategory,
-    removeCategory,
     setPage,
   };
 });

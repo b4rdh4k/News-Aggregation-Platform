@@ -37,11 +37,7 @@ export const homeRoutes = [
         component: () => import('@/views/Category/CategoryView.vue'),
         props: true
       },
-      {
-        path: 'source/:id',
-        name: 'Source',
-        component: () => import('@/views/Source/SourceView.vue')
-      }
+
     ]
   }
 ]

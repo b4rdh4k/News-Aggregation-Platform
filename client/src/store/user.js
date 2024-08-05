@@ -1,48 +1,42 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { useToast } from 'vue-toastification';
 import VueJwtDecode from 'vue-jwt-decode';
-import { fetchApi } from '@/utils/fetchApi'; // Ensure this path is correct
+import { authService } from '@/services/authService';
+import { useToast } from 'vue-toastification';
 
-export const useUserStore = defineStore('user', () => {
+export const useUserStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token') || null);
+  const refreshToken = ref(localStorage.getItem('refreshToken') || null);
   const decodedToken = ref(token.value ? VueJwtDecode.decode(token.value) : null);
   const user = ref(null);
   const toast = useToast();
 
   const fetchUser = async () => {
+    if (!token.value) return;
+
     try {
-      const response = await fetchApi('/auth/info', {
-        method: 'GET'
-      });
-
-      if (response.ok) {
-        user.value = await response.json();
+      const response = await authService.fetchUserInfo(token.value);
+      if (response?.code !== 40 && response?.code !== 41) {
+        user.value = response;
+        localStorage.setItem('user', JSON.stringify(response));
       } else {
-        throw new Error('Failed to fetch user info');
+        user.value = null;
+        localStorage.removeItem('user');
       }
-
     } catch (error) {
       console.error('Error fetching user info:', error);
-      toast.error('Error fetching user info');
-      // Handle token refresh if necessary
     }
   };
 
   const refreshAuthToken = async () => {
-    try {
-      const response = await fetchApi('/auth/refresh', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token.value}`,
-        },
-      });
+    if (!refreshToken.value) return;
 
-      if (response.ok) {
-        const data = await response.json();
-        token.value = data.accessToken;
-        localStorage.setItem('token', data.accessToken);
-        decodedToken.value = VueJwtDecode.decode(data.accessToken);
+    try {
+      const { accessToken } = await authService.refreshAuthToken(refreshToken.value);
+      if (accessToken) {
+        token.value = accessToken;
+        localStorage.setItem('token', accessToken);
+        decodedToken.value = VueJwtDecode.decode(accessToken);
         await fetchUser(); // Fetch user info after refreshing token
       } else {
         throw new Error('Failed to refresh token');
@@ -54,105 +48,15 @@ export const useUserStore = defineStore('user', () => {
     }
   };
 
-  const updateUser = async (userUpdateData) => {
-    try {
-      await fetchApi(`/user/${user.value.Id}`, {
-        method: 'PUT',
-        body: JSON.stringify(userUpdateData),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token.value}`,
-        },
-      });
-      await fetchUser(); // Fetch updated user info
-    } catch (error) {
-      console.error('Failed to update user info:', error);
-    }
-  };
-
-  const updateUserBirthdate = async (newBirthdate) => {
-    try {
-      await fetchApi('/user/update/birthdate', {
-        method: 'PATCH',
-        body: JSON.stringify(newBirthdate),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token.value}`,
-        },
-      });
-      await fetchUser(); // Fetch updated user info
-    } catch (error) {
-      console.error('Failed to update birthdate:', error);
-    }
-  };
-
-  const updateUserUsername = async (newUsername) => {
-    try {
-      await fetchApi('/user/update/username', {
-        method: 'PATCH',
-        body: JSON.stringify(newUsername),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token.value}`,
-        },
-      });
-      await fetchUser(); // Fetch updated user info
-    } catch (error) {
-      console.error('Failed to update username:', error);
-    }
-  };
-
-  const updateUserFullName = async (newFullName) => {
-    try {
-      await fetchApi('/user/update/fullname', {
-        method: 'PATCH',
-        body: JSON.stringify(newFullName),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token.value}`,
-        },
-      });
-      await fetchUser(); // Fetch updated user info
-    } catch (error) {
-      console.error('Failed to update full name:', error);
-    }
-  };
-
-  const updateProfileImage = async (imageUrl) => {
-    try {
-      await fetchApi('/user/update/profile-image', {
-        method: 'PATCH',
-        body: JSON.stringify(imageUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token.value}`,
-        },
-      });
-      await fetchUser(); // Fetch updated user info
-    } catch (error) {
-      console.error('Failed to update profile image:', error);
-    }
-  };
-
   const login = async (credentials) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
-      const data = await response.json();
-
-      if (response.ok) {
-        token.value = data.accessToken;
-        localStorage.setItem('token', data.accessToken);
-        decodedToken.value = VueJwtDecode.decode(data.accessToken);
-        await fetchUser();
-      } else {
-        throw new Error(data.message || 'Login failed');
-      }
+      const { accessToken, refreshToken: newRefreshToken } = await authService.login(credentials);
+      token.value = accessToken;
+      refreshToken.value = newRefreshToken;
+      localStorage.setItem('token', accessToken);
+      localStorage.setItem('refreshToken', newRefreshToken);
+      decodedToken.value = VueJwtDecode.decode(accessToken);
+      await fetchUser();
     } catch (error) {
       console.error('Login error:', error.message);
       throw error;
@@ -161,48 +65,120 @@ export const useUserStore = defineStore('user', () => {
 
   const register = async (userInfo) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userInfo),
-      });
-      const data = await response.json();
-
-      if (response.ok) {
-        token.value = data.accessToken;
-        localStorage.setItem('token', data.accessToken);
-        decodedToken.value = VueJwtDecode.decode(data.accessToken);
-        await fetchUser(); // Fetch user info after registration
-      } else {
-        throw new Error(data.message || 'Registration failed');
-      }
+      const { accessToken, refreshToken: newRefreshToken } = await authService.register(userInfo);
+      token.value = accessToken;
+      refreshToken.value = newRefreshToken;
+      localStorage.setItem('token', accessToken);
+      localStorage.setItem('refreshToken', newRefreshToken);
+      decodedToken.value = VueJwtDecode.decode(accessToken);
+      await fetchUser(); // Fetch user info after registration
     } catch (error) {
       console.error('Registration error:', error.message);
     }
   };
 
+  const loginWithProvider = async (provider) => {
+    try {
+      await authService.loginWithProvider(provider);
+    } catch (error) {
+      console.error('Login with provider error:', error.message);
+    }
+  };
+
+  const handleProviderCallback = async () => {
+    try {
+      const { accessToken: newAccessToken, refreshToken: newRefreshToken } = await authService.handleProviderCallback();
+      token.value = newAccessToken;
+      refreshToken.value = newRefreshToken;
+      localStorage.setItem('token', newAccessToken);
+      localStorage.setItem('refreshToken', newRefreshToken);
+      decodedToken.value = VueJwtDecode.decode(newAccessToken);
+      await fetchUser();
+    } catch (error) {
+      console.error('Provider callback error:', error.message);
+    }
+  };
+
   const logout = () => {
     token.value = null;
+    refreshToken.value = null;
     decodedToken.value = null;
     user.value = null;
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+  };
+
+  const getUserRole = () => {
+    return decodedToken.value?.role || 'guest'; 
+  };
+
+  const hasRole = (requiredRole) => {
+    const userRole = getUserRole();
+    return userRole === requiredRole;
+  };
+
+  const updateUserBirthdate = async (newBirthDay) => {
+    try {
+      await authService.updateUserBirthdate(newBirthDay);
+      await fetchUser(); // Refresh user data after update
+      toast.success('Birthdate updated successfully');
+    } catch (error) {
+      console.error('Error updating birthdate:', error.message);
+      toast.error('Failed to update birthdate');
+    }
+  };
+
+  const updateUserUsername = async (newUsername) => {
+    try {
+      await authService.updateUserUsername(newUsername);
+      await fetchUser(); // Refresh user data after update
+      toast.success('Username updated successfully');
+    } catch (error) {
+      console.error('Error updating username:', error.message);
+      toast.error('Failed to update username');
+    }
+  };
+
+  const updateUserFullName = async (newName) => {
+    try {
+      await authService.updateUserFullName(newName);
+      await fetchUser(); // Refresh user data after update
+      toast.success('Full name updated successfully');
+    } catch (error) {
+      console.error('Error updating full name:', error.message);
+      toast.error('Failed to update full name');
+    }
+  };
+
+  const updateProfileImage = async (imageUrl) => {
+    try {
+      await authService.updateProfileImage(imageUrl);
+      await fetchUser(); // Refresh user data after update
+      toast.success('Profile image updated successfully');
+    } catch (error) {
+      console.error('Error updating profile image:', error.message);
+      toast.error('Failed to update profile image');
+    }
   };
 
   return {
     token,
+    refreshToken,
     decodedToken,
     user,
     fetchUser,
     refreshAuthToken,
-    updateUser,
+    login,
+    register,
+    loginWithProvider,
+    handleProviderCallback,
+    logout,
+    getUserRole,
+    hasRole,
     updateUserBirthdate,
     updateUserUsername,
     updateUserFullName,
     updateProfileImage,
-    login,
-    register,
-    logout,
   };
 });

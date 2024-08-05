@@ -109,100 +109,30 @@ const register = async () => {
   loading.value = true
 
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json-patch+json'
-      },
-      body: JSON.stringify({
-        username: username.value,
-        fullName: fullName.value,
-        email: email.value,
-        password: password.value,
-        firstLogin: new Date().toISOString(),
-        lastLogin: new Date().toISOString(),
-        connectingIp: '127.0.0.1',
-        birthdate: new Date(birthdate.value).toISOString(),
-        language: navigator.language,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-      })
+    await userStore.register({
+      username: username.value,
+      fullName: fullName.value,
+      email: email.value,
+      password: password.value,
+      firstLogin: new Date().toISOString(),
+      lastLogin: new Date().toISOString(),
+      connectingIp: '127.0.0.1',
+      birthdate: new Date(birthdate.value).toISOString(),
+      language: navigator.language,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
     })
-
-    const data = await response.json()
-    console.log('Registration response:', data)
-    if (response.ok) {
-      userStore.$patch({
-        token: data.accessToken,
-        user: data.user
-      })
-      toast.success('Registration was successful!')
-      router.push('/login')
-    } else {
-      console.error('Registration failed:', data)
-
-      switch (data.code) {
-        case 1:
-          toast.error('Email is required.')
-          break
-        case 2:
-          toast.error('Password is required.')
-          break
-        case 3:
-          toast.error('Email and password are required.')
-          break
-        case 4:
-          toast.error('Password must be between 8 and 100 characters')
-          break
-        case 5:
-          toast.error('Password must be between 8 and 100 characters.')
-          break
-        case 6:
-          toast.error('Birtjdate is required.')
-          break
-        case 7:
-          toast.error('Email is already taken.')
-          break
-        case 8:
-          toast.error('Username is already taken.')
-          break
-        case 9:
-          toast.error('Invalid birthdate.')
-          break
-        case 10:
-          toast.error('Invalid date.')
-          break
-        case 12:
-          toast.error('Username cannot be empty.')
-          break
-        case 15:
-          toast.error('Birthdate is the same as the current one.')
-          break
-        case 16:
-          toast.error('Full name cannot be empty.')
-          break
-        default:
-          toast.error('Failed to register user.')
-      }
-    }
+    
+    toast.success('Registration was successful!')
+    router.push('/login')
   } catch (error) {
-    console.error('Error registering user:', error)
-    toast.error('Failed to connect to server.')
+    console.error('Registration failed:', error.message)
+    toast.error('Failed to register user.')
   } finally {
     loading.value = false
   }
 }
-const loginWithGoogle = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`
-}
-
-const loginWithDiscord = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL}/auth/discord`
-}
-
-const loginWithGitHub = () => {
-  window.location.href = `${import.meta.env.VITE_API_URL}/auth/github`
-}
 </script>
+
 
 <template>
   <div
@@ -219,50 +149,6 @@ const loginWithGitHub = () => {
       >
         <h3 class="text-text dark:text-dark-text font-bold mb-4 text-center">Join the community</h3>
         <form @submit.prevent="register" class="w-full" autocomplete="on" novalidate>
-          <section class="flex justify-center m-8 items-center gap-4">
-            <div class="relative group">
-              <button
-                @click="loginWithGoogle"
-                class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
-              >
-                <i class="fab fa-google text-2xl"></i>
-                <span
-                  class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-2 transition-all duration-300"
-                >
-                  Google
-                </span>
-              </button>
-            </div>
-
-            <div class="relative group">
-              <button
-                @click="loginWithDiscord"
-                class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
-              >
-                <i class="fab fa-discord text-2xl"></i>
-                <span
-                  class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-2 transition-all duration-300"
-                >
-                  Discord
-                </span>
-              </button>
-            </div>
-
-            <div class="relative group">
-              <button
-                @click="loginWithGitHub"
-                class="flex items-center justify-center p-4 rounded-md drop-shadow-xl bg-gradient-to-r from-primary to-accent dark:from-dark-accent dark:to-dark-primary text-white font-semibold hover:translate-y-3 hover:rounded-full transition-all duration-300 hover:from-background hover:to-primary hover:dark:from-dark-background hover:dark:to-dark-primary"
-              >
-                <i class="fab fa-github text-2xl"></i>
-                <span
-                  class="absolute left-1/2 transform -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 text-text dark:text-dark-text text-xs rounded py-1 px-4 transition-all duration-300"
-                >
-                  GitHub
-                </span>
-              </button>
-            </div>
-          </section>
-          <p class="mb-4 text-center">or through</p>
           <div class="mb-4">
             <label for="username" class="block mb-2">Username</label>
             <input

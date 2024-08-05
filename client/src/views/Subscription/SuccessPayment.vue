@@ -1,5 +1,28 @@
 <script setup>
-import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
+import { DotLottieVue } from '@lottiefiles/dotlottie-vue';
+import { useSubscriptionStore } from '@/stores/useSubscriptionStore';
+import { useUserStore } from '@/store/user';
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
+
+const subscriptionStore = useSubscriptionStore();
+const userStore = useUserStore();
+const router = useRouter();
+const toast = useToast();
+
+onMounted(async () => {
+  await userStore.fetchUser();
+
+
+  const userRole = userStore.getUserRole();
+  if (userRole == 'premium') {
+    subscriptionStore.setSubscribed(true);
+  } else {
+    router.push('/');
+    toast.error('Payment failed. Please try again.');
+  }
+});
 </script>
 
 <template>

@@ -10,6 +10,7 @@ export const useCommentsStore = defineStore('comments', () => {
     loading.value = true;
     comments.value = await fetchComments(articleId);
     loading.value = false;
+    return comments.value;
   };
 
   const addComment = async (commentData) => {

@@ -1,10 +1,10 @@
 <template>
   <div
     v-if="isVisible"
-    class="fixed bottom-0 right-0 m-4 p-2 bg-accent dark:bg-dark-accent text-text dark:text-dark-text rounded shadow-lg cursor-pointer"
+    class="fixed bottom-0 right-0 m-4 p-4 bg-accent dark:bg-dark-accent text-text dark:text-dark-text rounded shadow-lg cursor-pointer"
   >
     <button @click="scrollToTop">
-      <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>    </button>
+      <i class="fa fa-arrow-circle-up"></i></button>
   </div>
 </template>
 

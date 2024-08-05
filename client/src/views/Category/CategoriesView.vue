@@ -8,10 +8,9 @@ const toast = useToast();
 const categoryStore = useCategoryStore();
 const loading = ref(true);
 const currentPage = ref(1);
-const itemsPerPage = 3;
+const itemsPerPage = 12;
 const error = ref(false);
 
-// Fetch categories on mount and handle errors
 onMounted(async () => {
   try {
     await categoryStore.fetchCategories();
@@ -25,15 +24,13 @@ onMounted(async () => {
 });
 
 
-// Compute paginated categories
 const paginatedCategories = computed(() => {
-  console.log('Paginated categories:', categoryStore.categories); // Debugging
+  console.log('Paginated categories:', categoryStore.categories);
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
   return categoryStore.categories.slice(start, end);
 });
 
-// Pagination controls
 const nextPage = () => {
   if (currentPage.value * itemsPerPage < categoryStore.categories.length) {
     currentPage.value++;
@@ -46,7 +43,6 @@ const prevPage = () => {
   }
 };
 
-// Handle empty state
 const noCategories = computed(() => {
   return !loading.value && !error.value && categoryStore.categories.length === 0;
 });
@@ -54,7 +50,6 @@ const noCategories = computed(() => {
 
 <template>
   <div class="container mx-auto p-2">
-    <!-- Page Header -->
     <div class="b-4 pb-2 mb-4 border-b-2 border-dashed border-secondary dark:border-dark-secondary">
       <h3 class="font-bold text-accent dark:text-dark-accent mb-1 text-xl sm:text-2xl md:text-3xl lg:text-4xl">
         Explore the News Universe
@@ -64,17 +59,14 @@ const noCategories = computed(() => {
       </p>
     </div>
 
-    <!-- Loading Animation -->
     <div v-if="loading" class="flex justify-center items-center h-48">
       <LoadingAnimation />
     </div>
 
-    <!-- Error Message -->
     <div v-if="error" class="flex justify-center items-center h-48">
       <p>There was an error loading the categories. Please try again later.</p>
     </div>
 
-    <!-- Categories Grid -->
     <div v-else>
       <div v-if="noCategories" class="flex justify-center items-center h-48">
         <p>No categories available.</p>
@@ -90,7 +82,6 @@ const noCategories = computed(() => {
               {{ category.name }}
             </h5>
             <div v-if="category.articles && category.articles.length > 0" class="flex flex-col lg:flex-row gap-4 flex-grow">
-              <!-- Existing article display code -->
             </div>
             <div v-else>
               <p>No articles available in this category.</p>
@@ -104,12 +95,11 @@ const noCategories = computed(() => {
             </div>
           </div>
         </div>
-        <!-- Pagination Controls -->
         <div class="flex justify-between mt-4">
-          <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 bg-gray-300 rounded">
+          <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 bg-secondary dark:bg-dark-secondary hover:bg-accent dark:hover:bg-dark-accent transition-shadow rounded">
             Previous
           </button>
-          <button @click="nextPage" :disabled="currentPage * itemsPerPage >= categoryStore.categories.length" class="px-4 py-2 bg-gray-300 rounded">
+          <button @click="nextPage" :disabled="currentPage * itemsPerPage >= categoryStore.categories.length" class="px-4 py-2 bg-secondary dark:bg-dark-secondary hover:bg-accent dark:hover:bg-dark-accent transition-shadow rounded">
             Next
           </button>
         </div>

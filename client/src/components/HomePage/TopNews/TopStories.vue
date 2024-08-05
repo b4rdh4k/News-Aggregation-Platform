@@ -40,9 +40,9 @@ const fetchTrendingNews = async () => {
       throw new Error('Network response was not ok')
     }
     const data = await response.json()
-    console.log('API Response:', data) // Log the response to inspect it
+    //console.log('API Response:', data) // Log the response to inspect it
     if (data && Array.isArray(data.Value)) {
-      trendingNews.value = data.Value
+      trendingNews.value = data.Value || data.value
       updateVisibleNews()
     } else {
       console.error('Fetched data does not contain the expected array structure:', data)
@@ -74,7 +74,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Use the styles from NewsList.vue */
 .truncate-text {
   display: -webkit-box;
   -webkit-line-clamp: 3;

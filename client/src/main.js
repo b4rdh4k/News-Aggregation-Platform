@@ -3,6 +3,7 @@ import { initTheme } from './utils/theme'
 import Toast, { POSITION } from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import Scroll2TopButton from './components/shared/ScrollToTopButton.vue'
+import VueSocialSharing from 'vue-social-sharing'
 
 
 import { createApp } from 'vue'
@@ -18,7 +19,7 @@ app.use(Toast, {
   position: POSITION.TOP_RIGHT,
   timeout: 3000
 })
-
+app.use(VueSocialSharing);
 
 app.component('ScrollToTopButton', Scroll2TopButton)
 
