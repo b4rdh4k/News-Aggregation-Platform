@@ -1,5 +1,3 @@
-import { ref } from 'vue';
-
 export async function fetchComments(articleId) {
   try {
     const response = await fetch(`https://89xx7tdx-5095.euw.devtunnels.ms/comment/article/${articleId}`);

@@ -1,6 +1,5 @@
 <template>
   <div class="py-4">
-    <!-- Display Comments Section -->
     <div v-if="comments.length" class="mt-4 space-y-2 max-h-96 overflow-y-auto">
       <div
         v-for="comment in comments"
@@ -12,13 +11,9 @@
           class="absolute top-2 right-2 text-red-600 hover:text-red-800"
           @click="openReportModal(comment.Id)"
         >
-          <i class="fa fa-flag-o"></i>
+          <i class="fa fa-flag"></i>
         </button>
-        <img
-          :src="comment.UserProfilePhoto || 'https://via.placeholder.com/50'"
-          alt="User Profile"
-          class="w-12 h-12 rounded-full mr-4"
-        />
+
         <div class="flex-1">
           <p class="font-semibold">{{ comment.Username }}</p>
           <p class="text-text dark:text-dark-text">{{ comment.Content }}</p>
@@ -28,13 +23,7 @@
     </div>
     <p v-else class="text-text dark:text-dark-text mt-4">No comments yet.</p>
 
-    <!-- Add Comment Section -->
     <div class="flex items-center mb-4 mt-4">
-      <img
-        src="https://via.placeholder.com/50"
-        alt="User Profile"
-        class="w-12 h-12 rounded-full"
-      />
       <textarea
         v-model="commentContent"
         placeholder="Add a comment..."
@@ -61,8 +50,9 @@
     <!-- Report Modal -->
     <ReportModal
       v-if="showReportModal"
-      @submit="handleReportSubmit"
-      @close="showReportModal = false"
+      :commentId="selectedCommentId"
+      @submitReport="handleReportSubmit"
+      @closeModal="showReportModal = false"
     />
   </div>
 </template>
@@ -162,6 +152,7 @@ function handleKeydown(event) {
   }
 }
 </script>
+
 
 <style scoped>
 textarea {
